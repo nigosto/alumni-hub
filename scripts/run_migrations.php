@@ -28,12 +28,21 @@ if ($option === "-a" || $option === "-all") {
         }
     }
 } else {
-    // $ext = strtolower(pathinfo($src_file_name, PATHINFO_EXTENSION));
+    $ext = strtolower(pathinfo($option, PATHINFO_EXTENSION));
 
-    // if (empty($ext)) {
+    if (empty($ext)) {
+        if ($option[strlen($option)] === "/" || $option[strlen($option)] === "\\") {
+            $option = substr($option, 0, -1);
+        }
 
-    // }
-
+        if ($action === "-r" || $action === "-rollback") {
+            $option .= "/rollback.php";
+        }
+        else {
+            $option .= "/migrate.php";
+        }
+    }
+    
     exec("php $option", $output, $code);
 
     if ($code !== 0) {
