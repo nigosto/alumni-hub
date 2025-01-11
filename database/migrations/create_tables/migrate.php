@@ -6,9 +6,9 @@ $db_con = $database->connection();
 
 $db_con->exec(<<<CT
 CREATE TABLE IF NOT EXISTS Users (
-    id INT NOT NULL auto_increment PRIMARY KEY,
+    id INT auto_increment PRIMARY KEY,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(30),
+    password VARCHAR(256) NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     role ENUM('student', 'administrator', 'admin') NOT NULL
 );
@@ -16,7 +16,7 @@ CT);
 
 $db_con->exec(<<<CT
 CREATE TABLE IF NOT EXISTS Students (
-    fn VARCHAR(10) NOT NULL PRIMARY KEY,
+    fn VARCHAR(10) PRIMARY KEY,
     degree ENUM('bachelor', 'master', 'doctor') NOT NULL,
     fullname VARCHAR(100) NOT NULL,
     graduation_year INT NOT NULL,
@@ -28,7 +28,7 @@ CT);
 
 $db_con->exec(<<<CT
 CREATE TABLE IF NOT EXISTS Clothes (
-    id INT NOT NULL auto_increment PRIMARY KEY,
+    id INT auto_increment PRIMARY KEY,
     size VARCHAR(20) NOT NULL,
 
     student_fn VARCHAR(10),
@@ -38,7 +38,7 @@ CT);
 
 $db_con->exec(<<<CT
 CREATE TABLE IF NOT EXISTS Ceremony (
-    id INT NOT NULL auto_increment PRIMARY KEY,
+    id INT auto_increment PRIMARY KEY,
     date DATETIME NOT NULL
 );
 CT);

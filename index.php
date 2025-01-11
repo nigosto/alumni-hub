@@ -8,11 +8,6 @@
 </head>
 
 <body>
-    <?php
-    // require_once 'config.php';
-    // var_dump($_ENV);
-    // echo 'KUR';
-    ?>
 </body>
 
 </html>

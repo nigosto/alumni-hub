@@ -20,7 +20,6 @@ $code = 0;
 
 if ($option === "-a" || $option === "-all") {
     foreach(glob($scripts_locations) as $file) {
-        echo("php $file $output $code");
         exec("php $file", $output, $code);
 
         if ($code !== 0) {
