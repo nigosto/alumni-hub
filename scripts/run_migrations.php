@@ -27,12 +27,27 @@ if ($option === "-a" || $option === "-all") {
         }
     }
 } else {
-    exec("php $option $output, $code");
+    $ext = strtolower(pathinfo($option, PATHINFO_EXTENSION));
+
+    if (empty($ext)) {
+        if ($option[strlen($option)] === "/" || $option[strlen($option)] === "\\") {
+            $option = substr($option, 0, -1);
+        }
+
+        if ($action === "-r" || $action === "-rollback") {
+            $option .= "/rollback.php";
+        }
+        else {
+            $option .= "/migrate.php";
+        }
+    }
+    
+    exec("php $option", $output, $code);
 
     if ($code !== 0) {
-        die("Migration $file failed\n");
+        die("\nMigration $option failed\n");
     }
 }
 
-echo "Migrations run successfully!\n";
+echo "\nMigrations run successfully!\n";
 ?>
