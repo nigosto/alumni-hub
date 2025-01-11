@@ -20,6 +20,7 @@ $code = 0;
 
 if ($option === "-a" || $option === "-all") {
     foreach(glob($scripts_locations) as $file) {
+        echo("php $file $output $code");
         exec("php $file", $output, $code);
 
         if ($code !== 0) {
@@ -27,12 +28,18 @@ if ($option === "-a" || $option === "-all") {
         }
     }
 } else {
-    exec("php $option $output, $code");
+    // $ext = strtolower(pathinfo($src_file_name, PATHINFO_EXTENSION));
+
+    // if (empty($ext)) {
+
+    // }
+
+    exec("php $option", $output, $code);
 
     if ($code !== 0) {
-        die("Migration $file failed\n");
+        die("\nMigration $option failed\n");
     }
 }
 
-echo "Migrations run successfully!\n";
+echo "\nMigrations run successfully!\n";
 ?>
