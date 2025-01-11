@@ -2,8 +2,10 @@
 require __DIR__ . "/../../database/index.php";
 require __DIR__ . "/../base.php";
 
-class StudentsService extends BaseService {
-    function insert_many($students) {
+class StudentsService extends BaseDataService
+{
+    function insert_many($students)
+    {
         $insert_query = <<<IQ
             INSERT INTO Students (fn, degree, fullname, graduation_year, grade, user_id) 
             VALUES (:fn, :degree, :fullname, :graduation_year, :grade, :user_id)

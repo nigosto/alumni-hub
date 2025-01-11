@@ -1,13 +1,15 @@
 <?php
 require __DIR__ . "/imodel.php";
 
-enum Degree: string {
+enum Degree: string
+{
     case Bachelor = "bachelor";
     case Master = "master";
     case Doctor = "doctor";
 }
 
-function degree_to_string(Degree $degree) {
+function degree_to_string(Degree $degree)
+{
     switch ($degree) {
         case Degree::Bachelor:
             return "bachelor";
@@ -18,9 +20,9 @@ function degree_to_string(Degree $degree) {
     }
 }
 
-function parse_degree($degree) {
+function parse_degree($degree)
+{
     $degree = mb_strtolower($degree);
-    echo $degree . "\n";
     switch ($degree) {
         case 'бакалавър':
             return Degree::Bachelor;
@@ -33,7 +35,8 @@ function parse_degree($degree) {
     }
 }
 
-class Student implements IModel {
+class Student implements IModel
+{
     private $fn;
     private $degree;
     private $fullname;
@@ -41,20 +44,18 @@ class Student implements IModel {
     private $grade;
     private $user_id;
 
-    function __construct($fn, $degree, $fullname, $graduation_year, $grade, $user_id) {
-        try {
-            $this->fn = $fn;
-            $this->degree = parse_degree($degree);
-            $this->fullname = $fullname;
-            $this->graduation_year = $graduation_year;
-            $this->grade = $grade;
-            $this->user_id = $user_id;
-        } catch (Exception $e) {
-            echo $e->getMessage() . "\n";
-        }
+    function __construct($fn, $degree, $fullname, $graduation_year, $grade, $user_id)
+    {
+        $this->fn = $fn;
+        $this->degree = parse_degree($degree);
+        $this->fullname = $fullname;
+        $this->graduation_year = $graduation_year;
+        $this->grade = $grade;
+        $this->user_id = $user_id;
     }
 
-    public function to_insert_array() {
+    public function to_insert_array()
+    {
         return [
             "fn" => $this->fn,
             "degree" => degree_to_string($this->degree),
