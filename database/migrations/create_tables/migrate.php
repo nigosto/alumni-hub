@@ -29,6 +29,8 @@ CT);
 $db_con->exec(<<<CT
 CREATE TABLE IF NOT EXISTS Clothes (
     id INT NOT NULL auto_increment PRIMARY KEY,
+    size VARCHAR(20) NOT NULL,
+
     student_fn VARCHAR(10),
     FOREIGN KEY (student_fn) REFERENCES Students(fn)
 );
