@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html lang="bg">
+<?php
+// TODO: extract somewhere
+$s = str_replace("/alumni-hub", "", $_SERVER['REQUEST_URI']);
+$requested_page = trim($s, "/");
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumni Hub</title>
-</head>
+if (empty($requested_page)) {
+    $requested_page = "home";
+}
 
-<body>
-</body>
+$pages_directory = __DIR__ . "/pages";
+$requested_file = $pages_directory . "/" . $requested_page . "/index.php";
 
-</html>
+if (file_exists($requested_file)) {
+    include $requested_file;
+}
+?>

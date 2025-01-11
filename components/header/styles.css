@@ -1,0 +1,17 @@
+#site-header {
+  padding-top: 20px;
+}
+
+#site-header h2 {
+  margin-right: 10%;
+}
+
+#site-header, #site-navigation > ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#site-navigation > ul > li {
+  margin-left: 15px;
+}
