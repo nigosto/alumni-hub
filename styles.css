@@ -19,3 +19,7 @@ a {
 li {
   list-style: none;
 }
+
+#site-main {
+  flex-grow: 1;
+}

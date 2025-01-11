@@ -2,18 +2,21 @@
 require_once __DIR__ . "/../base.php";
 require_once __DIR__ . "/../../config.php";
 
-class MetadataComponent extends Component {
+class MetadataComponent extends Component
+{
     private $title;
     private $scripts;
     private $stylesheets;
 
-    function __construct($stylesheets = [], $scripts = [], $title = "Alumni Hub") {
+    function __construct($stylesheets = [], $scripts = [], $title = "Alumni Hub")
+    {
         $this->title = $title;
         $this->scripts = $scripts;
         $this->stylesheets = $stylesheets;
     }
 
-    public function render() {
+    public function render()
+    {
         return <<<HTML
         <head>
             <meta charset="UTF-8">
@@ -25,7 +28,8 @@ class MetadataComponent extends Component {
         HTML;
     }
 
-    private function insert_scripts() {
+    private function insert_scripts()
+    {
         $html = "";
         foreach ($this->scripts as $script) {
             $html .= "<script src=\"$script\"></script>\n";
@@ -34,7 +38,8 @@ class MetadataComponent extends Component {
         return $html;
     }
 
-    private function insert_stylesheets() {
+    private function insert_stylesheets()
+    {
         $html = "<link rel=\"stylesheet\" href=\"" . $_ENV["BASE_URL"] . "/styles.css\">\n";
         foreach ($this->stylesheets as $stylesheet) {
             $html .= "<link rel=\"stylesheet\" href=\"$stylesheet\">\n";

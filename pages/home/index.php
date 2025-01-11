@@ -10,7 +10,7 @@ $header = new HeaderComponent();
 $footer = new FooterComponent();
 
 $stylesheets = array_merge(
-    $header->get_stylesheets(), 
+    $header->get_stylesheets(),
     $footer->get_stylesheets()
 );
 
@@ -19,10 +19,10 @@ echo $meta->render();
 ?>
 
 <body>
-<?php
-echo $header->render();
-echo $footer->render();
-?>
+    <?php
+    echo $header->render();
+    echo $footer->render();
+    ?>
 </body>
 
 </html>

@@ -2,10 +2,12 @@
 require_once __DIR__ . "/../base.php";
 require_once __DIR__ . "/../../config.php";
 
-class HeaderComponent extends Component {
-    public function render() {
+class HeaderComponent extends Component
+{
+    public function render()
+    {
         $base_url = $_ENV["BASE_URL"];
-        
+
         return <<<HTML
         <header id="site-header">
             <h2><a href="$base_url">Alumni Hub</a></h2>
@@ -20,8 +22,10 @@ class HeaderComponent extends Component {
         HTML;
     }
 
-    public function get_stylesheets() {
+    public function get_stylesheets()
+    {
         return [$_ENV["BASE_URL"] . "/components/header/styles.css"];
     }
-};
+}
+;
 ?>

@@ -10,8 +10,8 @@ $header = new HeaderComponent();
 $footer = new FooterComponent();
 
 $stylesheets = array_merge(
-    $header->get_stylesheets(), 
-    $footer->get_stylesheets()
+  $header->get_stylesheets(),
+  $footer->get_stylesheets()
 );
 
 $meta = new MetadataComponent($stylesheets, ["./script.js"]);
@@ -22,9 +22,9 @@ echo $meta->render();
   <?php
   echo $header->render();
   ?>
-  <main>
+  <main id="site-main">
     <form method="POST" action="" id="file-form">
-      <input type="file" name="import-file" id="import-file"/>
+      <input type="file" name="import-file" id="import-file" />
       <input type="submit" value="Изпрати">
     </form>
   </main>
