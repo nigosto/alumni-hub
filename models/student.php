@@ -8,18 +8,6 @@ enum Degree: string
     case Doctor = "doctor";
 }
 
-function degree_to_string(Degree $degree)
-{
-    switch ($degree) {
-        case Degree::Bachelor:
-            return "bachelor";
-        case Degree::Master:
-            return "master";
-        case Degree::Doctor:
-            return "doctor";
-    }
-}
-
 function parse_degree($degree)
 {
     $degree = mb_strtolower($degree);
@@ -58,7 +46,7 @@ class Student implements IModel
     {
         return [
             "fn" => $this->fn,
-            "degree" => degree_to_string($this->degree),
+            "degree" => $this->degree->value,
             "fullname" => $this->fullname,
             "graduation_year" => intval($this->graduation_year),
             "grade" => floatval($this->grade),
