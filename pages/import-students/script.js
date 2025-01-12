@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
 
     const reader = new FileReader();
     reader.onload = async function(e) {
-      await fetch('../api/import_students.php', {
+      await fetch('api/import_students.php', {
         method: 'POST',
         body: JSON.stringify({
           file: e.target.result.split("base64,")[1]

@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html lang="bg">
+<?php
+require_once __DIR__ . "/config.php";
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumni Hub</title>
-</head>
+$base_path = parse_url($_ENV["BASE_URL"])["path"];
+$requested_page = trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/");
 
-<body>
-</body>
+if (empty($requested_page)) {
+    $requested_page = "home";
+}
 
-</html>
+$pages_directory = __DIR__ . "/pages";
+$requested_file = $pages_directory . "/" . $requested_page . "/index.php";
+
+if (file_exists($requested_file)) {
+    include $requested_file;
+}
+?>
