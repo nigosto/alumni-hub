@@ -9,6 +9,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: #f4f4f4;
 }
 
 a {
@@ -22,4 +23,13 @@ li {
 
 #site-main {
   flex-grow: 1;
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  color: #666;
+  margin-bottom: 5px;
 }
