@@ -5,6 +5,7 @@
 require __DIR__ . "/../../components/meta/index.php";
 require __DIR__ . "/../../components/header/index.php";
 require __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../config.php";
 
 $base_url = $_ENV["BASE_URL"];
 

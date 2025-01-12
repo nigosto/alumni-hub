@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . "/../database/index.php";
-require __DIR__ . "/../models/user.php";
+require_once __DIR__ . "/../../database/index.php";
+require __DIR__ . "/../../models/user.php";
+require __DIR__ . "/../base.php";
 
 class AuthenticationService extends BaseDataService
 {

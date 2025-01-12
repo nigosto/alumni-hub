@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . "/../services/authentication/index.php";
-require __DIR__ . "/../services/student/index.php";
+require __DIR__ . "/../services/students/index.php";
 
 header('Content-Type: application/json');
 
@@ -46,4 +46,4 @@ if (isset($data['username']) && isset($data['email']) && isset($data['password']
 }
 
 echo json_encode($response);
-
+?>

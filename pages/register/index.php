@@ -5,6 +5,7 @@
 require __DIR__ . "/../../components/meta/index.php";
 require __DIR__ . "/../../components/header/index.php";
 require __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../config.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
@@ -18,7 +19,6 @@ $stylesheets = array_merge(
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
     [$base_url . "/components/styles/button.css"],
-
 );
 
 $meta = new MetadataComponent($stylesheets, ["../pages/register/script.js"]);

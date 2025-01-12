@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . "/imodel.php";
+
 class User implements IModel
 {
     private $email;
