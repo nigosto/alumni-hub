@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . "/base.php";
-require __DIR__ . "/../../models/student.php";
+require_once __DIR__ . "/base.php";
+require_once __DIR__ . "/../../models/student.php";
 
 class StudentsImportService extends ImportService
 {

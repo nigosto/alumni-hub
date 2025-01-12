@@ -1,6 +1,7 @@
 <?php
-require __DIR__ . "/../../database/index.php";
-require __DIR__ . "/../base.php";
+require_once __DIR__ . "/../../database/index.php";
+require_once __DIR__ . "/../base.php";
+require_once __DIR__ . "/../../models/student.php";
 
 class StudentsService extends BaseDataService
 {
@@ -12,6 +13,11 @@ class StudentsService extends BaseDataService
         IQ;
 
         parent::insert_many_with_query($insert_query, $students);
+    }
+
+    function find_all() {
+        $find_query = "SELECT * FROM Students";
+        return parent::find_all_with_query($find_query, Student::class);
     }
 }
 

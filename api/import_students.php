@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . "/../services/import/students.php";
+require_once __DIR__ . "/../services/import/students.php";
 require_once __DIR__ . "/../services/students/index.php";
 
 try {

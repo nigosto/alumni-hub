@@ -1,0 +1,11 @@
+#students-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  gap: 50px;
+}
+
+#students-section h3 {
+  font-size: 2em;
+}
