@@ -14,7 +14,7 @@ class FooterComponent extends Component
         HTML;
     }
 
-    public function get_stylesheets()
+    public static function get_stylesheets()
     {
         return [$_ENV["BASE_URL"] . "/components/footer/styles.css"];
     }

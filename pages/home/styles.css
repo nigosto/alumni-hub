@@ -1,8 +1,45 @@
-main {
-  margin: 50px;
+#site-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#container {
   display: flex;
   flex-direction: column;
+  width: 50%;
+  gap: 50px;
+}
+
+#welcome-heading {
+  font-size: 3em;
+}
+
+#welcome-banner {
+  overflow: hidden;
+  height: 45vh;
+  box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.75);
+}
+
+#welcome-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translateY(-5%);
+}
+
+#welcome-info {
+  font-size: 1.15em;
+}
+
+#welcome-links {
+  display: flex;
   align-items: center;
-  text-align: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 20px;
+}
+
+#welcome-links .primary-btn {
+  width: 160px;
 }

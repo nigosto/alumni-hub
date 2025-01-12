@@ -5,6 +5,7 @@
 require __DIR__ . "/../../components/meta/index.php";
 require __DIR__ . "/../../components/header/index.php";
 require __DIR__ . "/../../components/footer/index.php";
+require __DIR__ . "/../../components/button/link.php";
 require_once __DIR__ . "/../../config.php";
 
 $header = new HeaderComponent();
@@ -18,7 +19,7 @@ $stylesheets = array_merge(
     [$base_url . "/pages/register/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
-    [$base_url . "/components/styles/button.css"],
+    ButtonComponent::get_stylesheets()
 );
 
 $meta = new MetadataComponent($stylesheets, ["../pages/register/script.js"]);
@@ -48,12 +49,19 @@ echo $meta->render();
                 placeholder="Потвърждение на паролата" required>
             <input type="text" id="fn" name="fn" placeholder="Факултетен номер" class="hidden">
 
-            <button type="submit" class="button">Регистрация</button>
+            <?php
+                $submit_button = new ButtonComponent("Регистрация");
+                echo $submit_button->render();
+            ?>
         </form>
 
         <nav class="form">
-            <a href="#" id="loginBtn" class="button">Вече имаш акаунт</a>
-            <a href="<?php echo $base_url . "/home" ?>" id="loginBtn" class="button">Обратно в началния екран</a>
+            <?php
+                $link = new LinkComponent("Вече имате акаунт", "#");
+                echo $link->render();
+                $link = new LinkComponent("Към началния екран", "$base_url/");
+                echo $link->render();
+            ?>
         </nav>
 
     </main>

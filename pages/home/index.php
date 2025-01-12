@@ -5,6 +5,7 @@
 require __DIR__ . "/../../components/meta/index.php";
 require __DIR__ . "/../../components/header/index.php";
 require __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../components/button/link.php";
 require_once __DIR__ . "/../../config.php";
 
 $base_url = $_ENV["BASE_URL"];
@@ -15,8 +16,8 @@ $footer = new FooterComponent();
 $stylesheets = array_merge(
     $header->get_stylesheets(),
     $footer->get_stylesheets(),
+    LinkComponent::get_stylesheets(),
     [$base_url . "/pages/home/styles.css"],
-    [$base_url . "/components/styles/button.css"],
 );
 
 $meta = new MetadataComponent($stylesheets);
@@ -24,28 +25,32 @@ echo $meta->render();
 ?>
 
 <body>
-    <?php
-    echo $header->render();
-    ?>
+    <?php echo $header->render(); ?>
 
-    <main>
-        <header>
-            <h1>Добре дошъл в Alumni Hub</h1>
-        </header>
-        <p>
-            Чрез този портал можеш да получиш актуална информация за предстоящото дипломиране и да организираш
-            събития за него. Информация за събитията можеш да получиш само след регистрация. Този портал е достъпен
-            само за завършили студенти и администрацията.
-        </p>
-
-        <nav>
-            <a href="#" id="loginBtn" class="button">Влез в профила си</a>
-            <a href="<?php echo $base_url . "/register" ?>" id="registerBtn" class="button">Създай нов профил</a>
-        </nav>
+    <main id="site-main">
+        <div id="container">
+            <h2 id="welcome-heading">Добре дошли в Alumni Hub</h2>
+            <div id="welcome-banner">
+                <img src="static/images/alumni-hats.png" alt="alumni hats">
+            </div>
+            <p id="welcome-info">
+                Чрез този портал можете да получите актуална информация за предстоящото дипломиране и да организирате
+                събития за него. Информация за събитията можете да получите само след регистрация. Този портал е достъпен
+                само за завършили студенти и администрацията.
+            </p>
+    
+            <nav id="welcome-links">
+                <?php 
+                    $link = new LinkComponent("ВЛИЗАНЕ", "#");
+                    echo $link->render();
+                    $link = new LinkComponent("РЕГИСТРИРАНЕ", "$base_url/register");
+                    echo $link->render();
+                ?>
+            </nav>
+        </div>
     </main>
 
-    <?php echo $footer->render();
-    ?>
+    <?php echo $footer->render(); ?>
 </body>
 
 </html>
