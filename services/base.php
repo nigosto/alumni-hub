@@ -16,5 +16,11 @@ class BaseDataService
             $stmt->execute($entry->to_insert_array());
         }
     }
+    function get_with_query($query, $id)
+    {
+        $stmt = $this->connection->prepare($query);
+
+        $stmt->execute([$id]);
+    }
 }
 ?>

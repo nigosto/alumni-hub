@@ -13,6 +13,14 @@ class StudentsService extends BaseDataService
 
         parent::insert_many_with_query($insert_query, $students);
     }
+
+    function get_student_by_fn($fn)
+    {
+        $query = <<<IQ
+            SELECT * FROM Students WHERE FN=:FN
+        IQ;
+        parent::get_with_query($query, $fn);
+    }
 }
 
 $students_service = new StudentsService($database);

@@ -15,7 +15,7 @@ class HeaderComponent extends Component
                 <ul>
                     <li><a href="$base_url">Начало</a></li>
                     <li><a href="$base_url/import-students">Добавяне на студенти</a></li>
-                    <li><a href="#">Регистрация</a></li>
+                    <li><a href="$base_url/register">Регистрация</a></li>
                 </ul>
             </nav>
         </header>
