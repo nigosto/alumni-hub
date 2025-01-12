@@ -9,7 +9,8 @@
   display: flex;
   flex-direction: column;
   width: 50%;
-  gap: 50px;
+  gap: 30px;
+  margin: 30px 0;
 }
 
 #welcome-heading {
@@ -18,7 +19,7 @@
 
 #welcome-banner {
   overflow: hidden;
-  height: 45vh;
+  height: 10vh;
   box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.75);
 }
 
@@ -42,4 +43,22 @@
 
 #welcome-links .primary-btn {
   width: 160px;
+}
+
+@media (min-width: 435px) {
+  #welcome-banner {
+    height: 15vh;
+  }
+}
+
+@media (min-width: 850px) {
+  #welcome-banner {
+    height: 30vh;
+  }
+}
+
+@media (min-width: 1405px) {
+  #welcome-banner {
+    height: 50vh;
+  }
 }
