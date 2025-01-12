@@ -5,6 +5,10 @@ require_once __DIR__ . "/../../models/student.php";
 
 class StudentsService extends BaseDataService
 {
+    function __construct(Database $database) {
+        parent::__construct($database, Student::class);
+    }
+
     function insert_many($students)
     {
         $insert_query = <<<IQ
@@ -17,7 +21,7 @@ class StudentsService extends BaseDataService
 
     function find_all() {
         $find_query = "SELECT * FROM Students";
-        return parent::find_all_with_query($find_query, Student::class);
+        return parent::find_all_with_query($find_query);
     }
 }
 
