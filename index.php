@@ -1,7 +1,8 @@
 <?php
-// TODO: extract somewhere
-$s = str_replace("/alumni-hub", "", $_SERVER['REQUEST_URI']);
-$requested_page = trim($s, "/");
+require_once __DIR__ . "/config.php";
+
+$base_path = parse_url($_ENV["BASE_URL"])["path"];
+$requested_page = trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/");
 
 if (empty($requested_page)) {
     $requested_page = "home";

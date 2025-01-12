@@ -27,5 +27,4 @@ class HeaderComponent extends Component
         return [$_ENV["BASE_URL"] . "/components/header/styles.css"];
     }
 }
-;
 ?>
