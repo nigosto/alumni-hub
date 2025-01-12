@@ -2,6 +2,7 @@
 <html lang="bg">
 
 <?php
+require_once __DIR__ . "/../../config.php";
 require __DIR__ . "/../../components/meta/index.php";
 require __DIR__ . "/../../components/header/index.php";
 require __DIR__ . "/../../components/footer/index.php";
@@ -14,7 +15,7 @@ $stylesheets = array_merge(
   $footer->get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["./script.js"]);
+$meta = new MetadataComponent($stylesheets, [$_ENV["BASE_URL"] . "/pages/import-students/script.js"]);
 echo $meta->render();
 ?>
 
