@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . "/../../database/index.php";
-require __DIR__ . "/../base.php";
+require_once __DIR__ . "/../../database/index.php";
+require_once __DIR__ . "/../base.php";
 
 class StudentsService extends BaseDataService
 {
@@ -19,7 +19,9 @@ class StudentsService extends BaseDataService
         $query = <<<IQ
             SELECT * FROM Students WHERE FN=:FN
         IQ;
-        parent::get_with_query($query, $fn);
+
+        $data = ["FN" => strval($fn)];
+        parent::get_with_query($query, $data);
     }
 }
 

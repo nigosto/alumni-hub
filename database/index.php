@@ -1,10 +1,12 @@
 <?php
-require __DIR__ . '/../config.php';
+require_once __DIR__ . '/../config.php';
 
-class Database {
+class Database
+{
     private $connection;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->connection = new PDO("mysql:host={$_ENV["DB_HOST"]};dbname=phpmyadmin", $_ENV["DB_USER"]);
         $this->connection->query("CREATE DATABASE IF NOT EXISTS {$_ENV["DB_NAME"]}; USE {$_ENV["DB_NAME"]}");
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

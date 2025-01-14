@@ -3,9 +3,9 @@
 
 <?php
 require_once __DIR__ . "/../../config.php";
-require __DIR__ . "/../../components/meta/index.php";
-require __DIR__ . "/../../components/header/index.php";
-require __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../components/meta/index.php";
+require_once __DIR__ . "/../../components/header/index.php";
+require_once __DIR__ . "/../../components/footer/index.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();

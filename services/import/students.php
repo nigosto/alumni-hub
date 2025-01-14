@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . "/base.php";
-require __DIR__ . "/../../models/student.php";
+require_once __DIR__ . "/base.php";
+require_once __DIR__ . "/../../models/student.php";
 
 class StudentsImportService extends ImportService
 {
@@ -10,7 +10,7 @@ class StudentsImportService extends ImportService
 
         return array_map(function ($student) use ($parsed_file) {
             $header = $parsed_file["header"];
-            
+
             return new Student(
                 $student[$header[0]],
                 $student[$header[1]],
