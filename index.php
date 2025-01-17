@@ -36,7 +36,19 @@ $router->register_route('GET', 'students/import', function() use ($students_cont
 });
 
 $router->register_route('POST', 'students/import', function() use ($students_controller) {
-    $students_controller->import_students();
+    try {
+        $data = json_decode(file_get_contents("php://input"));
+        $students_controller->import_students($data);
+        
+        echo json_encode(["Message" => "Success"]);
+    } catch (PDOException $e) {
+        http_response_code(409);
+        echo json_encode(["Message" => "Some of the students are already imported"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+
 });
 
 $router->register_route('GET', 'students', function() use ($students_controller) {
