@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/utils/query_params.php";
 require_once __DIR__ . "/router.php";
 require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
@@ -19,7 +20,7 @@ $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
-$requested_uri = trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/");
+$requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
 $request_method = $_SERVER['REQUEST_METHOD'];
 
 $router->register_route('GET', '/', function() use ($pages_controller) {
