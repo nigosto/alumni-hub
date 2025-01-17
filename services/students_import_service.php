@@ -1,5 +1,4 @@
 <?php
-$a = "a";
 require_once __DIR__ . "/import_service.php";
 require_once __DIR__ . "/../models/student.php";
 
