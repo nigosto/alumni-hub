@@ -1,6 +1,6 @@
 <?php
 interface IModel
 {
-    public function to_insert_array();
+    public function to_array();
 }
 ?>

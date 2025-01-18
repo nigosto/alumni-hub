@@ -19,7 +19,7 @@ class User implements IModel
         $this->id = $id;
     }
 
-    public function to_insert_array()
+    public function to_array()
     {
         return [
             "email" => $this->email,
