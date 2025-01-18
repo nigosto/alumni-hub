@@ -69,23 +69,6 @@ function parse_responsibility_status($responsibility_status)
     }
 }
 
-function parse_speach_status($speach_status)
-{
-    $speach_status = mb_strtolower($speach_status);
-    switch ($speach_status) {
-        case 'няма':
-            return SpeachStatus::None;
-        case 'изчакващ':
-            return SpeachStatus::Waiting;
-        case 'отказал':
-            return SpeachStatus::Declined;
-        case 'приел':
-            return SpeachStatus::Accepted;
-        default:
-            throw new Exception("Invalid degree");
-    }
-}
-
 class CeremonyAttendance implements IModel
 {
     private $ceremony_id;

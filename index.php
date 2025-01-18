@@ -4,9 +4,12 @@ require_once __DIR__ . "/utils/query_params.php";
 require_once __DIR__ . "/router.php";
 require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
+require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
+require_once __DIR__ . "/services/ceremonies_service.php";
+require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/authentication_service.php";
 
@@ -18,10 +21,13 @@ $database = new Database();
 $students_service = new StudentsService($database);
 $authentication_service = new AuthenticationService($database);
 $students_import_service = new StudentsImportService();
+$ceremoinies_service = new CeremoniesService($database);
+$ceremonies_attendance_service = new CeremoniesAttendanceService($database);
 
 $pages_controller = new PagesController();
 $authentication_controller = new AuthenticationController($authentication_service, $students_service);
 $students_controller = new StudentsController($students_service, $students_import_service);
+$ceremonies_controller = new CeremoniesController($ceremoinies_service, $ceremonies_attendance_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
@@ -77,6 +83,14 @@ $router->register_route('POST', 'students/import', function () use ($students_co
 
 $router->register_route('GET', 'students', function () use ($students_controller) {
     $students_controller->show_students_page();
+});
+
+$router->register_route('GET', 'ceremonies', function () use ($ceremonies_controller) {
+    $ceremonies_controller->show_ceremonies_page();
+});
+
+$router->register_route('POST', 'ceremonies/create', function () use ($ceremonies_controller) {
+    $ceremonies_controller->show_ceremonies_page();
 });
 
 $router->dispatch($request_method, $requested_uri);
