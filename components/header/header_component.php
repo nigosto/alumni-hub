@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . "/../base.php";
-require_once __DIR__ . "/../../config.php";
+require_once __DIR__ . "/../component.php";
 
 class HeaderComponent extends Component
 {
@@ -14,7 +13,7 @@ class HeaderComponent extends Component
             <nav id="site-navigation">
                 <ul>
                     <li><a href="$base_url">Начало</a></li>
-                    <li><a href="$base_url/import-students">Добавяне на студенти</a></li>
+                    <li><a href="$base_url/students/import">Добавяне на студенти</a></li>
                     <li><a href="#">Регистрация</a></li>
                 </ul>
             </nav>

@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . "/../base.php";
-require_once __DIR__ . "/../../config.php";
+require_once __DIR__ . "/../component.php";
 
 class FooterComponent extends Component
 {
