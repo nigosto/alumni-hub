@@ -20,7 +20,7 @@ $stylesheets = array_merge(
     [$base_url . "/components/styles/button.css"],
 );
 
-$meta = new MetadataComponent($stylesheets, ["../pages/register/script.js"]);
+$meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
 echo $meta->render();
 ?>
 

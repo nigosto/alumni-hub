@@ -33,7 +33,7 @@ class AuthenticationController
                 throw new Exception('Invalid faculty number!');
             }
 
-            $password_hash = password_hash($password, PASSWORD_ARGON2ID);
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
             $user = new User($email, $password_hash, $username, $role);
 
             if ($role === 'student') {
