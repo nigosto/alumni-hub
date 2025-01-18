@@ -10,17 +10,20 @@ enum Degree: string
 
 function parse_degree($degree)
 {
-    $degree = mb_strtolower($degree);
-    switch ($degree) {
-        case 'бакалавър':
-            return Degree::Bachelor;
-        case 'магистър':
-            return Degree::Master;
-        case 'доктор':
-            return Degree::Doctor;
-        default:
-            throw new Exception("Invalid degree");
-    }
+    return match (mb_strtolower($degree)) {
+        "бакалавър" => Degree::Bachelor,
+        "магистър" => Degree::Master,
+        "доктор" => Degree::Doctor,
+    };
+}
+
+function prettify_degree(Degree $degree)
+{
+    return match ($degree) {
+        Degree::Bachelor => "Бакалавър",
+        Degree::Master => "Магистър",
+        Degree::Doctor => "Доктор",
+    };
 }
 
 class Student implements IModel
@@ -42,16 +45,20 @@ class Student implements IModel
         $this->user_id = $user_id;
     }
 
-    public function to_insert_array()
+    public function to_array($prettify = false)
     {
         return [
             "fn" => $this->fn,
-            "degree" => $this->degree->value,
+            "degree" => $prettify ? prettify_degree($this->degree) : $this->degree->value,
             "fullname" => $this->fullname,
             "graduation_year" => intval($this->graduation_year),
             "grade" => floatval($this->grade),
             "user_id" => $this->user_id,
         ];
+    }
+
+    public static function labels() {
+        return ["Факултетен номер","Степен","Имена","Година на завършване","Оценка"];
     }
 }
 ?>

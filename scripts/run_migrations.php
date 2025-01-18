@@ -1,52 +1,58 @@
 <?php
-if ($argc != 3) {
+if ($argc > 3) {
     throw new Exception("Invalid number of arguments");
 }
 
-$action = $argv[1];
 $option = $argv[2];
-$scripts_locations = __DIR__ . "/../database/migrations";
-
-if ($action === "-m" || $action === "-migrate") {
-    $scripts_locations .= "/*/migrate.php";
-} else if ($action === "-r" || $action === "-rollback") {
-    $scripts_locations .= "/*/rollback.php";    
-} else {
-    throw new Exception("Invalid action");
-}
+$action = $argv[1];
+$scripts_locations = __DIR__ . "/../database/migrations/";
 
 $output = null;
 $code = 0;
 
 if ($option === "-a" || $option === "-all") {
+    if ($action === "-m" || $action === "-migrate") {
+        $scripts_locations .= "/*/migrate.php";
+    } else if ($action === "-r" || $action === "-rollback") {
+        $scripts_locations .= "/*/rollback.php";    
+    } else {
+        throw new Exception("Invalid action");
+    }
+
     foreach(glob($scripts_locations) as $file) {
-        exec("php $file", $output, $code);
+        $migration_file = $file;
+
+        exec("php $migration_file", $output, $code);
 
         if ($code !== 0) {
-            die("Migration $file failed\n");
+            die("Migration $migration_file failed\n");
         }
     }
-} else {
-    $ext = strtolower(pathinfo($option, PATHINFO_EXTENSION));
 
-    if (empty($ext)) {
-        if ($option[strlen($option)] === "/" || $option[strlen($option)] === "\\") {
-            $option = substr($option, 0, -1);
-        }
+    echo "\nMigrations run successfully!\n";
+    return;
+}
 
-        if ($action === "-r" || $action === "-rollback") {
-            $option .= "/rollback.php";
-        }
-        else {
-            $option .= "/migrate.php";
-        }
+$option = $scripts_locations . $option;
+
+$ext = strtolower(pathinfo($option, PATHINFO_EXTENSION));
+if (empty($ext)) {
+    if ($option[strlen($option)] === "/" || $option[strlen($option)] === "/") {
+        $option = substr($option, 0, -1);
     }
-    
-    exec("php $option", $output, $code);
 
-    if ($code !== 0) {
-        die("\nMigration $option failed\n");
+    if ($action === "-r" || $action === "-rollback") {
+        $option .= "/rollback.php";
     }
+    else if ($action === "-m" || $action === "-migrate") {
+        $option .= "/migrate.php";
+    }
+}
+
+exec("php $option", $output, $code);
+
+if ($code !== 0) {
+    die("\nMigration $option failed\n");
 }
 
 echo "\nMigrations run successfully!\n";

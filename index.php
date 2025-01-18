@@ -11,6 +11,7 @@ require_once __DIR__ . "/services/students_service.php";
 require_once __DIR__ . "/services/ceremonies_service.php";
 require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
+require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/authentication_service.php";
 
 load_config(".env");
@@ -23,10 +24,11 @@ $authentication_service = new AuthenticationService($database);
 $students_import_service = new StudentsImportService();
 $ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
+$students_export_service = new StudentsExportService();
 
 $pages_controller = new PagesController();
+$students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
 $authentication_controller = new AuthenticationController($authentication_service, $students_service);
-$students_controller = new StudentsController($students_service, $students_import_service);
 $ceremonies_controller = new CeremoniesController($ceremoinies_service, $ceremonies_attendance_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
@@ -78,6 +80,12 @@ $router->register_route('POST', 'students/import', function () use ($students_co
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
+});
+
+$router->register_route('GET', 'students/export', function() use ($students_controller) {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=students.csv');
+    $students_controller->export_students();
 });
 
 $router->register_route('GET', 'students', function () use ($students_controller) {
