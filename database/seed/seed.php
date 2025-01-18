@@ -34,21 +34,21 @@ CT);
 $db_con->exec(<<<CT
 INSERT INTO Students (fn, degree, fullname, graduation_year, grade, user_id)
 VALUES 
-    ('1MI1234567', 'bachelor', 'Elena Andreeva Stoyanova', '2025', 3.01, 4),
-    ('2MI9876543', 'bachelor', 'Petar Stanimirev Kolev', '2025', 6.00, 5),
-    ('3MI4567890', 'bachelor', 'Krasimira Nikolaeva Dimitrova', '2025', 6.01, 6),
+    ('1MI1234567', 'bachelor', 'Елена Андреева Стоянова', '2025', 3.01, 4),
+    ('2MI9876543', 'bachelor', 'Петър Станимирeв Колев', '2025', 6.00, 5),
+    ('3MI4567890', 'bachelor', 'Красимира Николаева Димитрова', '2025', 6.01, 6),
 
-    ('4MI6543210', 'bachelor', 'Nikolay Radoslavov Iliev', '2025', 5.00, 7),
-    ('5MI2345678', 'master', 'Valentina Valerieva Marinova', '2025', 5.50, 8),
-    ('6MI8765432', 'bachelor', 'Stefan Konstantinov Popov', '2025', 5.00, 9),
+    ('4MI6543210', 'bachelor', 'Николай Радославов Илиев', '2025', 5.00, 7),
+    ('5MI2345678', 'master', 'Валентина Валериева Маринова', '2025', 5.50, 8),
+    ('6MI8765432', 'bachelor', 'Стефан Константинов Попов', '2025', 5.00, 9),
 
-    ('7MI3456789', 'bachelor', 'Daniela Plamenova Angelova', '2026', 5.00, 10),
-    ('8MI7654321', 'bachelor', 'Boris Borisov Kolev', '2025', 5.50, 11),
-    ('9MI5678901', 'doctor', 'Yana Pravdomirova Vasileva', '2025', 6.50, 12),
+    ('7MI3456789', 'bachelor', 'Даниела Пламенова Ангелова', '2026', 5.00, 10),
+    ('8MI7654321', 'bachelor', 'Борис Борисов Колев', '2025', 5.50, 11),
+    ('9MI5678901', 'doctor', 'Яна Правдомирова Василева', '2025', 6.50, 12),
 
-    ('1MI8901234', 'bachelor', 'Mitko Stanislavov Dimitrov', '2026', 5.00, 10),
-    ('2MI6789012', 'bachelor', 'Teodora Vasileva Petkova', '2025', 5.75, 11),
-    ('3MI7890123', 'doctor', 'Alexander Viktorov Stanev', '2025', 4.50, 12)
+    ('1MI8901234', 'bachelor', 'Митко Станиславов Димитров', '2026', 5.00, 10),
+    ('2MI6789012', 'bachelor', 'Теодора Василева Петкова', '2025', 5.75, 11),
+    ('3MI7890123', 'doctor', 'Александър Викторов Станев', '2025', 4.50, 12)
 CT);
 
 $db_con->exec(<<<CT
