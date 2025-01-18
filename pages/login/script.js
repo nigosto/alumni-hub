@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("role", user.role);
 
                 if (user.role === "Student") {
-                    window.location.href = "pick-fn";
+                    window.location.href = "login/pick-fn";
                 }
                 else { window.location.href = "#"; }
             } else {
