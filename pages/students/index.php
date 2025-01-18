@@ -28,10 +28,11 @@ echo $meta->render();
   ?>
   <main id="site-main">
     <section id="students-section">
-        <h3>Списък със студенти</h3>
-        <?php
-        echo $table->render();
-        ?>
+      <h3>Списък със студенти</h3>
+      <a href="students/export">Експорт</a>
+      <?php
+      echo $table->render();
+      ?>
     </section>
   </main>
   <?php
