@@ -10,11 +10,11 @@ $db_con = $database->connection();
 
 $db_con->exec(<<<CT
 ALTER TABLE Ceremony_Attendance 
-    CHANGE COLUMN boss_status new_boss_status ENUM(
+    CHANGE COLUMN boss_status responsibility_status ENUM(
     'none', 
     'waiting_robes', 'waiting_signatures', 'waiting_diplomas', 
     'accepted_robes', 'accepted_signatures', 'accepted_diplomas',
-    'declined_robes', 'declined_signatures', 'declined_diplomas') ;
+    'declined_robes', 'declined_signatures', 'declined_diplomas');
 CT);
 
 ?>
