@@ -92,8 +92,8 @@ class CeremonyAttendance implements IModel
             "ceremony_id" => $this->ceremony_id,
             "student_fn" => $this->student_fn,
             "accepted" => $this->accepted,
-            "speach_status" => $this->speach_status,
-            "responsibility_status" => $this->responsibility_status,
+            "speach_status" => $this->speach_status->value,
+            "responsibility_status" => $this->responsibility_status->value,
         ];
     }
 }

@@ -22,7 +22,7 @@ $students_service = new StudentsService($database);
 $authentication_service = new AuthenticationService($database);
 $students_import_service = new StudentsImportService();
 $ceremoinies_service = new CeremoniesService($database);
-$ceremonies_attendance_service = new CeremoniesAttendanceService($database);
+$ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 
 $pages_controller = new PagesController();
 $authentication_controller = new AuthenticationController($authentication_service, $students_service);
@@ -78,19 +78,32 @@ $router->register_route('POST', 'students/import', function () use ($students_co
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
-
 });
 
 $router->register_route('GET', 'students', function () use ($students_controller) {
     $students_controller->show_students_page();
 });
 
-$router->register_route('GET', 'ceremonies', function () use ($ceremonies_controller) {
-    $ceremonies_controller->show_ceremonies_page();
+$router->register_route('GET', 'ceremonies/create', function () use ($ceremonies_controller) {
+    // TODO: Authentication
+    $ceremonies_controller->show_create_ceremony_page();
 });
 
 $router->register_route('POST', 'ceremonies/create', function () use ($ceremonies_controller) {
-    $ceremonies_controller->show_ceremonies_page();
+    // TODO: Authentication
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        $ceremonies_controller->create_ceremony($data);
+
+        http_response_code(200);
+        echo json_encode(["Message" => "Success"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
 });
 
 $router->dispatch($request_method, $requested_uri);

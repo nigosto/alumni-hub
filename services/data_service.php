@@ -33,6 +33,7 @@ class DataService
         $stmt = $this->connection->prepare($query);
         $stmt->execute($data);
     }
+    
     function get_with_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);

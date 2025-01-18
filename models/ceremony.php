@@ -17,7 +17,7 @@ class Ceremony implements IModel
     public function to_insert_array()
     {
         return [
-            "date" => $this->date
+            "date" => $this->date->format("Y-m-d H:i:s"),
         ];
     }
 }
