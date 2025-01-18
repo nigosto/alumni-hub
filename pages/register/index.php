@@ -2,11 +2,10 @@
 <html lang="bg">
 
 <?php
-require __DIR__ . "/../../components/meta/index.php";
-require __DIR__ . "/../../components/header/index.php";
-require __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../components/metadata/metadata_component.php";
+require_once __DIR__ . "/../../components/header/header_component.php";
+require_once __DIR__ . "/../../components/footer/footer_component.php";
 require __DIR__ . "/../../components/button/link.php";
-require_once __DIR__ . "/../../config.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
@@ -22,7 +21,7 @@ $stylesheets = array_merge(
     ButtonComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["../pages/register/script.js"]);
+$meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
 echo $meta->render();
 ?>
 
@@ -34,7 +33,7 @@ echo $meta->render();
     <main class="container">
         <h1>Регистрация в Alumni Hub</h1>
 
-        <form id="registrationForm">
+        <form id="registration-form">
             <select id="account-type" name="account-type">
                 <option value="">Тип на акаунта</option>
                 <option value="student" id="student-account">Студентски акаунт</option>
@@ -50,7 +49,7 @@ echo $meta->render();
             <input type="text" id="fn" name="fn" placeholder="Факултетен номер" class="hidden">
 
             <?php
-                $submit_button = new ButtonComponent("Регистрация");
+                $submit_button = new ButtonComponent("Регистрация", ButtonStyleType::Primary, true);
                 echo $submit_button->render();
             ?>
         </form>

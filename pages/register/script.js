@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('registrationForm');
+    const form = document.getElementById('registration-form');
     const accountType = document.getElementById('account-type');
     const fn = document.getElementById('fn');
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password_confirmation = document.getElementById('password-confirmation').value;
 
         try {
-            const response = await fetch('../api/register.php', {
+            const response = await fetch('', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

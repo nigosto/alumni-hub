@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . "/imodel.php";
+require_once __DIR__ . "/imodel.php";
 
 enum Degree: string
 {
@@ -35,7 +35,7 @@ class Student implements IModel
     function __construct($fn, $degree, $fullname, $graduation_year, $grade, $user_id)
     {
         $this->fn = $fn;
-        $this->degree = parse_degree($degree);
+        $this->degree = Degree::tryFrom($degree) ?? parse_degree($degree);
         $this->fullname = $fullname;
         $this->graduation_year = $graduation_year;
         $this->grade = $grade;

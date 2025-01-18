@@ -21,3 +21,8 @@
 .secondary-btn {
   /* TODO: */
 }
+
+input[type="submit"] {
+  display: inline;
+  width: auto;
+}
