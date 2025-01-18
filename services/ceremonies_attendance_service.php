@@ -10,7 +10,7 @@ class CeremoniesAttendanceService extends DataService
     function __construct(Database $database, $students_service)
     {
         parent::__construct($database, CeremonyAttendance::class);
-        $this->$students_service = $students_service;
+        $this->students_service = $students_service;
     }
 
     public function insert_ceremony_attendance($ceremony_attendance)

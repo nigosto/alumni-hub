@@ -67,7 +67,7 @@ class CeremoniesController
             };
 
             // The speaking student can also have a responsibility
-            $speaker_responsibility = $SpeakerResponsibility::None;
+            $speaker_is_responsible = $SpeakerResponsibility::None;
             $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::None;
             if ($responsible_robes === $speaker) {
                 $speaker_is_responsible = $SpeakerResponsibility::Robes;
@@ -111,7 +111,7 @@ class CeremoniesController
             // Now invite automatically all other students to the ceremony for the graduation year
             $special_attendants = array_unique([$speaker, $responsible_robes, $responsible_signatures, $responsible_diplomas]);
             
-            
+
         }
     }
 }

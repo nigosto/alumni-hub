@@ -86,7 +86,7 @@ class CeremonyAttendance implements IModel
         $this->responsibility_status = $responsibility_status;
     }
 
-    public function to_insert_array()
+    public function to_array()
     {
         return [
             "ceremony_id" => $this->ceremony_id,
