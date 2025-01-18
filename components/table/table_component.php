@@ -36,7 +36,7 @@ class TableComponent extends Component {
         return $html;
     }
 
-    public function get_stylesheets()
+    public static function get_stylesheets()
     {
         return [$_ENV["BASE_URL"] . "/components/table/styles.css"];
     }

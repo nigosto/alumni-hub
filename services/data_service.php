@@ -45,7 +45,7 @@ class DataService
     {
         $stmt = $this->connection->prepare($query);
 
-        $stmt->execute($data->to_insert_array());
+        $stmt->execute($data->to_array());
         return $this->connection->lastInsertId();
     }
     

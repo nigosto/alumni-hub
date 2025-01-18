@@ -3,21 +3,27 @@ class ImportService
 {
     public function parse_csv_as_base64($file)
     {
-        $file_contents = base64_decode($file);
-        $rows = explode("\n", $file_contents);
+        $csv_content = base64_decode($file);
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, $csv_content);
+        rewind($stream);
 
-        $header = explode(",", $rows[0]);
+        $rows = [];
+        while (($row = fgetcsv($stream)) !== false) {
+            $rows[] = $row;
+        }
+
+        $header = $rows[0];
         array_shift($rows);
 
         return [
             "header" => $header,
             "data" => array_map(function ($row) use ($header) {
                 return array_combine($header, $row);
-            }, array_filter(array_map(function ($row) {
-                return str_getcsv($row);
-            }, $rows), function ($row) use ($header) {
-                return count($row) === count($header);
-            }))
+            }, array_map(function ($row) {
+                return array_filter($row, function ($item) {
+                    return !empty(strval($item));
+            });}, $rows))
         ];
     }
 }

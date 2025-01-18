@@ -6,15 +6,18 @@ require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../components/table/table_component.php";
+require_once __DIR__ . "/../../components/button/link.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
 $table = new TableComponent(Student::labels(), $controller->get_students_data());
+$export_link = new LinkComponent("Експорт", "students/export");
 
 $stylesheets = array_merge(
   $header->get_stylesheets(),
   $footer->get_stylesheets(),
   $table->get_stylesheets(),
+  $export_link->get_stylesheets(),
   [$_ENV["BASE_URL"] . "/pages/students/styles.css"]
 );
 
@@ -29,8 +32,8 @@ echo $meta->render();
   <main id="site-main">
     <section id="students-section">
       <h3>Списък със студенти</h3>
-      <a href="students/export">Експорт</a>
       <?php
+      echo $export_link->render();
       echo $table->render();
       ?>
     </section>
