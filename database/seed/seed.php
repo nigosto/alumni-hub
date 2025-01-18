@@ -76,7 +76,7 @@ VALUES
 CT);
 
 $db_con->exec(<<<CT
-INSERT INTO Ceremony_Attendance (ceremony_id, student_fn, accepted, speach_status, boss_status)
+INSERT INTO Ceremony_Attendance (ceremony_id, student_fn, accepted, speach_status, responsibility_status)
 VALUES 
     ('2', '1MI1234567', FALSE, 'none', 'none'),
     ('2', '2MI9876543', NULL, 'none', 'none'),
