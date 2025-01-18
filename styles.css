@@ -1,7 +1,16 @@
+:root {
+  --primary-color: #7A005E;
+  --primary-dark-color: #590045;
+  --primary-text-color: #000000;
+  --secondary-text-color: #FFFFFF;
+  --background-primary-color: #F4F4F4;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Roboto", serif;
 }
 
 body {
@@ -9,7 +18,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #f4f4f4;
+  background-color: var(--background-primary-color);
 }
 
 a {
@@ -23,13 +32,4 @@ li {
 
 #site-main {
   flex-grow: 1;
-}
-
-h1 {
-  color: #333;
-}
-
-p {
-  color: #666;
-  margin-bottom: 5px;
 }
