@@ -12,7 +12,7 @@ class AuthenticationService extends DataService
     function insert($user)
     {
         $insert_query = <<<IQ
-            INSERT INTO USERS (email, password, username, role)  VALUES (:email, :password, :username, :role)
+            INSERT INTO Users (email, password, username, role)  VALUES (:email, :password, :username, :role)
         IQ;
 
         return parent::insert_with_query($insert_query, $user);
