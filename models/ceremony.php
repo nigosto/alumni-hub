@@ -3,20 +3,21 @@ require_once __DIR__ . "/imodel.php";
 
 class Ceremony implements IModel
 {
-    private $data;
+    private $date;
     private $id;
+    private $speach_status;
+    private $responsibility_status;
 
-
-    function __construct($data, $id = null)
+    function __construct($date, $id = null)
     {
-        $this->data = $data;
+        $this->date = $date;
         $this->id = $id;
     }
 
     public function to_insert_array()
     {
         return [
-            "data" => $this->data
+            "date" => $this->date
         ];
     }
 }
