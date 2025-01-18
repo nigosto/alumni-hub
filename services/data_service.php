@@ -27,7 +27,6 @@ class DataService
         $stmt->execute($data->to_insert_array());
         return $this->connection->lastInsertId();
     }
-    
     function update_with_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);

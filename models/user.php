@@ -3,20 +3,19 @@ require_once __DIR__ . "/imodel.php";
 
 class User implements IModel
 {
+    private $id;
     private $email;
     private $password;
     private $username;
     private $role;
-    private $id;
 
-
-    function __construct($email, $password, $username, $role, $id = null)
+    function __construct($id, $email, $password, $username, $role)
     {
+        $this->id = $id;
         $this->email = $email;
         $this->password = $password;
         $this->username = $username;
         $this->role = $role;
-        $this->id = $id;
     }
 
     public function to_insert_array()
@@ -27,6 +26,11 @@ class User implements IModel
             "username" => $this->username,
             "role" => $this->role
         ];
+    }
+
+    public function compare_password($password)
+    {
+        return password_verify($password, $this->password);
     }
 }
 ?>

@@ -17,6 +17,13 @@ class AuthenticationService extends DataService
 
         return parent::insert_with_query($insert_query, $user);
     }
-
+    function get_user($username)
+    {
+        $get_query = <<<IQ
+            Select * from Users where username=:username
+        IQ;
+        $data = ["username" => $username];
+        return parent::get_with_query($get_query, $data);
+    }
 }
 ?>

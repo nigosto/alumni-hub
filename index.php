@@ -39,6 +39,20 @@ $router->register_route('GET', 'register', function () use ($authentication_cont
     $authentication_controller->show_register_page();
 });
 
+$router->register_route('GET', 'login', function () use ($authentication_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $authentication_controller->login($data);
+
+        echo json_encode(["Message" => "Success"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+});
+
 $router->register_route('POST', 'register', function () use ($authentication_controller) {
     try {
         header('Content-Type: application/json');
