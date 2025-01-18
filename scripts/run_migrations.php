@@ -27,6 +27,8 @@ if ($option === "-a" || $option === "-all") {
         }
     }
 } else {
+    $option = "./database/migrations/" . $option;
+
     $ext = strtolower(pathinfo($option, PATHINFO_EXTENSION));
 
     if (empty($ext)) {
