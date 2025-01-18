@@ -7,28 +7,48 @@ $database = new Database();
 $db_name = $_ENV['DB_NAME'];
 $db_con = $database->connection();
 
+$hashed_passwords = [
+    'parola123',
+    'qwerty123',
+    'pass456',
+    'secure789',
+    'abc12345',
+    'password321',
+    'letmein123',
+    'zdrasti123',
+    'pass7890',
+    'welcome123',
+    'student123',
+    'learning456',
+    'booklover789',
+    'studytime321',
+    'studentpass2023'
+];
+
+$hashed_passwords = array_map(fn($value): string => password_hash($value, PASSWORD_DEFAULT), $hashed_passwords);
+
 $db_con->exec(<<<CT
 INSERT INTO Users (email, password, username, role)
 VALUES
-    ('ivan.petrov@example.com', 'parola123', 'IvanPetrov', 'admin'),
-    ('maria.ivanova@example.com', 'qwerty123', 'MariaIvanova', 'administrator'),
-    ('georgi.georgiev@example.com', 'pass456', 'GeorgiGeorgiev', 'administrator'),
+    ('ivan.petrov@example.com', '{$hashed_passwords[0]}', 'IvanPetrov', 'admin'),
+    ('maria.ivanova@example.com', '{$hashed_passwords[1]}', 'MariaIvanova', 'administrator'),
+    ('georgi.georgiev@example.com', '{$hashed_passwords[2]}', 'GeorgiGeorgiev', 'administrator'),
 
-    ('elena.stoyanova@example.com', 'secure789', 'ElenaStoyanova', 'student'),
-    ('petar.kolev@example.com', 'abc12345', 'PetarKolev', 'student'),
-    ('krasimira.dimitrova@example.com', 'password321', 'KrasimiraDimitrova', 'student'),
+    ('elena.stoyanova@example.com', '{$hashed_passwords[3]}', 'ElenaStoyanova', 'student'),
+    ('petar.kolev@example.com', '{$hashed_passwords[4]}', 'PetarKolev', 'student'),
+    ('krasimira.dimitrova@example.com', '{$hashed_passwords[5]}', 'KrasimiraDimitrova', 'student'),
 
-    ('nikolay.iliev@example.com', 'letmein123', 'NikolayIliev', 'student'),
-    ('valentina.marinova@example.com', 'zdrasti123', 'ValentinaMarinova', 'student'),
-    ('stefan.popov@example.com', 'pass7890', 'StefanPopov', 'student'),
+    ('nikolay.iliev@example.com', '{$hashed_passwords[6]}', 'NikolayIliev', 'student'),
+    ('valentina.marinova@example.com', '{$hashed_passwords[7]}', 'ValentinaMarinova', 'student'),
+    ('stefan.popov@example.com', '{$hashed_passwords[8]}', 'StefanPopov', 'student'),
 
-    ('daniela.angelova@example.com', 'welcome123', 'DanielaAngelova', 'student'),
-    ('boris.kolev@example.com', 'student123', 'BorisKolev', 'student'),
-    ('yana.vasileva@example.com', 'learning456', 'YanaVasileva', 'student'),
+    ('daniela.angelova@example.com', '{$hashed_passwords[9]}', 'DanielaAngelova', 'student'),
+    ('boris.kolev@example.com', '{$hashed_passwords[10]}', 'BorisKolev', 'student'),
+    ('yana.vasileva@example.com', '{$hashed_passwords[11]}', 'YanaVasileva', 'student'),
     
-    ('mitko.dimitrov@example.com', 'booklover789', 'MitkoDimitrov', 'student'),
-    ('teodora.petkova@example.com', 'studytime321', 'TeodoraPetkova', 'student'),
-    ('alexander.stanev@example.com', 'studentpass2023', 'AlexanderStanev', 'student');
+    ('mitko.dimitrov@example.com', '{$hashed_passwords[12]}', 'MitkoDimitrov', 'student'),
+    ('teodora.petkova@example.com', '{$hashed_passwords[13]}', 'TeodoraPetkova', 'student'),
+    ('alexander.stanev@example.com', '{$hashed_passwords[14]}', 'AlexanderStanev', 'student');
 CT);
 
 $db_con->exec(<<<CT
