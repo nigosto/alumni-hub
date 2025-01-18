@@ -83,9 +83,9 @@ $router->register_route('POST', 'login', function () use ($authentication_contro
         header('Content-Type: application/json');
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-        $authentication_controller->login($data);
+        $user = $authentication_controller->login($data);
 
-        echo json_encode(["Message" => "Success"]);
+        echo json_encode($user->to_array());
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);

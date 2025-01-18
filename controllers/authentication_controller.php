@@ -82,7 +82,7 @@ class AuthenticationController
 
             $_SESSION["role"] = $user->get_role();
             $_SESSION["id"] = $user->get_id();
-
+            return $user;
         } else {
             throw new Exception(
                 'Username and password are required'

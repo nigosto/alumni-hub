@@ -16,10 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ username, password }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
                 form.reset();
+                const user = await response.json();
+                localStorage.setItem("role", user.role);
+
+                if (user.role === "Student") {
+                    window.location.href = "pick-fn";
+                }
+                else { window.location.href = "#"; }
             } else {
                 throw new Error(data.message || 'Login failed');
             }

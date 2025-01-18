@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 form.reset();
+                window.location.href = "#";
             } else {
                 throw new Error(data.message || 'Registration failed');
             }

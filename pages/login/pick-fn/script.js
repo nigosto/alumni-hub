@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const select = document.getElementById('pick-fn');
+    const form = document.getElementById('form-fn');
 
-    select.addEventListener('change', async (e) => {
+    form.addEventListener('submit', async (e) => {
         const fn = document.getElementById('pick-fn').value;
         try {
             const response = await fetch('', {
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 form.reset();
+                window.location.href = "#";
             } else {
                 throw new Error(data.message || 'Could not pick faculty number');
             }

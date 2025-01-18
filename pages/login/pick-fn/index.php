@@ -35,25 +35,24 @@ echo $meta->render();
 
     <main class="container">
         <h1>Моля изберете факултетния номер, с който да влезете</h1>
-
-        <select id="pick-fn" name="pick-fn">
-            <option value="" disabled selected>Избор на факултетен номер</option>
-            <?php foreach ($students as $student) {
-                echo <<<HTML
+        <form id="form-fn">
+            <select name="pick-fn" id="pick-fn">
+                <option value="" disabled selected>Избор на факултетен номер</option>
+                <?php foreach ($students as $student) {
+                    echo <<<HTML
                         <option value="{$student->get_fn()}">{$student->get_fn()}
                     </option>
                     HTML;
-            }
-            ?>
-        </select>
+                }
+                ?>
+            </select>
 
-        <nav class="form">
             <?php
-            $link = new LinkComponent("Избери", "#");
-            echo $link->render();
+            $submit_button = new ButtonComponent("Избери", ButtonStyleType::Primary, true);
+            echo $submit_button->render();
             ?>
-        </nav>
 
+        </form>
     </main>
 
     <?php echo $footer->render();
