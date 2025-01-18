@@ -26,7 +26,7 @@ class User implements IModel
     {
         return $this->role;
     }
-    public function to_insert_array()
+    public function to_array()
     {
         return [
             "email" => $this->email,

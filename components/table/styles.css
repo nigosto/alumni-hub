@@ -1,0 +1,8 @@
+.report-table {
+  border-collapse: collapse;
+}
+
+.report-table-cell {
+  border: 1px solid black;
+  padding: 5px 10px;
+}

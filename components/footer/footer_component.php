@@ -9,7 +9,7 @@ class FooterComponent extends Component
         return <<<HTML
         <footer id="site-footer">
             <p>@Alumni Hub, $year</p>
-        </header>
+        </footer>
         HTML;
     }
 
