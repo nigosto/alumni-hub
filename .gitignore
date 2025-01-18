@@ -1,2 +1,1 @@
 .env
-/database/migrations/seed_tables/*.php
