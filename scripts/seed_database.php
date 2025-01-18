@@ -3,9 +3,8 @@ if ($argc > 3) {
     throw new Exception("Invalid number of arguments");
 }
 
-$option = $argv[2];
-$action = $argv[1];
-$scripts_locations = __DIR__ . "/../database/migrations/";
+$option = $argv[1];
+$scripts_locations = __DIR__ . "/../database/";
 
 $output = null;
 $code = 0;
@@ -17,19 +16,14 @@ if (empty($ext)) {
         $option = substr($option, 0, -1);
     }
 
-    if ($action === "-r" || $action === "-rollback") {
-        $option .= "rollback.php";
-    }
-    else {
-        $option .= "migrate.php";
-    }
+    $option .= "/seed.php";
 }
 
 exec("php $option", $output, $code);
 
 if ($code !== 0) {
-    die("\nMigration $option failed\n");
+    die("\Seeding $option failed\n");
 }
 
-echo "\nMigrations run successfully!\n";
+echo "Database seeded successfully!\n";
 ?>
