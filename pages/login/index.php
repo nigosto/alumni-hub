@@ -15,13 +15,13 @@ $base_url = $_ENV["BASE_URL"];
 $stylesheets = array_merge(
     $header->get_stylesheets(),
     $footer->get_stylesheets(),
-    [$base_url . "/pages/register/styles.css"],
+    [$base_url . "/pages/login/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
     ButtonComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
+$meta = new MetadataComponent($stylesheets, ["$base_url/pages/login/script.js"]);
 echo $meta->render();
 ?>
 
@@ -31,32 +31,21 @@ echo $meta->render();
     ?>
 
     <main class="container">
-        <h1>Регистрация в Alumni Hub</h1>
+        <h1>Вход в профила Ви в Alumni Hub</h1>
 
-        <form id="registration-form">
-            <select id="account-type" name="account-type">
-                <option value="">Тип на акаунта</option>
-                <option value="student" id="student-account">Студентски акаунт</option>
-                <option value="administrator" id="administration-account">Адиминистраторски акаунт
-                </option>
-            </select>
-
+        <form id="login-form">
             <input type="text" id="username" name="username" placeholder="Потребителско име" required>
-            <input type="email" id="email" name="email" placeholder="Имейл адрес" required>
             <input type="password" id="password" name="password" placeholder="Парола" required>
-            <input type="password" id="password-confirmation" name="password-confirmation"
-                placeholder="Потвърждение на паролата" required>
-            <input type="text" id="fn" name="fn" placeholder="Факултетен номер" class="hidden">
 
             <?php
-            $submit_button = new ButtonComponent("Регистрация", ButtonStyleType::Primary, true);
+            $submit_button = new ButtonComponent("Вход", ButtonStyleType::Primary, true);
             echo $submit_button->render();
             ?>
         </form>
 
         <nav class="form">
             <?php
-            $link = new LinkComponent("Вече имате акаунт", "$base_url/login");
+            $link = new LinkComponent("Регистрация", "$base_url/register");
             echo $link->render();
             $link = new LinkComponent("Към началния екран", "$base_url/");
             echo $link->render();

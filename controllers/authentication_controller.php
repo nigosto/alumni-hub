@@ -15,6 +15,12 @@ class AuthenticationController
         require_once __DIR__ . "/../pages/register/index.php";
     }
 
+
+    public function show_login_page()
+    {
+        require_once __DIR__ . "/../pages/login/index.php";
+    }
+
     public function register($data)
     {
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
@@ -65,6 +71,12 @@ class AuthenticationController
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
+
+            session_start();
+
+            $_SESSION["role"] = $user->get_role();
+            $_SESSION["id"] = $user->get_id();
+
         } else {
             throw new Exception(
                 'Username and password are required'

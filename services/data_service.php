@@ -39,5 +39,18 @@ class DataService
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return new $this->model(...array_values($row));
     }
+
+    function find_all_with_query($query, $data = null)
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($data);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($rows as $i => $row) {
+            $rows[$i] = new $this->model(...array_values($row));
+        }
+
+        return $rows;
+    }
 }
 ?>

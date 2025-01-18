@@ -18,6 +18,14 @@ class User implements IModel
         $this->role = $role;
     }
 
+    public function get_id()
+    {
+        return $this->id;
+    }
+    public function get_role()
+    {
+        return $this->role;
+    }
     public function to_insert_array()
     {
         return [
