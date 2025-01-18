@@ -6,16 +6,16 @@ class AuthenticationService extends DataService
 {
     function __construct(Database $database)
     {
-        parent::__construct($database);
+        parent::__construct($database, User::class);
     }
 
-    function insert_many($users)
+    function insert($user)
     {
         $insert_query = <<<IQ
             INSERT INTO USERS (email, password, username, role)  VALUES (:email, :password, :username, :role)
         IQ;
 
-        parent::insert_many_with_query($insert_query, $users);
+        return parent::insert_with_query($insert_query, $user);
     }
 
 }

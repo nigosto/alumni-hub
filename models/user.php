@@ -7,13 +7,16 @@ class User implements IModel
     private $password;
     private $username;
     private $role;
+    private $id;
 
-    function __construct($email, $password, $username, $role)
+
+    function __construct($email, $password, $username, $role, $id = null)
     {
         $this->email = $email;
         $this->password = $password;
         $this->username = $username;
         $this->role = $role;
+        $this->id = $id;
     }
 
     public function to_insert_array()

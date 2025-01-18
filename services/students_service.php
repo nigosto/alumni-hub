@@ -19,7 +19,17 @@ class StudentsService extends DataService
 
         parent::insert_many_with_query($insert_query, $students);
     }
+    function update_user_id($fn, $user_id)
+    {
+        $update_query = <<<IQ
+            UPDATE Students
+            SET user_id=:user_id
+            WHERE fn = :fn;
+        IQ;
 
+        $data = ["fn" => strval($fn), "user_id" => strval($user_id)];
+        parent::update_with_query($update_query, $data);
+    }
     function get_student_by_fn($fn)
     {
         $query = <<<IQ
@@ -27,7 +37,7 @@ class StudentsService extends DataService
         IQ;
 
         $data = ["FN" => strval($fn)];
-        parent::get_with_query($query, $data);
+        return parent::get_with_query($query, $data);
     }
 
     function find_all()
