@@ -21,6 +21,12 @@ class AuthenticationController
         require_once __DIR__ . "/../pages/login/index.php";
     }
 
+    public function show_pick_fn_page()
+    {
+        $controller = $this;
+        require_once __DIR__ . "/../pages/login/pick-fn/index.php";
+    }
+
     public function register($data)
     {
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
@@ -80,6 +86,19 @@ class AuthenticationController
         } else {
             throw new Exception(
                 'Username and password are required'
+            );
+        }
+    }
+
+    public function pick_fn($data)
+    {
+        if (isset($data['fn'])) {
+            $fn = $data['fn'];
+            session_start();
+            $_SESSION["fn"] = $fn;
+        } else {
+            throw new Exception(
+                'Faculty number is empty!'
             );
         }
     }
