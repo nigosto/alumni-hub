@@ -2,22 +2,14 @@
 <html lang="bg">
 
 <?php
-require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/../../components/meta/index.php";
-require_once __DIR__ . "/../../components/header/index.php";
-require_once __DIR__ . "/../../components/footer/index.php";
-require_once __DIR__ . "/../../components/table/index.php";
-require_once __DIR__ . "/../../services/students/index.php";
-
-$students = array_map(function ($student) {
-    $values = array_values($student->to_array(true));
-    array_pop($values);
-    return $values;
-}, $students_service->find_all());
+require_once __DIR__ . "/../../components/metadata/metadata_component.php";
+require_once __DIR__ . "/../../components/header/header_component.php";
+require_once __DIR__ . "/../../components/footer/footer_component.php";
+require_once __DIR__ . "/../../components/table/table_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
-$table = new TableComponent(Student::labels(), $students);
+$table = new TableComponent(Student::labels(), $controller->get_students_data());
 
 $stylesheets = array_merge(
   $header->get_stylesheets(),

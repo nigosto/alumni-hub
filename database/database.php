@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../config.php';
-
 class Database {
     private $connection;
 
@@ -15,6 +13,4 @@ class Database {
         return $this->connection;
     }
 }
-
-$database = new Database();
 ?>

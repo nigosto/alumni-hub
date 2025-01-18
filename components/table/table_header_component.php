@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../base.php";
+require_once __DIR__ . "/../component.php";
 
 class TableHeaderComponent extends Component {
     private $values;

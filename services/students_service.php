@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . "/../../database/index.php";
-require_once __DIR__ . "/../base.php";
-require_once __DIR__ . "/../../models/student.php";
+require_once __DIR__ . "/../database/database.php";
+require_once __DIR__ . "/data_service.php";
+require_once __DIR__ . "/../models/student.php";
 
-class StudentsService extends BaseDataService
+class StudentsService extends DataService
 {
     function __construct(Database $database) {
         parent::__construct($database, Student::class);
@@ -24,6 +24,4 @@ class StudentsService extends BaseDataService
         return parent::find_all_with_query($find_query);
     }
 }
-
-$students_service = new StudentsService($database);
 ?>

@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/base.php";
-require_once __DIR__ . "/../../models/student.php";
+require_once __DIR__ . "/import_service.php";
+require_once __DIR__ . "/../models/student.php";
 
 class StudentsImportService extends ImportService
 {
@@ -22,6 +22,4 @@ class StudentsImportService extends ImportService
         }, $parsed_file["data"]);
     }
 }
-
-$students_import_service = new StudentsImportService();
 ?>

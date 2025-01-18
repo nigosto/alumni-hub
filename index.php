@@ -1,17 +1,60 @@
 <?php
 require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/utils/query_params.php";
+require_once __DIR__ . "/router.php";
+require_once __DIR__ . "/controllers/pages_controller.php";
+require_once __DIR__ . "/controllers/students_controller.php";
+require_once __DIR__ . "/database/database.php";
+require_once __DIR__ . "/services/students_service.php";
+require_once __DIR__ . "/services/students_import_service.php";
+
+
+load_config(".env");
+
+$router = new Router();
+$database = new Database();
+
+$students_service = new StudentsService($database);
+$students_import_service = new StudentsImportService();
+
+$pages_controller = new PagesController();
+$students_controller = new StudentsController($students_service, $students_import_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
-$requested_page = trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/");
+$requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
+$request_method = $_SERVER['REQUEST_METHOD'];
 
-if (empty($requested_page)) {
-    $requested_page = "home";
-}
+$router->register_route('GET', '/', function() use ($pages_controller) {
+    $pages_controller->show_home_page();
+});
 
-$pages_directory = __DIR__ . "/pages";
-$requested_file = $pages_directory . "/" . $requested_page . "/index.php";
+$router->register_route('GET', '', function() use ($pages_controller) {
+    $pages_controller->show_home_page();
+});
 
-if (file_exists($requested_file)) {
-    include $requested_file;
-}
+$router->register_route('GET', 'students/import', function() use ($students_controller) {
+    $students_controller->show_import_students_page();
+});
+
+$router->register_route('POST', 'students/import', function() use ($students_controller) {
+    try {
+        $data = json_decode(file_get_contents("php://input"));
+        $students_controller->import_students($data);
+        
+        echo json_encode(["Message" => "Success"]);
+    } catch (PDOException $e) {
+        http_response_code(409);
+        echo json_encode(["Message" => "Some of the students are already imported"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+
+});
+
+$router->register_route('GET', 'students', function() use ($students_controller) {
+    $students_controller->show_students_page();
+});
+
+$router->dispatch($request_method, $requested_uri);
 ?>

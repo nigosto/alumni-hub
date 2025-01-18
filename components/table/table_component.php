@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/../base.php";
-require_once __DIR__ . "/header.php";
-require_once __DIR__ . "/row.php";
+require_once __DIR__ . "/../component.php";
+require_once __DIR__ . "/table_header_component.php";
+require_once __DIR__ . "/table_row_component.php";
 
 class TableComponent extends Component {
     private $header_values;
