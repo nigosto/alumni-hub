@@ -2,10 +2,9 @@
 <html lang="bg">
 
 <?php
-require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/../../components/meta/index.php";
-require_once __DIR__ . "/../../components/header/index.php";
-require_once __DIR__ . "/../../components/footer/index.php";
+require_once __DIR__ . "/../../components/metadata/metadata_component.php";
+require_once __DIR__ . "/../../components/header/header_component.php";
+require_once __DIR__ . "/../../components/footer/footer_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();

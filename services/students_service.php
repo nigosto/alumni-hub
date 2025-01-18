@@ -1,9 +1,15 @@
 <?php
-require_once __DIR__ . "/../../database/index.php";
-require_once __DIR__ . "/../base.php";
+require_once __DIR__ . "/../database/database.php";
+require_once __DIR__ . "/data_service.php";
+require_once __DIR__ . "/../models/student.php";
 
-class StudentsService extends BaseDataService
+class StudentsService extends DataService
 {
+    function __construct(Database $database)
+    {
+        parent::__construct($database, Student::class);
+    }
+
     function insert_many($students)
     {
         $insert_query = <<<IQ
@@ -23,7 +29,11 @@ class StudentsService extends BaseDataService
         $data = ["FN" => strval($fn)];
         parent::get_with_query($query, $data);
     }
-}
 
-$students_service = new StudentsService($database);
+    function find_all()
+    {
+        $find_query = "SELECT * FROM Students";
+        return parent::find_all_with_query($find_query);
+    }
+}
 ?>

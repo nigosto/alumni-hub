@@ -1,5 +1,5 @@
 <?php
-class BaseDataService
+class DataService
 {
     private $connection;
 

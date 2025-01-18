@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password_confirmation = document.getElementById('password-confirmation').value;
 
         try {
-            const response = await fetch('../api/register.php', {
+            const response = await fetch('', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
