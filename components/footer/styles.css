@@ -1,5 +1,8 @@
 #site-footer {
-  padding-bottom: 20px;
+  padding: 10px 0;
+  background-color: var(--primary-color);
+  color: var(--secondary-text-color);
+  box-shadow: 0px -1px 6px 1px rgba(0,0,0,0.75);
 }
 
 #site-footer p {

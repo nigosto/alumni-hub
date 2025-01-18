@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('registrationForm');
+    const form = document.getElementById('registration-form');
     const accountType = document.getElementById('account-type');
     const fn = document.getElementById('fn');
 
