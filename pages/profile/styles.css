@@ -1,0 +1,18 @@
+main#container {
+  width: 60%;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.entry {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}

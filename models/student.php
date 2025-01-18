@@ -45,9 +45,25 @@ class Student implements IModel
         $this->user_id = $user_id;
     }
 
-    function get_fn()
+    public function get_fn()
     {
         return $this->fn;
+    }
+    public function get_degree()
+    {
+        return $this->degree;
+    }
+    public function get_fullname()
+    {
+        return $this->fullname;
+    }
+    public function get_graduation_year()
+    {
+        return $this->graduation_year;
+    }
+    public function get_grade()
+    {
+        return $this->grade;
     }
     public function to_array($prettify = false)
     {

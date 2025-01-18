@@ -73,7 +73,7 @@ class AuthenticationController
             $username = $data['username'];
             $password = $data['password'];
 
-            $user = $this->authentication_service->get_user($username);
+            $user = $this->authentication_service->get_user_by_username($username);
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
@@ -90,7 +90,7 @@ class AuthenticationController
         }
     }
 
-    public function pick_fn($data)
+    public function set_fn($data)
     {
         if (isset($data['fn'])) {
             $fn = $data['fn'];
