@@ -5,6 +5,7 @@
 require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
+require __DIR__ . "/../../components/button/link.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
@@ -17,7 +18,7 @@ $stylesheets = array_merge(
     [$base_url . "/pages/register/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
-    [$base_url . "/components/styles/button.css"],
+    ButtonComponent::get_stylesheets()
 );
 
 $meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
@@ -32,7 +33,7 @@ echo $meta->render();
     <main class="container">
         <h1>Регистрация в Alumni Hub</h1>
 
-        <form id="registrationForm">
+        <form id="registration-form">
             <select id="account-type" name="account-type">
                 <option value="">Тип на акаунта</option>
                 <option value="student" id="student-account">Студентски акаунт</option>
@@ -47,12 +48,19 @@ echo $meta->render();
                 placeholder="Потвърждение на паролата" required>
             <input type="text" id="fn" name="fn" placeholder="Факултетен номер" class="hidden">
 
-            <button type="submit" class="button">Регистрация</button>
+            <?php
+                $submit_button = new ButtonComponent("Регистрация", ButtonStyleType::Primary, true);
+                echo $submit_button->render();
+            ?>
         </form>
 
         <nav class="form">
-            <a href="#" id="loginBtn" class="button">Вече имаш акаунт</a>
-            <a href="<?php echo $base_url . "/home" ?>" id="loginBtn" class="button">Обратно в началния екран</a>
+            <?php
+                $link = new LinkComponent("Вече имате акаунт", "#");
+                echo $link->render();
+                $link = new LinkComponent("Към началния екран", "$base_url/");
+                echo $link->render();
+            ?>
         </nav>
 
     </main>
