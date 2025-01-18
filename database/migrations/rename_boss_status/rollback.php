@@ -8,10 +8,13 @@ $db_name = $_ENV['DB_NAME'];
 $database = new Database();
 $db_con = $database->connection();
 
-$db_con->exec('DROP TABLE IF EXISTS Ceremony_Attendance;');
-$db_con->exec('DROP TABLE IF EXISTS Clothes;');
-$db_con->exec('DROP TABLE IF EXISTS Students;');
-$db_con->exec('DROP TABLE IF EXISTS Users;');
-$db_con->exec('DROP TABLE IF EXISTS Ceremony;');
+$db_con->exec(<<<CT
+ALTER TABLE Ceremony_Attendance 
+    CHANGE COLUMN responsibility_status boss_status ENUM(
+    'none', 
+    'waiting_robes', 'waiting_signatures', 'waiting_diplomas', 
+    'accepted_robes', 'accepted_signatures', 'accepted_diplomas',
+    'declined_robes', 'declined_signatures', 'declined_diplomas');
+CT);
 
 ?>
