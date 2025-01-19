@@ -3,11 +3,13 @@ class CeremoniesController
 {
     private $ceremonies_service;
     private $ceremonies_attendance_service;
+    private $students_service;
 
-    function __construct($ceremonies_service, $ceremonies_attendance_service)
+    function __construct($ceremonies_service, $ceremonies_attendance_service, $students_service)
     {
         $this->ceremonies_service = $ceremonies_service;
         $this->ceremonies_attendance_service = $ceremonies_attendance_service;
+        $this->students_service = $students_service;
     }
 
     public function get_ceremony_by_id()
@@ -82,36 +84,49 @@ class CeremoniesController
                 $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::WaitingDiplomas;
             }
 
+            $ceremony_attendances = [];
+
             $ceremony_attendance_speaker = new CeremonyAttendance($ceremony_id, $speaker, null, 
                 SpeachStatus::Waiting, $ceremony_attendance_speaker_responsibility);
-            $this->ceremonies_attendance_service->insert_ceremony_attendance($ceremony_attendance_speaker);
+            array_push($ceremony_attendances, $ceremony_attendance_speaker);
 
             if ($speaker_is_responsible !== $SpeakerResponsibility::Robes) 
             {
                 $ceremony_attendance_responsible_robes = new CeremonyAttendance(
                     $ceremony_id, $responsible_robes, null, 
                     SpeachStatus::None, ResponsibilityStatus::WaitingRobes);
-                $this->ceremonies_attendance_service->insert_ceremony_attendance($ceremony_attendance_responsible_robes);
+                array_push($ceremony_attendances, $ceremony_attendance_responsible_robes);
             }
             if ($speaker_is_responsible !== $SpeakerResponsibility::Signatures) 
             {
                 $ceremony_attendance_responsible_signatures = new CeremonyAttendance(
                     $ceremony_id, $responsible_signatures, null, 
                     SpeachStatus::None, ResponsibilityStatus::WaitingSignatures);
-                $this->ceremonies_attendance_service->insert_ceremony_attendance($ceremony_attendance_responsible_signatures);
+                array_push($ceremony_attendances, $ceremony_attendance_responsible_signatures);
             }
             if ($speaker_is_responsible !== $SpeakerResponsibility::Diplomas) 
             {
                 $ceremony_attendance_responsible_diplomas = new CeremonyAttendance(
                     $ceremony_id, $responsible_diplomas, null, 
                     SpeachStatus::None, ResponsibilityStatus::WaitingDiplomas);
-                $this->ceremonies_attendance_service->insert_ceremony_attendance($ceremony_attendance_responsible_diplomas);
+                array_push($ceremony_attendances, $ceremony_attendance_responsible_diplomas);
             }
 
-            // Now invite automatically all other students to the ceremony for the graduation year
-            $special_attendants = array_unique([$speaker, $responsible_robes, $responsible_signatures, $responsible_diplomas]);
+            $special_students_fns = array_map(
+                function($value): string { return $value->to_array()["student_fn"]; }, 
+            $ceremony_attendances);
+            $ordinary_students_fns = $this->students_service->get_ordinary_students_fns_for_graduation_year($graduation_year, $special_students_fns);
             
+            foreach ($ordinary_students_fns as $ordinary_student_fn)
+            {
+                $ordinary_ceremony_attendance = new CeremonyAttendance(
+                    $ceremony_id, $ordinary_student_fn, null, 
+                    SpeachStatus::None, ResponsibilityStatus::None);
+                array_push($ceremony_attendances, $ordinary_ceremony_attendance);
+            }
 
+            var_dump($ceremony_attendances);
+            $this->ceremonies_attendance_service->insert_many_ceremony_attendances($ceremony_attendances);
         }
     }
 }

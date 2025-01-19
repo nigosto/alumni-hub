@@ -40,14 +40,21 @@ class StudentsService extends DataService
         return parent::get_with_query($query, $data);
     }
 
-    function get_fns_for_graduation_year($graduation_year, $special_attendants)
+    function get_ordinary_students_fns_for_graduation_year($graduation_year, $special_attendants_fns)
     {
-        $query = <<<IQ
-            SELECT FN FROM Students WHERE graduation_year=:graduation_year
-        IQ;
+        $placeholders = implode(", ", array_fill(0, count($special_attendants_fns), "?"));
+        $query = <<<SQL
+            SELECT fn FROM Students 
+            WHERE graduation_year = ? AND fn NOT IN ($placeholders)
+        SQL;
 
-        $data = ["graduation_year" => strval($graduation_year)];
-        return parent::get_with_query($query, $data);
+        $data = array_merge([strval($graduation_year)], $special_attendants_fns);
+        $get_fn_func = function ($data)
+        {
+            return $data["fn"];
+        };
+
+        return parent::find_all_with_query_map($query, $data, $get_fn_func);
     }
 
     function find_all()

@@ -13,28 +13,21 @@ class CeremoniesAttendanceService extends DataService
         $this->students_service = $students_service;
     }
 
-    public function insert_ceremony_attendance($ceremony_attendance)
+    public function insert_many_ceremony_attendances($ceremony_attendances)
     {
+        $placeholders = [];
+        $values = [];
+        foreach ($ceremony_attendances as $ceremony_attendance) {
+            $placeholders[] = "(?, ?, ?, ?, ?)";
+            $values = array_merge($values, array_values($ceremony_attendance->to_array()));
+        }
+
         $insert_query = <<<IQ
-            INSERT INTO Ceremony_Attendance (ceremony_id, student_fn, accepted, speach_status, responsibility_status) 
-            VALUES (:ceremony_id, :student_fn, :accepted, :speach_status, :responsibility_status)
-        IQ;
+        INSERT INTO Ceremony_Attendance (ceremony_id, student_fn, accepted, speach_status, responsibility_status)  
+        VALUES 
+        IQ . implode(", ", $placeholders);
 
-        return parent::insert_with_query($insert_query, $ceremony_attendance);
-    }
-
-    
-    public function insert_ceremony_ordinary_attendances($graduation_year, $special_attendants)
-    {
-        $ordinary_students_fns = $this->students_service->get_fns_for_graduation_year($graduation_year, $special_attendants);
-
-        $insert_values = "(:ceremony_id, :student_fn, :accepted, :speach_status, :responsibility_status)";
-
-        // $insert_query = <<<IQ
-        //     INSERT INTO Ceremony (date) VALUES (:date)
-        // IQ;
-
-        // return parent::insert_with_query($insert_query, ["date" => $graduation_year]);
+        return parent::insert_many_bulk_query($insert_query, $values);
     }
 }
 ?>

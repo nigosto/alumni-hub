@@ -29,7 +29,8 @@ $students_export_service = new StudentsExportService();
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
 $authentication_controller = new AuthenticationController($authentication_service, $students_service);
-$ceremonies_controller = new CeremoniesController($ceremoinies_service, $ceremonies_attendance_service);
+$ceremonies_controller = new CeremoniesController(
+    $ceremoinies_service, $ceremonies_attendance_service, $students_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
