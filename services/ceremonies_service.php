@@ -24,16 +24,5 @@ class CeremoniesService extends DataService
 
         return parent::insert_with_query($insert_query, $ceremony);
     }
-
-    // // TODO: Remove?
-    // function get_ceremony_by_id($id)
-    // {
-    //     $query = <<<IQ
-    //         SELECT * FROM Ceremony WHERE ceremony_id=:ID
-    //     IQ;
-
-    //     $data = ["ID" => strval($id)];
-    //     return parent::get_with_query($query, $data);
-    // }
 }
 ?>

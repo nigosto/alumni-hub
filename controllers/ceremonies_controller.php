@@ -24,8 +24,6 @@ class CeremoniesController
 
     public function create_ceremony($data)
     {
-        # TODO: Authentication
-
         if (isset($data['date']) && 
             isset($data['graduation_year']) && 
             isset($data['speaker']) && 
@@ -58,6 +56,7 @@ class CeremoniesController
                 throw new Exception('The same student cannot be assigned more than one responsibility');
             }
 
+            // TODO: Validation for requested students being in the same graduation year as the ceremony 
             $ceremony = new Ceremony($date);
             $ceremony_id = $this->ceremonies_service->insert_ceremony($ceremony);
 
@@ -125,7 +124,6 @@ class CeremoniesController
                 array_push($ceremony_attendances, $ordinary_ceremony_attendance);
             }
 
-            var_dump($ceremony_attendances);
             $this->ceremonies_attendance_service->insert_many_ceremony_attendances($ceremony_attendances);
         }
     }

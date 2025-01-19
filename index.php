@@ -94,12 +94,11 @@ $router->register_route('GET', 'students', function () use ($students_controller
 });
 
 $router->register_route('GET', 'ceremonies/create', function () use ($ceremonies_controller) {
-    // TODO: Authentication
+    // TODO: Authorization
     $ceremonies_controller->show_create_ceremony_page();
 });
 
 $router->register_route('POST', 'ceremonies/create', function () use ($ceremonies_controller) {
-    // TODO: Authentication
     try {
         header('Content-Type: application/json');
         $json = file_get_contents('php://input');
