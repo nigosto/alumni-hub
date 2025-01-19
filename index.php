@@ -4,11 +4,14 @@ require_once __DIR__ . "/utils/query_params.php";
 require_once __DIR__ . "/router.php";
 require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
+require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
 require_once __DIR__ . "/controllers/admin_controller.php";
 require_once __DIR__ . "/controllers/user_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
+require_once __DIR__ . "/services/ceremonies_service.php";
+require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/users_service.php";
@@ -23,6 +26,8 @@ $database = new Database();
 $students_service = new StudentsService($database);
 $users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
+$ceremoinies_service = new CeremoniesService($database);
+$ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 $students_export_service = new StudentsExportService();
 
 $pages_controller = new PagesController();
@@ -30,6 +35,11 @@ $students_controller = new StudentsController($students_service, $students_impor
 $authentication_controller = new AuthenticationController($users_service, $students_service);
 $admin_controller = new AdminController($users_service);
 $user_controller = new UserController($users_service, $students_service);
+$ceremonies_controller = new CeremoniesController(
+    $ceremoinies_service,
+    $ceremonies_attendance_service,
+    $students_service
+);
 
 $authorization_middleware = new AuthorizationMiddleware();
 
@@ -174,6 +184,34 @@ $router->register_route(
     'admin/approval',
     $authorization_middleware->is_authorized(Role::Admin, function () use ($admin_controller) {
         $admin_controller->show_approval_page();
+    })
+);
+
+$router->register_route(
+    'GET',
+    'ceremonies/create',
+    $authorization_middleware->is_authorized(Role::Administrator, function () use ($ceremonies_controller) {
+        $ceremonies_controller->show_create_ceremony_page();
+    })
+);
+
+$router->register_route(
+    'POST',
+    'ceremonies/create',
+    $authorization_middleware->is_authorized(Role::Administrator, function () use ($ceremonies_controller) {
+        try {
+            header('Content-Type: application/json');
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            $ceremonies_controller->create_ceremony($data);
+
+            http_response_code(200);
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
     })
 );
 
