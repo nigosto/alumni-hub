@@ -1,21 +1,39 @@
 <?php
 require_once __DIR__ . "/imodel.php";
 
+enum Role: string {
+    case Student = "student";
+    case Administrator = "administrator";
+    case Admin = "admin";
+}
+
+function prettify_role(Role $role)
+{
+    return match ($role) {
+        Role::Student => "Студент",
+        Role::Administrator => "Администратор",
+        Role::Admin => "Админ",
+    };
+}
+
+
 class User implements IModel
 {
     private $id;
     private $email;
     private $password;
     private $username;
-    private $role;
+    private Role $role;
+    private $approved;
 
-    function __construct($id, $email, $password, $username, $role)
+    function __construct($id, $email, $password, $username, $role, $approved)
     {
         $this->id = $id;
         $this->email = $email;
         $this->password = $password;
         $this->username = $username;
-        $this->role = $role;
+        $this->role = Role::tryFrom($role);
+        $this->approved = $approved;
     }
 
     public function get_id()
@@ -26,14 +44,28 @@ class User implements IModel
     {
         return $this->role;
     }
-    public function to_array()
+    public function to_array($prettify = false)
     {
+        if ($prettify) {
+            return [
+                "email" => $this->email,
+                "username" => $this->username,
+                "role" => prettify_role($this->role),
+                "approved" => $this->approved ? "Да" : "Не"
+            ];
+        } 
+
         return [
             "email" => $this->email,
             "password" => $this->password,
             "username" => $this->username,
-            "role" => $this->role
+            "role" => $this->role->value,
+            "approved" => intval($this->approved)
         ];
+    }
+
+    public static function labels() {
+        return ["Имейл","Потребителско име","Роля","Одобрен"];
     }
 
     public function compare_password($password)

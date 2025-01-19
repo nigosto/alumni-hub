@@ -1,12 +1,12 @@
 <?php
 class AuthenticationController
 {
-    private $authentication_service;
+    private $users_service;
     private $students_service;
 
-    function __construct($authentication_service, $students_service)
+    function __construct($users_service, $students_service)
     {
-        $this->authentication_service = $authentication_service;
+        $this->users_service = $users_service;
         $this->students_service = $students_service;
 
     }
@@ -40,18 +40,18 @@ class AuthenticationController
             }
 
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            $user = new User(null, $email, $password_hash, $username, $role);
-
             if ($role === 'student') {
+                $user = new User(null, $email, $password_hash, $username, $role, true);
                 $student = $this->students_service->get_student_by_fn($fn);
                 if (!$student) {
                     throw new Exception('Incorrect faculty number!');
                 }
 
-                $registered_user_id = $this->authentication_service->insert($user);
+                $registered_user_id = $this->users_service->insert($user);
                 $this->students_service->update_user_id($fn, $registered_user_id);
             } else {
-                $this->authentication_service->insert($user);
+                $user = new User(null, $email, $password_hash, $username, $role, false);
+                $this->users_service->insert($user);
             }
 
         } else {
@@ -67,7 +67,7 @@ class AuthenticationController
             $username = $data['username'];
             $password = $data['password'];
 
-            $user = $this->authentication_service->get_user($username);
+            $user = $this->users_service->get_user($username);
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
