@@ -47,7 +47,6 @@ class AuthenticationController
                 throw new Exception('Invalid faculty number!');
             }
 
-            
             $role = Role::tryFrom($role);
 
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -66,7 +65,7 @@ class AuthenticationController
                 $_SESSION["fn"] = $fn;
             } else {
                 $user = new User(null, $email, $password_hash, $username, $role->value, false);
-                $this->users_service->insert($user);
+                $registered_user_id = $this->users_service->insert($user);
             }
 
             $_SESSION["role"] = $role;

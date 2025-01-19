@@ -101,7 +101,6 @@ class CeremoniesService extends DataService
                 $graduation_year_current = $row["graduation_year"];
             }
             
-            var_dump($row["speach_status"]);
             if ($speaker_info_current === "none")
             {
                 $speaker_info_new = $ceremony_special_people_info_func(

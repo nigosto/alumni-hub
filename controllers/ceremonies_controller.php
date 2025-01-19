@@ -169,7 +169,6 @@ class CeremoniesController
             return [];
         }
 
-        var_dump($ceremonies_info);
         return $ceremonies_info;
     }
 }
