@@ -47,6 +47,7 @@ class AuthenticationController
 
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             $user = new User(null, $email, $password_hash, $username, $role);
+            session_start();
 
             if ($role === 'student') {
                 $student = $this->students_service->get_student_by_fn($fn);
@@ -56,10 +57,14 @@ class AuthenticationController
 
                 $registered_user_id = $this->authentication_service->insert($user);
                 $this->students_service->update_user_id($fn, $registered_user_id);
+
+                $_SESSION["fn"] = $fn;
             } else {
                 $this->authentication_service->insert($user);
             }
-
+            $user_data = $user->to_array();
+            $_SESSION["role"] = $user_data["role"];
+            $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
                 'Username, email and password are required'
@@ -73,14 +78,14 @@ class AuthenticationController
             $username = $data['username'];
             $password = $data['password'];
 
-            $user = $this->authentication_service->get_user($username);
+            $user = $this->authentication_service->get_user_by_username($username);
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
 
             session_start();
-
-            $_SESSION["role"] = $user->get_role();
+            $user_data = $user->to_array();
+            $_SESSION["role"] = $user_data["role"];
             $_SESSION["id"] = $user->get_id();
             return $user;
         } else {
@@ -90,7 +95,7 @@ class AuthenticationController
         }
     }
 
-    public function pick_fn($data)
+    public function set_fn($data)
     {
         if (isset($data['fn'])) {
             $fn = $data['fn'];

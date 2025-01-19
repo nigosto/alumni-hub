@@ -2,6 +2,7 @@
   margin: 50px;
   display: flex;
   flex-direction: column;
+  align-self: center;
   align-items: center;
   text-align: center;
 
@@ -10,8 +11,13 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   gap: 10px;
+  width: 40%;
 }
 
-.form a:first-child {
+#login-form {
+  margin-bottom: 5px;
+}
+
+.nav-buttons a:first-child {
   margin-right: 10px;
 }

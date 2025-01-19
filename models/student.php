@@ -45,10 +45,6 @@ class Student implements IModel
         $this->user_id = $user_id;
     }
 
-    function get_fn()
-    {
-        return $this->fn;
-    }
     public function to_array($prettify = false)
     {
         return [
