@@ -33,16 +33,17 @@ echo $meta->render();
             </div>
             <p id="welcome-info">
                 Чрез този портал можете да получите актуална информация за предстоящото дипломиране и да организирате
-                събития за него. Информация за събитията можете да получите само след регистрация. Този портал е достъпен
+                събития за него. Информация за събитията можете да получите само след регистрация. Този портал е
+                достъпен
                 само за завършили студенти и администрацията.
             </p>
-    
+
             <nav id="welcome-links">
-                <?php 
-                    $link = new LinkComponent("ВЛИЗАНЕ", "#");
-                    echo $link->render();
-                    $link = new LinkComponent("РЕГИСТРИРАНЕ", "$base_url/register");
-                    echo $link->render();
+                <?php
+                $link = new LinkComponent("ВЛИЗАНЕ", "$base_url/login");
+                echo $link->render();
+                $link = new LinkComponent("РЕГИСТРИРАНЕ", "$base_url/register");
+                echo $link->render();
                 ?>
             </nav>
         </div>

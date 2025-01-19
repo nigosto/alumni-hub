@@ -33,7 +33,8 @@ class StudentsController
         $this->students_service->insert_many($students);
     }
 
-    public function export_students() {
+    public function export_students()
+    {
         $students = $this->students_service->find_all();
         $this->students_export_service->export($students);
     }

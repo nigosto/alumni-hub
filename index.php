@@ -54,7 +54,42 @@ $router->register_route('POST', 'register', function () use ($authentication_con
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
+});
 
+$router->register_route('GET', 'login', function () use ($authentication_controller) {
+    $authentication_controller->show_login_page();
+});
+
+$router->register_route('GET', 'login/pick-fn', function () use ($authentication_controller) {
+    $authentication_controller->show_pick_fn_page();
+});
+
+$router->register_route('POST', 'login/pick-fn', function () use ($authentication_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $authentication_controller->pick_fn($data);
+
+        echo json_encode(["Message" => "Success"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+});
+
+$router->register_route('POST', 'login', function () use ($authentication_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $user = $authentication_controller->login($data);
+
+        echo json_encode($user->to_array());
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
 });
 
 $router->register_route('GET', 'students/import', function () use ($students_controller) {
@@ -76,7 +111,7 @@ $router->register_route('POST', 'students/import', function () use ($students_co
     }
 });
 
-$router->register_route('GET', 'students/export', function() use ($students_controller) {
+$router->register_route('GET', 'students/export', function () use ($students_controller) {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=students.csv');
     $students_controller->export_students();
