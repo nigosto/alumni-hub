@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../models/user.php";
+
 class AuthenticationController
 {
     private $users_service;
@@ -32,7 +34,7 @@ class AuthenticationController
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
             $username = $data['username'];
             $email = $data['email'];
-            $role = $data['role'];
+            $role = strtolower($data['role']);
             $password = $data['password'];
             $password_confirmation = $data['password_confirmation'];
             $fn = $data['fn'];
@@ -45,11 +47,14 @@ class AuthenticationController
                 throw new Exception('Invalid faculty number!');
             }
 
+            
+            $role = Role::tryFrom($role);
+
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             session_start();
 
-            if ($role === 'student') {
-                $user = new User(null, $email, $password_hash, $username, $role, true);
+            if ($role === Role::Student) {
+                $user = new User(null, $email, $password_hash, $username, $role->value, true);
                 $student = $this->students_service->get_student_by_fn($fn);
                 if (!$student) {
                     throw new Exception('Incorrect faculty number!');
@@ -60,11 +65,11 @@ class AuthenticationController
 
                 $_SESSION["fn"] = $fn;
             } else {
-                $user = new User(null, $email, $password_hash, $username, $role, false);
+                $user = new User(null, $email, $password_hash, $username, $role->value, false);
                 $this->users_service->insert($user);
             }
-            $user_data = $user->to_array();
-            $_SESSION["role"] = $user_data["role"];
+
+            $_SESSION["role"] = $role;
             $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
@@ -87,7 +92,7 @@ class AuthenticationController
 
             session_start();
             $user_data = $user->to_array();
-            $_SESSION["role"] = $user_data["role"];
+            $_SESSION["role"] = Role::tryFrom($user_data["role"]);
             $_SESSION["id"] = $user->get_id();
             return $user;
         } else {

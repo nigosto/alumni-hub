@@ -40,10 +40,6 @@ class User implements IModel
         return $this->id;
     }
 
-    public function get_role()
-    {
-        return $this->role;
-    }
     public function to_array($prettify = false)
 
     {
