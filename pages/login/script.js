@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ username, password }),
             });
+            const baseUrl = localStorage.getItem("baseUrl");
 
             if (response.ok) {
                 form.reset();
@@ -22,9 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("role", user.role);
 
                 if (user.role === "Student") {
-                    window.location.href = "login/pick-fn";
+                    window.location.href = `${baseUrl}/login/pick-fn`;
                 }
-                else { window.location.href = "#"; }
+                
+                else {
+                    const baseUrl = localStorage.getItem("baseUrl");
+                    window.location.href = `${baseUrl}/profile`;
+                }
             } else {
                 throw new Error(data.message || 'Login failed');
             }

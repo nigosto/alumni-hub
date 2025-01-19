@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 form.reset();
-                window.location.href = "#";
+                const baseUrl = localStorage.getItem("baseUrl");
+                window.location.href = `${baseUrl}/profile`;
             } else {
                 throw new Error(data.message || 'Registration failed');
             }

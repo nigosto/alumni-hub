@@ -17,23 +17,9 @@ class User implements IModel
         $this->username = $username;
         $this->role = $role;
     }
-
-    public function get_id()
+    function get_id()
     {
         return $this->id;
-    }
-    public function get_role()
-    {
-        return $this->role;
-    }
-    public function get_username()
-    {
-        return $this->username;
-    }
-
-    public function get_email()
-    {
-        return $this->email;
     }
     public function to_array()
     {

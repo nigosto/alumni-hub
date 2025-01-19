@@ -79,8 +79,8 @@ class AuthenticationController
             }
 
             session_start();
-
-            $_SESSION["role"] = $user->get_role();
+            $user_data = $user->to_array();
+            $_SESSION["role"] = $user_data["role"];
             $_SESSION["id"] = $user->get_id();
             return $user;
         } else {

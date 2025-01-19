@@ -39,8 +39,9 @@ echo $meta->render();
             <select name="pick-fn" id="pick-fn">
                 <option value="" disabled selected>Избор на факултетен номер</option>
                 <?php foreach ($students as $student) {
+                    $fn = $student->to_array()["fn"];
                     echo <<<HTML
-                        <option value="{$student->get_fn()}">{$student->get_fn()}
+                        <option value="{$fn}"> $fn
                     </option>
                     HTML;
                 }
