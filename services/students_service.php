@@ -40,6 +40,23 @@ class StudentsService extends DataService
         return parent::get_with_query($query, $data);
     }
 
+    function get_ordinary_students_fns_for_graduation_year($graduation_year, $special_attendants_fns)
+    {
+        $placeholders = implode(", ", array_fill(0, count($special_attendants_fns), "?"));
+        $query = <<<SQL
+            SELECT fn FROM Students 
+            WHERE graduation_year = ? AND fn NOT IN ($placeholders)
+        SQL;
+
+        $data = array_merge([strval($graduation_year)], $special_attendants_fns);
+        $get_fn_func = function ($data)
+        {
+            return $data["fn"];
+        };
+
+        return parent::find_all_with_query_map($query, $data, $get_fn_func);
+    }
+
     function get_students_by_user_id($user_id)
     {
         $query = <<<IQ
@@ -49,6 +66,7 @@ class StudentsService extends DataService
         $data = ["user_id" => strval($user_id)];
         return parent::find_all_with_query($query, $data);
     }
+
     function find_all()
     {
         $find_query = "SELECT * FROM Students";
