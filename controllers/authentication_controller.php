@@ -21,6 +21,12 @@ class AuthenticationController
         require_once __DIR__ . "/../pages/login/index.php";
     }
 
+    public function show_pick_fn_page()
+    {
+        $controller = $this;
+        require_once __DIR__ . "/../pages/login/pick-fn/index.php";
+    }
+
     public function register($data)
     {
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
@@ -40,6 +46,8 @@ class AuthenticationController
             }
 
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
+            session_start();
+
             if ($role === 'student') {
                 $user = new User(null, $email, $password_hash, $username, $role, true);
                 $student = $this->students_service->get_student_by_fn($fn);
@@ -49,11 +57,15 @@ class AuthenticationController
 
                 $registered_user_id = $this->users_service->insert($user);
                 $this->students_service->update_user_id($fn, $registered_user_id);
+
+                $_SESSION["fn"] = $fn;
             } else {
                 $user = new User(null, $email, $password_hash, $username, $role, false);
                 $this->users_service->insert($user);
             }
-
+            $user_data = $user->to_array();
+            $_SESSION["role"] = $user_data["role"];
+            $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
                 'Username, email and password are required'
@@ -67,19 +79,33 @@ class AuthenticationController
             $username = $data['username'];
             $password = $data['password'];
 
-            $user = $this->users_service->get_user($username);
+            $user = $this->users_service->get_user_by_username($username);
+
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
 
             session_start();
-
-            $_SESSION["role"] = $user->get_role();
+            $user_data = $user->to_array();
+            $_SESSION["role"] = $user_data["role"];
             $_SESSION["id"] = $user->get_id();
-
+            return $user;
         } else {
             throw new Exception(
                 'Username and password are required'
+            );
+        }
+    }
+
+    public function set_fn($data)
+    {
+        if (isset($data['fn'])) {
+            $fn = $data['fn'];
+            session_start();
+            $_SESSION["fn"] = $fn;
+        } else {
+            throw new Exception(
+                'Faculty number is empty!'
             );
         }
     }

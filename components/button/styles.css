@@ -5,8 +5,8 @@
 
 .primary-btn, .secondary-btn {
   border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 1em;
+  padding: 7px 14px;
+  font-size: 0.9em;
   font-weight: bold;
   box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
 }

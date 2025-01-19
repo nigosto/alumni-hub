@@ -15,11 +15,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
-            const data = await response.json();
+            const baseUrl = localStorage.getItem("baseUrl");
 
             if (response.ok) {
                 form.reset();
+                const user = await response.json();
+                localStorage.setItem("role", user.role);
+
+                if (user.role === "Student") {
+                    window.location.href = `${baseUrl}/login/pick-fn`;
+                }
+                
+                else {
+                    const baseUrl = localStorage.getItem("baseUrl");
+                    window.location.href = `${baseUrl}/profile`;
+                }
             } else {
                 throw new Error(data.message || 'Login failed');
             }

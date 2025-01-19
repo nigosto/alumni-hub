@@ -43,7 +43,7 @@ echo $meta->render();
             ?>
         </form>
 
-        <nav class="form">
+        <nav class="nav-buttons">
             <?php
             $link = new LinkComponent("Регистрация", "$base_url/register");
             echo $link->render();
