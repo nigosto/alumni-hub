@@ -13,10 +13,6 @@ class Clothes implements IModel
         $this->size = $size;
         $this->student_fn = $student_fn;
     }
-    function get_id()
-    {
-        return $this->id;
-    }
     public function to_array()
     {
         return [
