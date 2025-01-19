@@ -51,7 +51,9 @@ class CeremoniesController
                 throw new Exception('The same student cannot be assigned more than one responsibility');
             }
 
-            // TODO: Validation for requested students being in the same graduation year as the ceremony 
+            // TODO: Validation for: 
+            // 1) requested students being in the same graduation year as the ceremony
+            // 2) already created ceremony for graduation year
             $ceremony = new Ceremony($date);
             $ceremony_id = $this->ceremonies_service->insert_ceremony($ceremony);
 
