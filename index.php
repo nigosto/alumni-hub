@@ -29,8 +29,11 @@ $database = new Database();
 $students_service = new StudentsService($database);
 $users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
-$ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
+$ceremonies_service = new CeremoniesService(
+    $database, 
+    $ceremonies_attendance_service, 
+    $students_service);
 $students_export_service = new StudentsExportService();
 $clothes_service = new ClothesService($database);
 
@@ -40,7 +43,7 @@ $authentication_controller = new AuthenticationController($users_service, $stude
 $admin_controller = new AdminController($users_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service);
 $ceremonies_controller = new CeremoniesController(
-    $ceremoinies_service,
+    $ceremonies_service,
 
     $ceremonies_attendance_service,
 
