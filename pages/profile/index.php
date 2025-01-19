@@ -6,6 +6,7 @@ require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../models/user.php";
+require_once __DIR__ . "/../../components/button/link.php";
 
 $base_url = $_ENV["BASE_URL"];
 $header = new HeaderComponent();
@@ -17,13 +18,20 @@ $username = $user_data["username"];
 $email = $user_data["email"];
 $role = $_SESSION["role"];
 
+$user_id = $_SESSION["id"];
+$fn = $_SESSION["fn"];
+$clothing_for_student = $controller->clothes_service->get_clothing_for_student($fn);
+$clothes = $controller->clothes_service->get_clothes_with_size();
+
 $stylesheets = array_merge(
     $header->get_stylesheets(),
     $footer->get_stylesheets(),
     [$base_url . "/pages/profile/styles.css"],
+    [$base_url . "/components/styles/input.css"],
+    ButtonComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets);
+$meta = new MetadataComponent($stylesheets, ["$base_url/pages/profile/script.js"]);
 echo $meta->render();
 ?>
 
@@ -59,6 +67,42 @@ echo $meta->render();
             <p  class="entry"><strong  class="entry-name">Оценка:</strong> $grade</p>
             <p  class="entry"><strong  class="entry-name">Година на завършване:</strong> $graduation_year</p>
             HTML;
+
+                if ($clothing_for_student !== null) {
+                    echo <<<HTML
+                        <p class="entry" ><strong class="entry-name">Размер на тога:</strong>
+                        {$clothing_for_student->to_array()["size"]}</p>
+                    HTML;
+                } else {
+                    echo <<<HTML
+            <div class="entry" >
+                <p><strong class="entry-name">Размер на тога:</strong></p>
+                <form id="clothes">
+                    <select name="pick-size" id="pick-size">
+                        <option value="" disabled selected>Избор</option>
+            HTML;
+                    foreach ($clothes as $size => $occurrences) {
+                        $is_disabled = $occurrences === 0;
+                        if ($is_disabled) {
+                            echo <<<HTML
+                            <option value="{$size}" disabled> $size </option>
+                        HTML;
+                        } else {
+                            echo <<<HTML
+                            <option value="{$size}"> $size </option>
+                        HTML;
+                        }
+                    }
+                    echo <<<HTML
+                </select>
+            HTML;
+                    $submit_button = new ButtonComponent("Потвърди", ButtonStyleType::Primary, true);
+                    echo $submit_button->render();
+                    echo <<<HTML
+            </form>
+                </div>
+            HTML;
+                }
             }
         }
         ?>

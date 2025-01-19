@@ -59,8 +59,22 @@ class DataService
         $stmt = $this->connection->prepare($query);
         $stmt->execute($data);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === null || $row === false) {
+            return null;
+        }
         return new $this->model(...array_values($row));
     }
+    function find_all_with_query_map($query, $data, $map_func)
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($data);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($rows as $i => $row) {
+            $rows[$i] = $map_func($row);
+        }
+
+        return $rows;
+    }
 }
 ?>

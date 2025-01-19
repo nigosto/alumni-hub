@@ -22,10 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const user = await response.json();
                 localStorage.setItem("role", user.role);
 
-                if (user.role === "Student") {
+                if (user.role === "student") {
                     window.location.href = `${baseUrl}/login/pick-fn`;
                 }
-                
                 else {
                     const baseUrl = localStorage.getItem("baseUrl");
                     window.location.href = `${baseUrl}/profile`;

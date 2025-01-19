@@ -11,8 +11,19 @@ main#container {
   flex-direction: column;
   gap: 10px;
 }
+
 .entry {
   display: flex;
   gap: 10px;
   margin-left: 20px;
+  align-items: center;
+  justify-items: center;
+}
+
+#clothes {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 20px;
+  width: 80%;
 }
