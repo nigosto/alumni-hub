@@ -58,7 +58,8 @@ class DataService
         return $rows;
     }
 
-    function find_all_with_query($query, $data = null) {
+    function find_all_with_query($query, $data = null)
+    {
         $stmt = $this->connection->prepare($query);
         $stmt->execute($data);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -77,7 +78,6 @@ class DataService
         $stmt->execute($data->to_array());
         return $this->connection->lastInsertId();
     }
-    
     function update_with_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);
@@ -91,5 +91,6 @@ class DataService
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return new $this->model(...array_values($row));
     }
+
 }
 ?>

@@ -57,8 +57,9 @@ class Student implements IModel
         ];
     }
 
-    public static function labels() {
-        return ["Факултетен номер","Степен","Имена","Година на завършване","Оценка"];
+    public static function labels()
+    {
+        return ["Факултетен номер", "Степен", "Имена", "Година на завършване", "Оценка"];
     }
 }
 ?>

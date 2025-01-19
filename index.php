@@ -6,6 +6,7 @@ require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
 require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
+require_once __DIR__ . "/controllers/user_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
 require_once __DIR__ . "/services/ceremonies_service.php";
@@ -31,6 +32,7 @@ $students_controller = new StudentsController($students_service, $students_impor
 $authentication_controller = new AuthenticationController($authentication_service, $students_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremoinies_service, $ceremonies_attendance_service, $students_service);
+$user_controller = new UserController($authentication_service, $students_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
@@ -61,7 +63,42 @@ $router->register_route('POST', 'register', function () use ($authentication_con
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
+});
 
+$router->register_route('GET', 'login', function () use ($authentication_controller) {
+    $authentication_controller->show_login_page();
+});
+
+$router->register_route('GET', 'login/pick-fn', function () use ($authentication_controller) {
+    $authentication_controller->show_pick_fn_page();
+});
+
+$router->register_route('POST', 'login/pick-fn', function () use ($authentication_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $authentication_controller->set_fn($data);
+
+        echo json_encode(["Message" => "Success"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+});
+
+$router->register_route('POST', 'login', function () use ($authentication_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $user = $authentication_controller->login($data);
+
+        echo json_encode($user->to_array());
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
 });
 
 $router->register_route('GET', 'students/import', function () use ($students_controller) {
@@ -83,7 +120,7 @@ $router->register_route('POST', 'students/import', function () use ($students_co
     }
 });
 
-$router->register_route('GET', 'students/export', function() use ($students_controller) {
+$router->register_route('GET', 'students/export', function () use ($students_controller) {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=students.csv');
     $students_controller->export_students();
@@ -112,6 +149,10 @@ $router->register_route('POST', 'ceremonies/create', function () use ($ceremonie
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
+});
+
+$router->register_route('GET', 'profile', function () use ($user_controller) {
+    $user_controller->show_profile_page();
 });
 
 $router->dispatch($request_method, $requested_uri);

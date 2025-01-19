@@ -57,6 +57,16 @@ class StudentsService extends DataService
         return parent::find_all_with_query_map($query, $data, $get_fn_func);
     }
 
+    function get_students_by_user_id($user_id)
+    {
+        $query = <<<IQ
+            SELECT * FROM Students WHERE user_id=:user_id
+        IQ;
+
+        $data = ["user_id" => strval($user_id)];
+        return parent::find_all_with_query($query, $data);
+    }
+
     function find_all()
     {
         $find_query = "SELECT * FROM Students";

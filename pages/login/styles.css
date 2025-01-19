@@ -11,15 +11,13 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   gap: 10px;
-  width: 50%;
+  width: 40%;
 }
 
-.form a:first-child {
+#login-form {
+  margin-bottom: 5px;
+}
+
+.nav-buttons a:first-child {
   margin-right: 10px;
-}
-
-#registration-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
