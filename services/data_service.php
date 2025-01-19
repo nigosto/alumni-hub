@@ -10,6 +10,23 @@ class DataService
         $this->model = $model;
     }
 
+    function insert_many_bulk_query($query, $data)
+    {
+        $stmt = $this->connection->prepare($query);
+
+        $this->connection->beginTransaction();
+        try 
+        {
+            $stmt->execute($data);
+        } 
+        catch (PDOException $e)
+        {
+            $this->connection->rollBack();
+            throw $e;
+        }
+        $this->connection->commit();
+    }
+
     function insert_many_with_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);
@@ -27,6 +44,18 @@ class DataService
         }
 
         $this->connection->commit();
+    }
+
+    function find_all_with_query_map($query, $data = null, $map_func) {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($data);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($rows as $i => $row) {
+            $rows[$i] = $map_func($row);
+        }
+
+        return $rows;
     }
 
     function find_all_with_query($query, $data = null)
@@ -54,6 +83,7 @@ class DataService
         $stmt = $this->connection->prepare($query);
         $stmt->execute($data);
     }
+    
     function get_with_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);

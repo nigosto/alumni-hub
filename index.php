@@ -4,14 +4,18 @@ require_once __DIR__ . "/utils/query_params.php";
 require_once __DIR__ . "/router.php";
 require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
+require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
+require_once __DIR__ . "/controllers/admin_controller.php";
 require_once __DIR__ . "/controllers/clothes_controller.php";
 require_once __DIR__ . "/controllers/user_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
+require_once __DIR__ . "/services/ceremonies_service.php";
+require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
-require_once __DIR__ . "/services/authentication_service.php";
+require_once __DIR__ . "/services/users_service.php";
 require_once __DIR__ . "/services/clothes_service.php";
 
 load_config(".env");
@@ -20,15 +24,23 @@ $router = new Router();
 $database = new Database();
 
 $students_service = new StudentsService($database);
-$authentication_service = new AuthenticationService($database);
+$users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
+$ceremoinies_service = new CeremoniesService($database);
+$ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 $students_export_service = new StudentsExportService();
 $clothes_service = new ClothesService($database);
 
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
-$authentication_controller = new AuthenticationController($authentication_service, $students_service);
-$user_controller = new UserController($authentication_service, $students_service, $clothes_service);
+$authentication_controller = new AuthenticationController($users_service, $students_service);
+$admin_controller = new AdminController($users_service);
+$user_controller = new UserController($users_service, $students_service, $clothes_service);
+$ceremonies_controller = new CeremoniesController(
+    $ceremoinies_service,
+    $ceremonies_attendance_service,
+    $students_service
+);
 $clothes_controller = new ClothesController($clothes_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
@@ -125,6 +137,31 @@ $router->register_route('GET', 'students/export', function () use ($students_con
 
 $router->register_route('GET', 'students', function () use ($students_controller) {
     $students_controller->show_students_page();
+});
+
+$router->register_route('GET', 'ceremonies/create', function () use ($ceremonies_controller) {
+    // TODO: Authorization
+    $ceremonies_controller->show_create_ceremony_page();
+});
+
+$router->register_route('POST', 'ceremonies/create', function () use ($ceremonies_controller) {
+    try {
+        header('Content-Type: application/json');
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        $ceremonies_controller->create_ceremony($data);
+
+        http_response_code(200);
+        echo json_encode(["Message" => "Success"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+    }
+});
+
+$router->register_route('GET', 'admin/approval', function () use ($admin_controller) {
+    $admin_controller->show_approval_page();
 });
 
 $router->register_route('GET', 'profile', function () use ($user_controller) {

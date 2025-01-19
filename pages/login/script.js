@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const user = await response.json();
                 localStorage.setItem("role", user.role);
 
-                if (user.role === "student") {
+                if (user.role.toLowerCase() === "student") {
                     window.location.href = `${baseUrl}/login/pick-fn`;
                 }
                 else {

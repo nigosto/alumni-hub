@@ -49,7 +49,7 @@ echo $meta->render();
         <p class="entry"><strong class="entry-name">Имейл:</strong> $email</p>
     HTML;
 
-        if ($role === "student") {
+        if ($role === Role::Student) {
             $fn = $_SESSION["fn"];
             $student = $controller->students_service->get_student_by_fn($fn);
             if ($student !== null) {
