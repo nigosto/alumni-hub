@@ -1,12 +1,14 @@
 <?php
+require_once __DIR__ . "/../models/user.php";
+
 class AuthenticationController
 {
-    private $authentication_service;
+    private $users_service;
     private $students_service;
 
-    function __construct($authentication_service, $students_service)
+    function __construct($users_service, $students_service)
     {
-        $this->authentication_service = $authentication_service;
+        $this->users_service = $users_service;
         $this->students_service = $students_service;
 
     }
@@ -32,7 +34,7 @@ class AuthenticationController
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
             $username = $data['username'];
             $email = $data['email'];
-            $role = $data['role'];
+            $role = strtolower($data['role']);
             $password = $data['password'];
             $password_confirmation = $data['password_confirmation'];
             $fn = $data['fn'];
@@ -45,25 +47,29 @@ class AuthenticationController
                 throw new Exception('Invalid faculty number!');
             }
 
+            
+            $role = Role::tryFrom($role);
+
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            $user = new User(null, $email, $password_hash, $username, $role);
             session_start();
 
-            if ($role === 'student') {
+            if ($role === Role::Student) {
+                $user = new User(null, $email, $password_hash, $username, $role->value, true);
                 $student = $this->students_service->get_student_by_fn($fn);
                 if (!$student) {
                     throw new Exception('Incorrect faculty number!');
                 }
 
-                $registered_user_id = $this->authentication_service->insert($user);
+                $registered_user_id = $this->users_service->insert($user);
                 $this->students_service->update_user_id($fn, $registered_user_id);
 
                 $_SESSION["fn"] = $fn;
             } else {
-                $this->authentication_service->insert($user);
+                $user = new User(null, $email, $password_hash, $username, $role->value, false);
+                $this->users_service->insert($user);
             }
-            $user_data = $user->to_array();
-            $_SESSION["role"] = $user_data["role"];
+
+            $_SESSION["role"] = $role;
             $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
@@ -78,14 +84,15 @@ class AuthenticationController
             $username = $data['username'];
             $password = $data['password'];
 
-            $user = $this->authentication_service->get_user_by_username($username);
+            $user = $this->users_service->get_user_by_username($username);
+
             if (!$user->compare_password($password)) {
                 throw new Exception('Wrong password or username!');
             }
 
             session_start();
             $user_data = $user->to_array();
-            $_SESSION["role"] = $user_data["role"];
+            $_SESSION["role"] = Role::tryFrom($user_data["role"]);
             $_SESSION["id"] = $user->get_id();
             return $user;
         } else {

@@ -6,6 +6,7 @@ require_once __DIR__ . "/controllers/pages_controller.php";
 require_once __DIR__ . "/controllers/students_controller.php";
 require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
+require_once __DIR__ . "/controllers/admin_controller.php";
 require_once __DIR__ . "/controllers/user_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
@@ -13,7 +14,7 @@ require_once __DIR__ . "/services/ceremonies_service.php";
 require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
-require_once __DIR__ . "/services/authentication_service.php";
+require_once __DIR__ . "/services/users_service.php";
 
 load_config(".env");
 
@@ -21,7 +22,7 @@ $router = new Router();
 $database = new Database();
 
 $students_service = new StudentsService($database);
-$authentication_service = new AuthenticationService($database);
+$users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
 $ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
@@ -29,10 +30,11 @@ $students_export_service = new StudentsExportService();
 
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
-$authentication_controller = new AuthenticationController($authentication_service, $students_service);
+$authentication_controller = new AuthenticationController($users_service, $students_service);
+$admin_controller = new AdminController($users_service);
+$user_controller = new UserController($users_service, $students_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremoinies_service, $ceremonies_attendance_service, $students_service);
-$user_controller = new UserController($authentication_service, $students_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
@@ -149,6 +151,10 @@ $router->register_route('POST', 'ceremonies/create', function () use ($ceremonie
         http_response_code(500);
         echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
     }
+});
+
+$router->register_route('GET', 'admin/approval', function() use ($admin_controller) {
+    $admin_controller->show_approval_page();
 });
 
 $router->register_route('GET', 'profile', function () use ($user_controller) {

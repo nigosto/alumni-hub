@@ -5,6 +5,8 @@ enum ButtonStyleType: string
 {
     case Primary = "primary-btn";
     case Secondary = "secondary-btn";
+    case Small = "small-btn";
+    case DisabledSmall = "small-btn disabled-btn";
 }
 
 class ButtonComponent extends Component

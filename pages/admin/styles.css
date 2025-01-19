@@ -1,11 +1,12 @@
-#students-section {
+#approval-section {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   margin: 50px 0;
   gap: 50px;
 }
 
-#students-section h3 {
+#approval-section h3 {
   font-size: 2em;
 }
