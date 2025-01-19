@@ -5,7 +5,8 @@
 require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
-require __DIR__ . "/../../components/button/link.php";
+require_once __DIR__ . "/../../components/button/link.php";
+require_once __DIR__ . "/../../models/user.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
@@ -36,8 +37,8 @@ echo $meta->render();
         <form id="registration-form">
             <select id="account-type" name="account-type">
                 <option value="">Тип на акаунта</option>
-                <option value="student" id="student-account">Студентски акаунт</option>
-                <option value="administrator" id="administration-account">Адиминистраторски акаунт
+                <option value="<?php echo Role::Student->value;?>" id="student-account">Студентски акаунт</option>
+                <option value="<?php echo Role::Administrator->value;?>" id="administration-account">Адиминистраторски акаунт
                 </option>
             </select>
 
