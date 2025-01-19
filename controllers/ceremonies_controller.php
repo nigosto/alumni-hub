@@ -12,11 +12,6 @@ class CeremoniesController
         $this->students_service = $students_service;
     }
 
-    public function get_ceremony_by_id()
-    {
-        return $this->ceremonies_service->get_ceremony_by_id(1);
-    }
-
     public function show_create_ceremony_page()
     {
         require_once __DIR__ . "/../pages/ceremonies/create_ceremony/index.php";
