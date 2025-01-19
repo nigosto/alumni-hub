@@ -17,6 +17,12 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/create_ceremony/index.php";
     }
 
+    public function show_ceremonies_list_page()
+    {
+        $controller = $this;
+        require_once __DIR__ . "/../pages/ceremonies/ceremonies_list/index.php";
+    }
+
     private function validate_create_ceremony_data($date, 
         $graduation_year, 
         $responsible_robes,
@@ -153,6 +159,18 @@ class CeremoniesController
             $ceremony_attendances = array_merge($special_ceremony_attendances, $ordinary_ceremony_attendances);
             $this->ceremonies_attendance_service->insert_many_ceremony_attendances($ceremony_attendances);
         }
+    }
+
+    public function get_ceremonies_data()
+    {
+        $ceremonies_info = $this->ceremonies_service->get_all_ceremony_info();
+        if (!$ceremonies_info)
+        {
+            return [];
+        }
+
+        var_dump($ceremonies_info);
+        return $ceremonies_info;
     }
 }
 ?>

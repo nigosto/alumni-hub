@@ -153,6 +153,10 @@ $router->register_route('POST', 'ceremonies/create', function () use ($ceremonie
     }
 });
 
+$router->register_route('GET', 'ceremonies', function () use ($ceremonies_controller) {
+    $ceremonies_controller->show_ceremonies_list_page();
+});
+
 $router->register_route('GET', 'admin/approval', function() use ($admin_controller) {
     $admin_controller->show_approval_page();
 });
