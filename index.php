@@ -7,6 +7,7 @@ require_once __DIR__ . "/controllers/students_controller.php";
 require_once __DIR__ . "/controllers/ceremonies_controller.php";
 require_once __DIR__ . "/controllers/authentication_controller.php";
 require_once __DIR__ . "/controllers/admin_controller.php";
+require_once __DIR__ . "/controllers/clothes_controller.php";
 require_once __DIR__ . "/controllers/user_controller.php";
 require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
@@ -15,9 +16,10 @@ require_once __DIR__ . "/services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/users_service.php";
+require_once __DIR__ . "/services/clothes_service.php";
 require_once __DIR__ . "/middleware/authorization_middleware.php";
 require_once __DIR__ . "/models/user.php";
-
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 load_config(".env");
 
 $router = new Router();
@@ -29,19 +31,24 @@ $students_import_service = new StudentsImportService();
 $ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 $students_export_service = new StudentsExportService();
+$clothes_service = new ClothesService($database);
 
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
 $authentication_controller = new AuthenticationController($users_service, $students_service);
 $admin_controller = new AdminController($users_service);
-$user_controller = new UserController($users_service, $students_service);
+$user_controller = new UserController($users_service, $students_service, $clothes_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremoinies_service,
+
     $ceremonies_attendance_service,
+
     $students_service
 );
 
-$authorization_middleware = new AuthorizationMiddleware();
+$authorization_middleware = new AuthorizationMiddleware(
+);
+$clothes_controller = new ClothesController($clothes_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
@@ -238,6 +245,22 @@ $router->register_route(
     function () use ($pages_controller) {
         return $pages_controller->show_access_denied_page();
     }
+);
+
+$router->register_route(
+    'PATCH',
+    'clothes',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($clothes_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $clothes_controller->assign_clothing($data);
+
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
 );
 
 $router->dispatch($request_method, $requested_uri);

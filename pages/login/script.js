@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (user.role.toLowerCase() === "student") {
                     window.location.href = `${baseUrl}/login/pick-fn`;
                 }
-                
                 else {
                     const baseUrl = localStorage.getItem("baseUrl");
                     window.location.href = `${baseUrl}/profile`;
