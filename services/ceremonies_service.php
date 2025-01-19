@@ -141,7 +141,7 @@ class CeremoniesService extends DataService
                 $responsible_robes_info_new = $ceremony_special_people_info_func(
                     $row["student_fn"],
                     $row["responsibility_status"],
-                    [ResponsibilityStatus::WaitingRobes, ResponsibilityStatus::AcceptedSignatures],
+                    [ResponsibilityStatus::WaitingRobes, ResponsibilityStatus::AcceptedRobes],
                     ResponsibilityStatus::class
                 );
                 $responsible_robes_info_current = $responsible_robes_info_new;
