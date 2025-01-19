@@ -1,0 +1,22 @@
+#site-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#access-denied-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+#access-denied-section h3 {
+  font-size: 3em;
+}
+
+#access-denied-section p {
+  font-size: 1.5em;
+}

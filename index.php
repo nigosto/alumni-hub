@@ -232,5 +232,13 @@ $router->register_route(
     })
 );
 
+$router->register_route(
+    'GET',
+    'access-denied',
+    function () use ($pages_controller) {
+        return $pages_controller->show_access_denied_page();
+    }
+);
+
 $router->dispatch($request_method, $requested_uri);
 ?>
