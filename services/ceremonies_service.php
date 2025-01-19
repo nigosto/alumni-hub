@@ -19,7 +19,7 @@ class CeremoniesService extends DataService
     public function insert_ceremony($ceremony)
     {
         $insert_query = <<<IQ
-            INSERT INTO Ceremony (date) VALUES (:date)
+            INSERT INTO Ceremony (date, graduation_year) VALUES (:date, :graduation_year)
         IQ;
 
         return parent::insert_with_query($insert_query, $ceremony);
@@ -28,12 +28,12 @@ class CeremoniesService extends DataService
     public function get_all_ceremony_info()
     {
         $insert_query = <<<IQ
-            SELECT * FROM Ceremony
+            SELECT date, Ceremony.graduation_year, student_fn, speach_status, responsibility_status FROM Ceremony
             JOIN Ceremony_Attendance ON Ceremony.id = Ceremony_Attendance.ceremony_id
             JOIN Students ON Students.fn = ceremony_attendance.student_fn
             WHERE (speach_status != "declined" AND Ceremony_Attendance.speach_status != "none")
                 OR(responsibility_status NOT LIKE '%declined%' AND responsibility_status != "none")
-            ORDER BY graduation_year
+            ORDER BY Ceremony.graduation_year
         IQ;
 
         $map_func = function ($row) 

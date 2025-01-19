@@ -141,7 +141,7 @@ class CeremoniesController
                 $responsible_signatures, 
                 $responsible_diplomas);
 
-            $ceremony = new Ceremony($date);
+            $ceremony = new Ceremony($date, $graduation_year);
             $ceremony_id = $this->ceremonies_service->insert_ceremony($ceremony);
 
             $special_ceremony_attendances = $this->get_special_ceremony_attendances(
