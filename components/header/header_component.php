@@ -45,6 +45,7 @@ class HeaderComponent extends Component
             $html .= <<<HTML
                 <li><a href="$base_url/students">Преглед на студентите</a></li>
                 <li><a href="$base_url/students/import">Добавяне на студенти</a></li>
+                <li><a href="$base_url/ceremonies">Преглед на церемонии</a></li>
                 <li><a href="$base_url/ceremonies/create">Създаване на церемония</a></li>
             HTML;
         }

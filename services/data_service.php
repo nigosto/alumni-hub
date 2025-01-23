@@ -13,34 +13,18 @@ class DataService
     function insert_many_bulk_query($query, $data)
     {
         $stmt = $this->connection->prepare($query);
-
-        $this->connection->beginTransaction();
-        try {
-            $stmt->execute($data);
-        } catch (PDOException $e) {
-            $this->connection->rollBack();
-            throw $e;
-        }
-        $this->connection->commit();
+        $stmt->execute($data);
     }
 
     function insert_many_with_query($query, $data)
     {
-        $stmt = $this->connection->prepare($query);
+        return $this->execute_in_transaction(function() use ($query, $data) {
+            $stmt = $this->connection->prepare($query);
 
-        $this->connection->beginTransaction();
-
-        try {
             foreach ($data as $entry) {
                 $stmt->execute($entry->to_array());
             }
-        } catch (PDOException $e) {
-            $this->connection->rollBack();
-
-            throw $e;
-        }
-
-        $this->connection->commit();
+        });
     }
 
     function find_all_with_query($query, $data = null)
@@ -90,6 +74,28 @@ class DataService
         }
 
         return $rows;
+    }
+
+    function execute_in_transaction($exec_func)
+    {
+        $is_in_active_transaction = $this->connection->inTransaction();
+        if (!$is_in_active_transaction)
+        {
+            $this->connection->beginTransaction();
+        }
+
+        try {
+            $exec_func();
+        } catch (PDOException $e) {
+            if(!$is_in_active_transaction) {
+                $this->connection->rollBack();
+            }
+            throw $e;
+        }
+
+        if(!$is_in_active_transaction) {
+            $this->connection->commit();
+        }
     }
 }
 ?>

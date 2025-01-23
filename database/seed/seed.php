@@ -89,10 +89,10 @@ VALUES
 CT);
 
 $db_con->exec(<<<CT
-INSERT INTO Ceremony (date)
+INSERT INTO Ceremony (date, graduation_year)
 VALUES 
-    ('2024-02-19 10:30:00'),
-    ('2025-02-23 10:00:00')
+    ('2025-02-19 10:30:00', 2024),
+    ('2026-02-23 10:00:00', 2025)
 CT);
 
 $db_con->exec(<<<CT
