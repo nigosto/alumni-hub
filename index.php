@@ -81,10 +81,10 @@ $router->register_route(
 
             $authentication_controller->register($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -115,10 +115,10 @@ $router->register_route(
             $data = json_decode($json, true);
             $authentication_controller->set_fn($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -136,7 +136,7 @@ $router->register_route(
             echo json_encode($user->to_array());
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -157,13 +157,13 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"));
             $students_controller->import_students($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (PDOException $e) {
             http_response_code(409);
-            echo json_encode(["Message" => "Some of the students are already imported"]);
+            echo json_encode(["message" => "Някои от студентите вече са импортнати"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -214,10 +214,10 @@ $router->register_route(
             $ceremonies_controller->create_ceremony($data);
 
             http_response_code(200);
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -255,10 +255,10 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             $clothes_controller->assign_clothing($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );

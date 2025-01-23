@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('creation-form');
+    const popup = document.getElementById("popup");
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -25,12 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 form.reset();
             } else {
-                // TODO: proper error handling
-                throw new Error(data.message || 'Ceremony creation failed');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
+
+    function showPopup(message) {
+        popup.textContent = message;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+    }
 });
 

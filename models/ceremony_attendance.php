@@ -22,7 +22,7 @@ function parse_speach_status($speach_status)
         case 'приел':
             return SpeachStatus::Accepted;
         default:
-            throw new Exception("Invalid speach status");
+            throw new Exception("Невалиден статус за речи!");
     }
 }
 
@@ -65,7 +65,7 @@ function parse_responsibility_status($responsibility_status)
         case 'приел отговорник за връчване на дипломи':
             return ResponsibilityStatus::AcceptedDiplomas;
         default:
-            throw new Exception("Invalid responsibility status");
+            throw new Exception("Невалиден статус за отговорности!");
     }
 }
 

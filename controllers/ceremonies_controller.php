@@ -28,19 +28,19 @@ class CeremoniesController
         // 2) already created ceremony for graduation year
         if (!$date) 
         {
-            throw new Exception('Invalid date!');
+            throw new Exception('Невалидна дата!');
         }
 
         if ($date->format('Y') < $graduation_year) 
         {
-            throw new Exception('Ceremony date is before graduation year');
+            throw new Exception('Датата за церемонията трябва да е след датата на завършването!');
         }
 
         if ($responsible_robes === $responsible_diplomas ||
             $responsible_robes === $responsible_signatures ||
             $responsible_signatures === $responsible_diplomas) 
         {
-            throw new Exception('The same student cannot be assigned more than one responsibility');
+            throw new Exception('Един студент не може да има повече от една отговорност!');
         }
     }
 

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('form-fn');
+    const popup = document.getElementById("popup");
 
     form.addEventListener('submit', async (e) => {
         const fn = document.getElementById('pick-fn').value;
@@ -15,15 +16,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                form.reset();
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/profile`;
             } else {
-                throw new Error(data.message || 'Could not pick faculty number');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
+
+    function showPopup(message) {
+        popup.textContent = message;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+    }
 });
 

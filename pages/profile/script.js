@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('clothes');
+    const popup = document.getElementById("popup");
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -18,11 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 window.location.reload();
             } else {
-                throw new Error(data.message || 'Could not clothes size');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
-});
 
+    function showPopup(message) {
+        popup.textContent = message;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+    }
+});
