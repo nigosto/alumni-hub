@@ -29,6 +29,33 @@ class AuthenticationController
         require_once __DIR__ . "/../pages/login/pick-fn/index.php";
     }
 
+    private function assign_fn_for_user($fn, $user_id)
+    {
+        if (!$fn || !$user_id) {
+            throw new Exception("Missing faculty number or user_id");
+        }
+
+        $student = $this->students_service->get_student_by_fn($fn);
+        if (!$student) {
+            throw new Exception('Incorrect faculty number!');
+        }
+        $this->students_service->update_user_id($fn, $user_id);
+
+        session_start();
+        $_SESSION["fn"] = $fn;
+    }
+
+    public function add_fn($data)
+    {
+        if (!isset($data["fn"])) {
+            throw new Exception("Missing fn");
+        }
+
+        session_start();
+        $user_id = $_SESSION["id"];
+
+        $this->assign_fn_for_user($data["fn"], $user_id);
+    }
     public function register($data)
     {
         if (isset($data['username']) && isset($data['email']) && isset($data['password']) && isset($data['role']) && isset($data["password_confirmation"])) {
@@ -54,15 +81,10 @@ class AuthenticationController
 
             if ($role === Role::Student) {
                 $user = new User(null, $email, $password_hash, $username, $role->value, true);
-                $student = $this->students_service->get_student_by_fn($fn);
-                if (!$student) {
-                    throw new Exception('Incorrect faculty number!');
-                }
 
                 $registered_user_id = $this->users_service->insert($user);
-                $this->students_service->update_user_id($fn, $registered_user_id);
+                $this->assign_fn_for_user($fn, $registered_user_id);
 
-                $_SESSION["fn"] = $fn;
             } else {
                 $user = new User(null, $email, $password_hash, $username, $role->value, false);
                 $registered_user_id = $this->users_service->insert($user);

@@ -34,8 +34,8 @@ echo $meta->render();
     ?>
 
     <main class="container">
-        <h1>Моля изберете факултетния номер, с който да влезете</h1>
-        <form id="form-fn">
+        <h3>Моля изберете факултетния номер, с който да влезете</h3>
+        <form id="form-pick-fn">
             <select name="pick-fn" id="pick-fn">
                 <option value="" disabled selected>Избор на факултетен номер</option>
                 <?php foreach ($students as $student) {
@@ -50,6 +50,17 @@ echo $meta->render();
 
             <?php
             $submit_button = new ButtonComponent("Избери", ButtonStyleType::Primary, true);
+            echo $submit_button->render();
+            ?>
+        </form>
+
+        <h3>Или добавете нов факултетен номер</h3>
+
+        <form id="form-add-fn">
+            <input type="text" id="fn" name="fn" placeholder="Факултетен номер">
+
+            <?php
+            $submit_button = new ButtonComponent("Добави", ButtonStyleType::Primary, true);
             echo $submit_button->render();
             ?>
 
