@@ -24,7 +24,8 @@ class StudentsService extends DataService
         $update_query = <<<IQ
             UPDATE Students
             SET user_id=:user_id
-            WHERE fn = :fn;
+            WHERE fn = :fn 
+            AND user_id IS NULL;
         IQ;
 
         $data = ["fn" => strval($fn), "user_id" => strval($user_id)];
@@ -49,8 +50,7 @@ class StudentsService extends DataService
         SQL;
 
         $data = array_merge([strval($graduation_year)], $special_attendants_fns);
-        $get_fn_func = function ($data)
-        {
+        $get_fn_func = function ($data) {
             return $data["fn"];
         };
 

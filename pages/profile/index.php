@@ -7,10 +7,12 @@ require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../models/user.php";
 require_once __DIR__ . "/../../components/button/link.php";
+require_once __DIR__ . "/../../components/message/message_component.php";
 
 $base_url = $_ENV["BASE_URL"];
 $header = new HeaderComponent();
 $footer = new FooterComponent();
+$message = new MessageComponent();
 
 $user = $controller->get_user();
 $user_data = $user->to_array();
@@ -28,7 +30,8 @@ $stylesheets = array_merge(
     $footer->get_stylesheets(),
     [$base_url . "/pages/profile/styles.css"],
     [$base_url . "/components/styles/input.css"],
-    ButtonComponent::get_stylesheets()
+    ButtonComponent::get_stylesheets(),
+    MessageComponent::get_stylesheets()
 );
 
 $meta = new MetadataComponent($stylesheets, ["$base_url/pages/profile/script.js"]);
@@ -106,6 +109,9 @@ echo $meta->render();
             }
         }
         ?>
+
+        <?php echo $message->render(); ?>
+
     </main>
 
     <?php echo $footer->render(); ?>

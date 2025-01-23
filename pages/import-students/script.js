@@ -6,14 +6,28 @@ window.addEventListener("load", () => {
     event.preventDefault();
 
     const reader = new FileReader();
-    reader.onload = async function(e) {
-      await fetch('import', {
-        method: 'POST',
-        body: JSON.stringify({
-          file: e.target.result.split("base64,")[1]
-        })
-      })
-    };
-    reader.readAsDataURL(file.files[0]);
+    try {
+      reader.onload = async function (e) {
+        await fetch('import', {
+          method: 'POST',
+          body: JSON.stringify({
+            file: e.target.result.split("base64,")[1]
+          })
+        });
+      };
+      reader.readAsDataURL(file.files[0]);
+    }
+    catch (error) {
+      showPopup(error.message);
+    }
   });
+
+  function showPopup(message) {
+    popup.textContent = message;
+    popup.style.display = "block";
+
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 3000);
+  }
 });

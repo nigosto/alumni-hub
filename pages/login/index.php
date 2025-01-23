@@ -5,10 +5,12 @@
 require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
-require __DIR__ . "/../../components/button/link.php";
+require_once __DIR__ . "/../../components/button/link.php";
+require_once __DIR__ . "/../../components/message/message_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
+$message = new MessageComponent();
 
 $base_url = $_ENV["BASE_URL"];
 
@@ -18,7 +20,8 @@ $stylesheets = array_merge(
     [$base_url . "/pages/login/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
-    ButtonComponent::get_stylesheets()
+    ButtonComponent::get_stylesheets(),
+    MessageComponent::get_stylesheets()
 );
 
 $meta = new MetadataComponent($stylesheets, ["$base_url/pages/login/script.js"]);
@@ -51,6 +54,7 @@ echo $meta->render();
             echo $link->render();
             ?>
         </nav>
+        <?php echo $message->render(); ?>
 
     </main>
 

@@ -6,9 +6,11 @@ require_once __DIR__ . "/../../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../../components/header/header_component.php";
 require_once __DIR__ . "/../../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../../components/button/link.php";
+require_once __DIR__ . "/../../../components/message/message_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
+$message = new MessageComponent();
 
 $base_url = $_ENV["BASE_URL"];
 
@@ -17,7 +19,8 @@ $stylesheets = array_merge(
     $footer->get_stylesheets(),
     [$base_url . "/pages/login/pick-fn/styles.css"],
     [$base_url . "/components/styles/input.css"],
-    ButtonComponent::get_stylesheets()
+    ButtonComponent::get_stylesheets(),
+    MessageComponent::get_stylesheets()
 );
 
 session_start();
@@ -54,6 +57,9 @@ echo $meta->render();
             ?>
 
         </form>
+
+        <?php echo $message->render(); ?>
+
     </main>
 
     <?php echo $footer->render();

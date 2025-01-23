@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('login-form');
+    const popup = document.getElementById("popup");
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -29,12 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     const baseUrl = localStorage.getItem("baseUrl");
                     window.location.href = `${baseUrl}/profile`;
                 }
-            } else {
-                throw new Error(data.message || 'Login failed');
+            }
+            else {
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
+
+    function showPopup(message) {
+        popup.textContent = message;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+    }
 });
 

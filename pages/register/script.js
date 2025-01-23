@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registration-form');
     const accountType = document.getElementById('account-type');
     const fn = document.getElementById('fn');
+    const popup = document.getElementById("popup");
 
     accountType.addEventListener('change', async (e) => {
         if (e.target.value === 'student') {
@@ -32,18 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ username, email, role, password, password_confirmation, fn }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
-                form.reset();
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/profile`;
             } else {
-                throw new Error(data.message || 'Registration failed');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
+
+    function showPopup(message) {
+        popup.textContent = message;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+    }
 });
 

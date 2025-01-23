@@ -27,6 +27,14 @@ class UsersService extends DataService
         $data = ["username" => $username];
         return parent::get_with_query($get_query, $data);
     }
+    function get_user_by_email($email)
+    {
+        $get_query = <<<IQ
+            Select * from Users where email=:email
+        IQ;
+        $data = ["email" => $email];
+        return parent::get_with_query($get_query, $data);
+    }
 
     function get_user_by_id($id)
     {
@@ -38,7 +46,8 @@ class UsersService extends DataService
         return parent::get_with_query($get_query, $data);
     }
 
-    public function find_users_by_role(Role $role) {
+    public function find_users_by_role(Role $role)
+    {
         $get_query = <<<GQ
             SELECT * FROM Users
             WHERE role=:role
@@ -47,14 +56,15 @@ class UsersService extends DataService
         return parent::find_all_with_query($get_query, ["role" => $role->value]);
     }
 
-    public function approve_user_by_email($email) {
+    public function approve_user_by_email($email)
+    {
         $update_query = <<<UQ
             UPDATE Users
             SET approved = 1
             WHERE email=:email
         UQ;
 
-        parent::update_with_query($update_query, ["email" => $email]);        
+        parent::update_with_query($update_query, ["email" => $email]);
     }
 }
 ?>
