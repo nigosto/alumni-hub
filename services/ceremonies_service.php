@@ -130,7 +130,8 @@ class CeremoniesService extends DataService
                     // 3) If the old status was waiting, we don't need to do anything
                     // 3) If the old status was none, we don't need to do anything
                     if ($old_speach_status !== $new_speach_status &&
-                        $old_speach_status === SpeachStatus::Accepted)
+                        $old_speach_status === SpeachStatus::Accepted && 
+                        $new_speach_status === SpeachStatus::Waiting)
                     {
                         $new_special_ceremony_attendances[$student_fn]->set_speach_status(SpeachStatus::Accepted);
                     }
