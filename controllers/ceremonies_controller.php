@@ -2,12 +2,10 @@
 class CeremoniesController
 {
     private $ceremonies_service;
-    private $students_service;
 
-    function __construct($ceremonies_service, $students_service)
+    function __construct($ceremonies_service)
     {
         $this->ceremonies_service = $ceremonies_service;
-        $this->students_service = $students_service;
     }
 
     public function show_create_ceremony_page()
