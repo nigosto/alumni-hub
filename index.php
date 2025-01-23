@@ -54,18 +54,18 @@ $base_path = parse_url($_ENV["BASE_URL"])["path"];
 $requested_uri = parse_url(trim(str_replace($base_path, "", $_SERVER['REQUEST_URI']), "/"), PHP_URL_PATH);
 $request_method = $_SERVER['REQUEST_METHOD'];
 
-$router->register_route('GET', '/', function () use ($pages_controller) {
+$router->register_route('GET', '/', function ($params) use ($pages_controller) {
     $pages_controller->show_home_page();
 });
 
-$router->register_route('GET', '', function () use ($pages_controller) {
+$router->register_route('GET', '', function ($params) use ($pages_controller) {
     $pages_controller->show_home_page();
 });
 
 $router->register_route(
     'GET',
     'register',
-    $authorization_middleware->is_not_authenticated(function () use ($authentication_controller) {
+    $authorization_middleware->is_not_authenticated(function ($params) use ($authentication_controller) {
         $authentication_controller->show_register_page();
     })
 );
@@ -73,7 +73,7 @@ $router->register_route(
 $router->register_route(
     'POST',
     'register',
-    $authorization_middleware->is_not_authenticated(function () use ($authentication_controller) {
+    $authorization_middleware->is_not_authenticated(function ($params) use ($authentication_controller) {
         try {
             header('Content-Type: application/json');
             $json = file_get_contents('php://input');
@@ -92,7 +92,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'login',
-    $authorization_middleware->is_not_authenticated(function () use ($authentication_controller) {
+    $authorization_middleware->is_not_authenticated(function ($params) use ($authentication_controller) {
         $authentication_controller->show_login_page();
     })
 );
@@ -100,7 +100,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'login/pick-fn',
-    $authorization_middleware->is_authorized(Role::Student, function () use ($authentication_controller) {
+    $authorization_middleware->is_authorized(Role::Student, function ($params) use ($authentication_controller) {
         $authentication_controller->show_pick_fn_page();
     })
 );
@@ -108,7 +108,7 @@ $router->register_route(
 $router->register_route(
     'POST',
     'login/pick-fn',
-    $authorization_middleware->is_authorized(Role::Student, function () use ($authentication_controller) {
+    $authorization_middleware->is_authorized(Role::Student, function ($params) use ($authentication_controller) {
         try {
             header('Content-Type: application/json');
             $json = file_get_contents('php://input');
@@ -126,7 +126,7 @@ $router->register_route(
 $router->register_route(
     'POST',
     'login',
-    $authorization_middleware->is_not_authenticated(function () use ($authentication_controller) {
+    $authorization_middleware->is_not_authenticated(function ($params) use ($authentication_controller) {
         try {
             header('Content-Type: application/json');
             $json = file_get_contents('php://input');
@@ -144,7 +144,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'students/import',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($students_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($students_controller) {
         $students_controller->show_import_students_page();
     })
 );
@@ -152,7 +152,7 @@ $router->register_route(
 $router->register_route(
     'POST',
     'students/import',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($students_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($students_controller) {
         try {
             $data = json_decode(file_get_contents("php://input"));
             $students_controller->import_students($data);
@@ -171,7 +171,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'students/export',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($students_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($students_controller) {
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=students.csv');
         $students_controller->export_students();
@@ -181,7 +181,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'students',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($students_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($students_controller) {
         $students_controller->show_students_page();
     })
 );
@@ -189,7 +189,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'admin/approval',
-    $authorization_middleware->is_authorized(Role::Admin, function () use ($admin_controller) {
+    $authorization_middleware->is_authorized(Role::Admin, function ($params) use ($admin_controller) {
         $admin_controller->show_approval_page();
     })
 );
@@ -197,7 +197,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'ceremonies/create',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($ceremonies_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($ceremonies_controller) {
         $ceremonies_controller->show_create_ceremony_page();
     })
 );
@@ -205,7 +205,7 @@ $router->register_route(
 $router->register_route(
     'POST',
     'ceremonies/create',
-    $authorization_middleware->is_authorized(Role::Administrator, function () use ($ceremonies_controller) {
+    $authorization_middleware->is_authorized(Role::Administrator, function ($params) use ($ceremonies_controller) {
         try {
             header('Content-Type: application/json');
             $json = file_get_contents('php://input');
@@ -225,7 +225,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'profile',
-    $authorization_middleware->is_authenticated(function () use ($user_controller) {
+    $authorization_middleware->is_authenticated(function ($params) use ($user_controller) {
         return $user_controller->show_profile_page();
     })
 );
@@ -233,7 +233,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'logout',
-    $authorization_middleware->is_authenticated(function () {
+    $authorization_middleware->is_authenticated(function ($params) {
         session_destroy();
         header("Location: {$_ENV["BASE_URL"]}/login");
     })
@@ -242,7 +242,7 @@ $router->register_route(
 $router->register_route(
     'GET',
     'access-denied',
-    function () use ($pages_controller) {
+    function ($params) use ($pages_controller) {
         return $pages_controller->show_access_denied_page();
     }
 );
@@ -250,7 +250,7 @@ $router->register_route(
 $router->register_route(
     'PATCH',
     'clothes',
-    $authorization_middleware->is_authorized(Role::Student, function () use ($clothes_controller) {
+    $authorization_middleware->is_authorized(Role::Student, function ($params) use ($clothes_controller) {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
             $clothes_controller->assign_clothing($data);
@@ -267,9 +267,59 @@ $router->register_route(
     'GET', 
     'ceremonies',
     $authorization_middleware->is_authorized(Role::Administrator, 
-     function () use ($ceremonies_controller) {
+     function ($params) use ($ceremonies_controller) {
     $ceremonies_controller->show_ceremonies_list_page();
 }));
+
+$router->register_route(
+    'GET', 
+    'ceremony/edit/{id}',
+    $authorization_middleware->is_authorized(Role::Administrator, 
+        function ($params) use ($ceremonies_controller) {
+            $ceremonies_controller->show_ceremonies_edit_page($params["id"]);
+}));
+
+$router->register_route(
+    'POST', 
+    'ceremony/edit/{id}',
+    $authorization_middleware->is_authorized(Role::Administrator, 
+        function ($params) use ($ceremonies_controller) {
+            try {
+                header('Content-Type: application/json');
+                $json = file_get_contents('php://input');
+                $data = json_decode($json, true);
+                $data["id"] = $params["id"];
+    
+                $ceremonies_controller->update_ceremony($data);
+
+                http_response_code(200);
+                echo json_encode(["Message" => "Success"]);
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            }
+}));
+
+// $router->register_route(
+//     'GET', 
+//     'ceremony/get',
+//     $authorization_middleware->is_authorized(Role::Administrator, 
+//      function ($params) use ($ceremonies_controller) {
+//         try {
+//             header('Content-Type: application/json');
+//             $json = file_get_contents('php://input');
+//             $data = json_decode($json, true);
+
+//             $ceremony = $ceremonies_controller->get_ceremony($data);
+
+//             http_response_code(200);
+//             echo $ceremony;
+//         } catch (Exception $e) {
+//             http_response_code(500);
+//             echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+//         }
+//     })
+// );
 
 $router->dispatch($request_method, $requested_uri);
 ?>

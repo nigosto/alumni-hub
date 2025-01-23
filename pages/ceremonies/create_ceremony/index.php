@@ -35,7 +35,7 @@ echo $meta->render();
             <input type="number" id="graduation-year" name="graduation-year" placeholder="Година на завършване" required>
             <input type="text" id="speaker" name="speaker" placeholder="Покана към студент за церемониална реч" required>
             <input type="text" id="responsible-robes" name="responsible-robes" 
-                placeholder="Покана към студент за отговорник на церелониалните тоги" required>
+                placeholder="Покана към студент за отговорник на церемониалните тоги" required>
             <input type="text" id="responsible-signatures" name="responsible-signatures"
                 placeholder="Покана към студент за отговорник на дипломните подписи" required>
             <input type="text" id="responsible-diplomas" name="responsible-diplomas"

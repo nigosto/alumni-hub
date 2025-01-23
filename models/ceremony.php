@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once __DIR__ . "/imodel.php";
 
 class Ceremony implements IModel
@@ -17,6 +20,7 @@ class Ceremony implements IModel
     public function to_array()
     {
         return [
+            "id" => $this->id,
             "date" => $this->date->format("Y-m-d H:i:s"),
             "graduation_year" => $this->graduation_year,
         ];
