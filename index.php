@@ -37,7 +37,7 @@ $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
 $authentication_controller = new AuthenticationController($users_service, $students_service);
 $admin_controller = new AdminController($users_service);
-$user_controller = new UserController($users_service, $students_service, $clothes_service);
+$user_controller = new UserController($users_service, $students_service, $clothes_service, $ceremonies_attendance_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremoinies_service,
 
@@ -255,6 +255,95 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             $clothes_controller->assign_clothing($data);
 
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
+
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller, $ceremonies_attendance_service) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $ceremony_id = intval($data["ceremony_id"]);
+            $student_fn = $data["student_fn"];
+            $status = boolval($data["status"]);
+
+            # TODO: add more security - send cookies
+            session_start();
+            if ($_SESSION["fn"] !== $student_fn) {
+                throw new Exception("Invalid faculty number");
+            }
+
+            $ceremonies_controller->update_accepted_status($ceremony_id, $student_fn, $status);
+
+            if ($status === false) {
+                $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, SpeachStatus::Declined);
+
+                $attendance = $ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
+                $responsibility_status = ResponsibilityStatus::tryFrom($attendance->to_array()["responsibility_status"]);
+
+                
+                if ($responsibility_status === ResponsibilityStatus::AcceptedDiplomas || $responsibility_status === ResponsibilityStatus::WaitingDiplomas) {
+                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedDiplomas);
+                } else if ($responsibility_status === ResponsibilityStatus::AcceptedRobes || $responsibility_status === ResponsibilityStatus::WaitingRobes) {
+                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedRobes);
+                } else if ($responsibility_status === ResponsibilityStatus::AcceptedSignatures || $responsibility_status === ResponsibilityStatus::WaitingSignatures) {
+                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedSignatures);
+                }
+            }
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
+
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance/speach',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $ceremony_id = intval($data["ceremony_id"]);
+            $student_fn = $data["student_fn"];
+            $status = SpeachStatus::tryFrom($data["status"]);
+
+            session_start();
+            if ($_SESSION["fn"] !== $student_fn) {
+                throw new Exception("Invalid faculty number");
+            }
+
+            $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, $status);
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
+
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance/responsibility',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $ceremony_id = intval($data["ceremony_id"]);
+            $student_fn = $data["student_fn"];
+            $status = ResponsibilityStatus::tryFrom($data["status"]);
+
+            session_start();
+            if ($_SESSION["fn"] !== $student_fn) {
+                throw new Exception("Invalid faculty number");
+            }
+
+            $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, $status);
             echo json_encode(["Message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);

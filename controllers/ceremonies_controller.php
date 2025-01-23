@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . "/../services/ceremonies_attendance_service.php";
+
 class CeremoniesController
 {
     private $ceremonies_service;
-    private $ceremonies_attendance_service;
+    private CeremoniesAttendanceService $ceremonies_attendance_service;
     private $students_service;
 
     function __construct($ceremonies_service, $ceremonies_attendance_service, $students_service)
@@ -42,6 +44,18 @@ class CeremoniesController
         {
             throw new Exception('The same student cannot be assigned more than one responsibility');
         }
+    }
+
+    public function update_speach_status($ceremony_id, $student_fn, SpeachStatus $status) {
+        return $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, $status);
+    }
+
+    public function update_accepted_status($ceremony_id, $student_fn, $status) {
+        return $this->ceremonies_attendance_service->update_accepted_status($ceremony_id, $student_fn, $status);
+    }
+
+    public function update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus $status) {
+        return $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, $status);
     }
 
     private function get_special_ceremony_attendances(
