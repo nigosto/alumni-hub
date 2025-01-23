@@ -270,14 +270,10 @@ $router->register_route(
         try {
             $data = json_decode(file_get_contents("php://input"), true);
             $ceremony_id = intval($data["ceremony_id"]);
-            $student_fn = $data["student_fn"];
             $status = boolval($data["status"]);
 
-            # TODO: add more security - send cookies
             session_start();
-            if ($_SESSION["fn"] !== $student_fn) {
-                throw new Exception("Invalid faculty number");
-            }
+            $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_accepted_status($ceremony_id, $student_fn, $status);
 
@@ -311,13 +307,10 @@ $router->register_route(
         try {
             $data = json_decode(file_get_contents("php://input"), true);
             $ceremony_id = intval($data["ceremony_id"]);
-            $student_fn = $data["student_fn"];
             $status = SpeachStatus::tryFrom($data["status"]);
-
+            
             session_start();
-            if ($_SESSION["fn"] !== $student_fn) {
-                throw new Exception("Invalid faculty number");
-            }
+            $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, $status);
             echo json_encode(["Message" => "Success"]);
@@ -335,13 +328,10 @@ $router->register_route(
         try {
             $data = json_decode(file_get_contents("php://input"), true);
             $ceremony_id = intval($data["ceremony_id"]);
-            $student_fn = $data["student_fn"];
             $status = ResponsibilityStatus::tryFrom($data["status"]);
 
             session_start();
-            if ($_SESSION["fn"] !== $student_fn) {
-                throw new Exception("Invalid faculty number");
-            }
+            $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, $status);
             echo json_encode(["Message" => "Success"]);

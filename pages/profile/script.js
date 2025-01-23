@@ -1,11 +1,11 @@
-async function buttonHandler(url, ceremony_id, student_fn, status) {
+async function buttonHandler(url, ceremony_id, status) {
     try {
         const response = await fetch(`${localStorage.getItem("baseUrl")}/${url}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ceremony_id, student_fn, status }),
+            body: JSON.stringify({ ceremony_id, status }),
         });
 
         const data = await response.json();
@@ -47,13 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const student_fn = localStorage.getItem("student_fn");
-
     const accept_speach_buttons = document.getElementsByClassName('accept-speach-btn');
     Array.from(accept_speach_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/speach", ceremony_id, student_fn, 'accepted');
+            buttonHandler("ceremonies/attendance/speach", ceremony_id, 'accepted');
         });
     });
     
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(decline_speach_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/speach", ceremony_id, student_fn, 'declined');           
+            buttonHandler("ceremonies/attendance/speach", ceremony_id, 'declined');           
         });
     })
 
@@ -69,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(accept_invitation_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance", ceremony_id, student_fn, true);           
+            buttonHandler("ceremonies/attendance", ceremony_id, true);           
         });
     });
 
@@ -77,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(decline_invitation_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance", ceremony_id, student_fn, false);           
+            buttonHandler("ceremonies/attendance", ceremony_id, false);           
         });
     });
 
@@ -85,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(accept_diplomas_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "accepted_diplomas");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "accepted_diplomas");           
         });
     });
 
@@ -93,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(decline_diplomas_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "declined_diplomas");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "declined_diplomas");           
         });
     });
 
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(accept_robes_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "accepted_robes");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "accepted_robes");           
         });
     });
 
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(decline_robes_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "declined_robes");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "declined_robes");           
         });
     });
 
@@ -117,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(accept_signatures_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "accepted_signatures");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "accepted_signatures");           
         });
     });
 
@@ -125,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Array.from(decline_signatures_buttons).forEach(button => {
         const ceremony_id = button.getAttribute('data-param');
         button.addEventListener('click', async (e) => {
-            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, student_fn, "declined_signatures");           
+            buttonHandler("ceremonies/attendance/responsibility", ceremony_id, "declined_signatures");           
         });
     });
 });

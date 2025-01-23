@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 form.reset();
                 const user = await response.json();
-                localStorage.setItem("role", user.role);
 
                 if (user.role.toLowerCase() === "student") {
                     window.location.href = `${baseUrl}/login/pick-fn`;

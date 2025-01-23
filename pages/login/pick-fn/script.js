@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 form.reset();
                 const baseUrl = localStorage.getItem("baseUrl");
-                localStorage.setItem("student_fn", fn);
                 window.location.href = `${baseUrl}/profile`;
             } else {
                 throw new Error(data.message || 'Could not pick faculty number');
