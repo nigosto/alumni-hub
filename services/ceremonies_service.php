@@ -98,11 +98,6 @@ class CeremoniesService extends DataService
                     $responsible_diplomas
                 );
                 
-                // This will be a dict<student_fn => CeremonyAttendance>, 
-                // where CeremonyAttendance will be the new attendance for student_fn
-                // This is initiallized with all speach/responsibility statuses set to "waiting",
-                // but some of them need to be adjusted 
-                // (for example, already accepted speaker who hasn't changed should be "accepted")
                 $new_special_ceremony_attendances = array_reduce($requested_special_ceremony_attendances, 
                 function ($result, $attendance) {
                     $object_student_fn = $attendance->to_array()["student_fn"];
