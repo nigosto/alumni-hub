@@ -57,7 +57,7 @@ class CeremoniesAttendanceService extends DataService
 
     public function update_speach_status($ceremony_id, $student_fn, SpeachStatus $status) {
         $query = <<<UQ
-            UPDATE `Ceremony_Attendance` 
+            UPDATE Ceremony_Attendance 
             SET speach_status = :status
             WHERE ceremony_id = :ceremony_id AND student_fn = :student_fn
         UQ;
@@ -72,7 +72,7 @@ class CeremoniesAttendanceService extends DataService
 
     public function update_accepted_status($ceremony_id, $student_fn, $status) {
         $query = <<<UQ
-            UPDATE `Ceremony_Attendance` 
+            UPDATE Ceremony_Attendance 
             SET accepted = :status
             WHERE ceremony_id = :ceremony_id AND student_fn = :student_fn
         UQ;
@@ -87,7 +87,7 @@ class CeremoniesAttendanceService extends DataService
 
     public function update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus $status) {
         $query = <<<UQ
-            UPDATE `Ceremony_Attendance` 
+            UPDATE Ceremony_Attendance 
             SET responsibility_status = :status
             WHERE ceremony_id = :ceremony_id AND student_fn = :student_fn
         UQ;

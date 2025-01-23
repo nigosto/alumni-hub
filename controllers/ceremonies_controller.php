@@ -6,9 +6,10 @@ class CeremoniesController
     private $ceremonies_service;
     private CeremoniesAttendanceService $ceremonies_attendance_service;
 
-    function __construct($ceremonies_service)
+    function __construct($ceremonies_service, CeremoniesAttendanceService $ceremonies_attendance_service)
     {
         $this->ceremonies_service = $ceremonies_service;
+        $this->ceremonies_attendance_service = $ceremonies_attendance_service;
     }
 
     public function show_create_ceremony_page()

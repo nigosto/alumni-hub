@@ -43,7 +43,8 @@ $authentication_controller = new AuthenticationController($users_service, $stude
 $admin_controller = new AdminController($users_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service, $ceremonies_attendance_service);
 $ceremonies_controller = new CeremoniesController(
-    $ceremonies_service
+    $ceremonies_service,
+    $ceremonies_attendance_service
 );
 
 $authorization_middleware = new AuthorizationMiddleware(
