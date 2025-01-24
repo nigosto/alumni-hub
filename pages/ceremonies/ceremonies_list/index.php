@@ -25,10 +25,10 @@ $ceremonies_cur_idx = 0;
 $table = new TableComponent(
   Ceremony::labels(), 
   $all_ceremonies_rest,
-  "Редактиране",
+  "Инфо",
   function ($values) use ($all_ceremonies_ids, &$ceremonies_cur_idx) {
       $ceremony_id = $all_ceremonies_ids[$ceremonies_cur_idx++];
-      return "ceremony/edit/$ceremony_id"; });
+      return "ceremony/students/$ceremony_id"; });
 
 $stylesheets = array_merge(
   $header->get_stylesheets(),

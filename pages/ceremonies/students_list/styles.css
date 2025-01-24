@@ -1,0 +1,57 @@
+#students-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px 0;
+  gap: 50px;
+}
+
+.report-table {
+  margin: 0px 10px;
+}
+
+#students-section h3 {
+  font-size: 2em;
+}
+
+div#ceremony-info-container {
+  width: 35%;
+  padding: 10px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#ceremony-info-container .primary-btn {
+  margin: 0px 20px;
+}
+
+#buttons-container {
+  flex-direction: row;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  width: 30%;
+}
+
+.entry {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+  align-items: center;
+  justify-items: center;
+  align-self: center;
+}
+
+#clothes {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 20px;
+  width: 80%;
+}

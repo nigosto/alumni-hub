@@ -29,6 +29,24 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/edit_ceremony/index.php";
     }
 
+    public function show_ceremonies_studdents_page($ceremony_id)
+    {
+        $ceremonies_controller = $this;
+        require_once __DIR__ . "/../pages/ceremonies/students_list/index.php";
+    }
+
+    public function get_ceremony_students_info($ceremonies_id)
+    {
+        $ceremoniy_students_info = $this->ceremonies_service->get_ceremony_students_info($ceremonies_id);
+
+        if (!$ceremoniy_students_info)
+        {
+            return [];
+        }
+
+        return $ceremoniy_students_info;
+    }
+
     private function validate_create_or_update_ceremony_data($date, 
         $graduation_year, 
         $responsible_robes,
@@ -112,6 +130,17 @@ class CeremoniesController
     public function get_ceremony_by_id($ceremony_id)
     {
         $ceremony_info = $this->ceremonies_service->get_ceremony_info_by_id($ceremony_id);
+        if (!$ceremony_info)
+        {
+            return null;
+        }
+
+        return $ceremony_info;
+    }
+
+    public function get_ceremony_simple_info_by_id($ceremony_id)
+    {
+        $ceremony_info = $this->ceremonies_service->get_ceremony_simple_info_by_id($ceremony_id);
         if (!$ceremony_info)
         {
             return null;
