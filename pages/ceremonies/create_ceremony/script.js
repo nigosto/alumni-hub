@@ -26,11 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/ceremonies`;
             } else {
-                // TODO: proper error handling
-                throw new Error(data.message || 'Ceremony creation failed');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 });

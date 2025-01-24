@@ -16,7 +16,7 @@ class ClothesController
             $this->clothes_service->assign_clothing($size, $fn);
         } else {
             throw new Exception(
-                'Size is not selected'
+                'Невалиден размер!'
             );
         }
     }

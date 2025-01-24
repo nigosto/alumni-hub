@@ -41,9 +41,10 @@ $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
 $authentication_controller = new AuthenticationController($users_service, $students_service);
 $admin_controller = new AdminController($users_service);
-$user_controller = new UserController($users_service, $students_service, $clothes_service);
+$user_controller = new UserController($users_service, $students_service, $clothes_service, $ceremonies_attendance_service);
 $ceremonies_controller = new CeremoniesController(
-    $ceremonies_service
+    $ceremonies_service,
+    $ceremonies_attendance_service
 );
 
 $authorization_middleware = new AuthorizationMiddleware(
@@ -81,10 +82,10 @@ $router->register_route(
 
             $authentication_controller->register($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -115,10 +116,10 @@ $router->register_route(
             $data = json_decode($json, true);
             $authentication_controller->set_fn($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -136,7 +137,7 @@ $router->register_route(
             echo json_encode($user->to_array());
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -157,13 +158,13 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"));
             $students_controller->import_students($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (PDOException $e) {
             http_response_code(409);
-            echo json_encode(["Message" => "Some of the students are already imported"]);
+            echo json_encode(["message" => "Някои от студентите вече са импортнати"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -214,10 +215,10 @@ $router->register_route(
             $ceremonies_controller->create_ceremony($data);
 
             http_response_code(200);
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["message" => $e->getMessage()]);
         }
     })
 );
@@ -255,6 +256,22 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             $clothes_controller->assign_clothing($data);
 
+            echo json_encode(["message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["message" => $e->getMessage()]);
+        }
+    })
+);
+
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            
+            $ceremonies_controller->update_ceremony_invitation($data);
             echo json_encode(["Message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -263,6 +280,47 @@ $router->register_route(
     })
 );
 
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance/speach',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $ceremony_id = intval($data["ceremony_id"]);
+            $status = SpeachStatus::tryFrom($data["status"]);
+            
+            session_start();
+            $student_fn = $_SESSION["fn"];
+
+            $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, $status);
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
+
+$router->register_route(
+    'PATCH',
+    'ceremonies/attendance/responsibility',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $ceremony_id = intval($data["ceremony_id"]);
+            $status = ResponsibilityStatus::tryFrom($data["status"]);
+
+            session_start();
+            $student_fn = $_SESSION["fn"];
+
+            $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, $status);
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
 $router->register_route(
     'GET', 
     'ceremonies',
@@ -299,6 +357,25 @@ $router->register_route(
                 echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
             }
 }));
+
+$router->register_route(
+    'POST',
+    'add-fn',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($authentication_controller) {
+        try {
+            header('Content-Type: application/json');
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            $authentication_controller->add_fn($data);
+
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
 
 $router->dispatch($request_method, $requested_uri);
 ?>

@@ -6,10 +6,12 @@ require_once __DIR__ . "/../../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../../components/header/header_component.php";
 require_once __DIR__ . "/../../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../../components/button/link.php";
+require_once __DIR__ . "/../../components/message/message_component.php";
 
 $base_url = $_ENV["BASE_URL"];
 $header = new HeaderComponent();
 $footer = new FooterComponent();
+$message = new MessageComponent();
 
 $stylesheets = array_merge(
     $header->get_stylesheets(),
@@ -17,10 +19,14 @@ $stylesheets = array_merge(
     [$base_url . "/pages/ceremonies/create_ceremony/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
-    ButtonComponent::get_stylesheets()
+    ButtonComponent::get_stylesheets(),
+    MessageComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/ceremonies/create_ceremony/script.js"]);
+$meta = new MetadataComponent($stylesheets, array_merge(
+    MessageComponent::get_scripts(),
+    ["$base_url/pages/ceremonies/create_ceremony/script.js"]
+));
 echo $meta->render();
 ?>
 
@@ -65,10 +71,13 @@ echo $meta->render();
             </div>
 
             <?php
-                $submit_button = new ButtonComponent("Създаване на церемония", ButtonStyleType::Primary, true);
-                echo $submit_button->render();
+            $submit_button = new ButtonComponent("Създаване на церемония", ButtonStyleType::Primary, true);
+            echo $submit_button->render();
             ?>
         </form>
+
+        <?php echo $message->render(); ?>
+
     </main>
 
     <?php echo $footer->render(); ?>
