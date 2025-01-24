@@ -17,8 +17,10 @@ require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/users_service.php";
 require_once __DIR__ . "/services/clothes_service.php";
+require_once __DIR__ . "/services/requests_service.php";
 require_once __DIR__ . "/middleware/authorization_middleware.php";
 require_once __DIR__ . "/models/user.php";
+
 error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 load_config(".env");
 
@@ -32,11 +34,12 @@ $ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 $students_export_service = new StudentsExportService();
 $clothes_service = new ClothesService($database);
+$requests_service = new RequestsService($database);
 
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
-$authentication_controller = new AuthenticationController($users_service, $students_service);
-$admin_controller = new AdminController($users_service);
+$authentication_controller = new AuthenticationController($users_service, $students_service, $requests_service);
+$admin_controller = new AdminController($users_service, $requests_service, $students_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremoinies_service,
@@ -188,9 +191,17 @@ $router->register_route(
 
 $router->register_route(
     'GET',
-    'admin/approval',
+    'admin/approval/administrators',
     $authorization_middleware->is_authorized(Role::Admin, function () use ($admin_controller) {
-        $admin_controller->show_approval_page();
+        $admin_controller->show_administrator_approval_page();
+    })
+);
+
+$router->register_route(
+    'GET',
+    'admin/approval/students',
+    $authorization_middleware->is_authorized(Role::Admin, function () use ($admin_controller) {
+        $admin_controller->show_students_approval_page();
     })
 );
 

@@ -91,5 +91,11 @@ class DataService
 
         return $rows;
     }
+
+    function delete_with_query($query, $data)
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($data);
+    }
 }
 ?>

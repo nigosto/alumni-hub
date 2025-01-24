@@ -1,22 +1,24 @@
 <?php
 require_once __DIR__ . "/../models/user.php";
+require_once __DIR__ . "/../services/requests_service.php";
 
 class AuthenticationController
 {
     private $users_service;
     private $students_service;
+    private RequestsService $requests_service;
 
-    function __construct($users_service, $students_service)
+    function __construct($users_service, $students_service, $requests_service)
     {
         $this->users_service = $users_service;
         $this->students_service = $students_service;
+        $this->requests_service = $requests_service;
 
     }
     public function show_register_page()
     {
         require_once __DIR__ . "/../pages/register/index.php";
     }
-
 
     public function show_login_page()
     {
@@ -53,8 +55,10 @@ class AuthenticationController
 
         session_start();
         $user_id = $_SESSION["id"];
+        $request = new Request($user_id, $data["fn"]);
+        $this->requests_service->insert_request($request);
 
-        $this->assign_fn_for_user($data["fn"], $user_id);
+        // $this->assign_fn_for_user($data["fn"], $user_id);
     }
     public function register($data)
     {
@@ -81,17 +85,21 @@ class AuthenticationController
 
             if ($role === Role::Student) {
                 $user = new User(null, $email, $password_hash, $username, $role->value, true);
-
+                
                 $registered_user_id = $this->users_service->insert($user);
-                $this->assign_fn_for_user($fn, $registered_user_id);
+                
+                $request = new Request($registered_user_id, $fn);
+                $this->requests_service->insert_request($request);
 
+                // $this->assign_fn_for_user($fn, $registered_user_id);
             } else {
                 $user = new User(null, $email, $password_hash, $username, $role->value, false);
                 $registered_user_id = $this->users_service->insert($user);
+                
+                $_SESSION["role"] = $role;
+                $_SESSION["id"] = $registered_user_id;
             }
 
-            $_SESSION["role"] = $role;
-            $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
                 'Username, email and password are required'

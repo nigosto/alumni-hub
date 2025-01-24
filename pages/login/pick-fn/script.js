@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                window.location.href = `${baseUrl}/profile`;
+                // TODO: show message, but don't redirect
+                // window.location.href = `${baseUrl}/profile`;
             } else {
                 throw new Error(data.message || 'Could not add faculty number');
             }

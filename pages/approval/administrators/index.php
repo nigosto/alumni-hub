@@ -2,17 +2,17 @@
 <html lang="bg">
 
 <?php
-require_once __DIR__ . "/../../components/metadata/metadata_component.php";
-require_once __DIR__ . "/../../components/header/header_component.php";
-require_once __DIR__ . "/../../components/footer/footer_component.php";
-require_once __DIR__ . "/../../components/table/table_component.php";
-require_once __DIR__ . "/../../models/user.php";
+require_once __DIR__ . "/../../../components/metadata/metadata_component.php";
+require_once __DIR__ . "/../../../components/header/header_component.php";
+require_once __DIR__ . "/../../../components/footer/footer_component.php";
+require_once __DIR__ . "/../../../components/table/table_component.php";
+require_once __DIR__ . "/../../../models/user.php";
 
 function approve($controller, $email)
 {
     $base_url = $_ENV["BASE_URL"];
     $controller->approve_administrator($email);
-    header("Location: $base_url/admin/approval");
+    header("Location: $base_url/admin/approval/administrators");
 }
 
 if (isset($_GET["approve"])) {
@@ -36,7 +36,7 @@ $stylesheets = array_merge(
     $header->get_stylesheets(),
     $footer->get_stylesheets(),
     $table->get_stylesheets(),
-    ["$base_url/pages/admin/styles.css"]
+    ["$base_url/pages/approval/administrators/styles.css"]
 );
 
 $meta = new MetadataComponent($stylesheets);
@@ -48,7 +48,7 @@ echo $meta->render();
 
     <main id="site-main">
         <section id="approval-section">
-            <h3>Списък с потребители</h3>
+            <h3>Списък с администратори</h3>
             <?php
             echo $table->render();
             ?>
