@@ -390,7 +390,8 @@ $router->register_route(
     })
 );
 
-$router->register_route('GET', 
+$router->register_route(
+    'GET', 
     'ceremony/students/{id}',
     $authorization_middleware->is_authorized(Role::Administrator, 
         function ($params) use ($ceremonies_controller) {

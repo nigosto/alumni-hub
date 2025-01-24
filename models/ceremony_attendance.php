@@ -38,7 +38,7 @@ function speach_status_invite_string($speach_status)
         case SpeachStatus::Accepted:
             return 'приета';
         default:
-            throw new Exception("Невалиден статус за реч");
+            throw new Exception("Невалиден статус за реч!");
     }
 }
 
