@@ -1,0 +1,40 @@
+#site-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+}
+
+#import-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+}
+
+#import-section h3 {
+  font-size: 2em;
+}
+
+#file-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+#import-file-label {
+  background-color: #eeeeee;
+  border: 1px dashed black;
+  cursor: pointer;
+  padding: 20px 40px;
+  border-radius: 10px;
+}
+
+#import-file {
+  display: none;
+}

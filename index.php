@@ -46,8 +46,7 @@ $ceremonies_controller = new CeremoniesController(
     $ceremonies_service
 );
 
-$authorization_middleware = new AuthorizationMiddleware(
-);
+$authorization_middleware = new AuthorizationMiddleware($users_service);
 $clothes_controller = new ClothesController($clothes_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
@@ -80,6 +79,8 @@ $router->register_route(
             $data = json_decode($json, true);
 
             $authentication_controller->register($data);
+            session_start();
+            setcookie(session_name(), session_id(), time() + 24 * 60 * 60, '/');
 
             echo json_encode(["Message" => "Success"]);
         } catch (Exception $e) {
@@ -133,6 +134,9 @@ $router->register_route(
             $data = json_decode($json, true);
             $user = $authentication_controller->login($data);
 
+            session_start();
+            setcookie(session_name(), session_id(), time() + 24 * 60 * 60, '/');
+            
             echo json_encode($user->to_array());
         } catch (Exception $e) {
             http_response_code(500);
@@ -234,9 +238,13 @@ $router->register_route(
     'GET',
     'logout',
     $authorization_middleware->is_authenticated(function () {
+        session_start();
+        setcookie(session_name(), session_id(), time() - 24 * 60 * 60, '/');
+        
+        session_unset();
         session_destroy();
         header("Location: {$_ENV["BASE_URL"]}/login");
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -244,6 +252,14 @@ $router->register_route(
     'access-denied',
     function () use ($pages_controller) {
         return $pages_controller->show_access_denied_page();
+    }
+);
+
+$router->register_route(
+    'GET',
+    'not-approved',
+    function () use ($pages_controller) {
+        return $pages_controller->show_not_approved_page();
     }
 );
 

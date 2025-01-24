@@ -19,7 +19,9 @@ if ($option === "-a" || $option === "-all") {
         throw new Exception("Invalid action");
     }
 
-    foreach(glob($scripts_locations) as $file) {
+    $files = glob($scripts_locations);
+    $files = $action === "-r" ? array_reverse($files) : $files;
+    foreach($files as $file) {
         $migration_file = $file;
 
         exec("php $migration_file", $output, $code);
