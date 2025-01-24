@@ -5,9 +5,8 @@ class Router
 
     public function register_route($method, $path, $handler)
     {
-        // Convert {param} to a named regex group
         $path = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', $path);
-        $path = '#^' . $path . '$#'; // Wrap with delimiters
+        $path = '#^' . $path . '$#';
 
         $this->routes[] = [
             'method' => strtoupper($method),
@@ -20,7 +19,6 @@ class Router
     {
         foreach ($this->routes as $route) {
             if (strtoupper($method) === $route['method'] && preg_match($route['path'], $uri, $matches)) {
-                // Remove numeric keys from matches, keeping only named params
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 call_user_func($route['handler'], $params);
                 return;

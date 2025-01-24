@@ -51,14 +51,6 @@ echo $meta->render();
       <?php
       echo $table->render();
       ?>
-      <!-- if ($_SESSION["id"] === null) {
-          echo "<nav id=\"welcome-links\">";
-          $link_login = new LinkComponent("ВЛИЗАНЕ", "$base_url/login");
-          $link_register = new LinkComponent("РЕГИСТРИРАНЕ", "$base_url/register");
-          echo $link_login->render();
-          echo $link_register->render();
-          echo "</nav>";
-      } -->
     </section>
   </main>
   <?php

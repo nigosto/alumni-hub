@@ -300,26 +300,5 @@ $router->register_route(
             }
 }));
 
-// $router->register_route(
-//     'GET', 
-//     'ceremony/get',
-//     $authorization_middleware->is_authorized(Role::Administrator, 
-//      function ($params) use ($ceremonies_controller) {
-//         try {
-//             header('Content-Type: application/json');
-//             $json = file_get_contents('php://input');
-//             $data = json_decode($json, true);
-
-//             $ceremony = $ceremonies_controller->get_ceremony($data);
-
-//             http_response_code(200);
-//             echo $ceremony;
-//         } catch (Exception $e) {
-//             http_response_code(500);
-//             echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
-//         }
-//     })
-// );
-
 $router->dispatch($request_method, $requested_uri);
 ?>
