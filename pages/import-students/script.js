@@ -1,6 +1,18 @@
 window.addEventListener("load", () => {
   const form = document.getElementById("file-form");
   const file = document.getElementById("import-file");
+  const filename = document.getElementById("file-name");
+
+  file.addEventListener('change', (event) => {
+    const currentFile = event.target.files[0];
+    const currentFilename = currentFile?.name ?? "Няма избран файл";
+    
+    if (currentFile.type === "text/csv") {
+      filename.textContent = currentFilename;
+    } else {
+      file.value = "";
+    }
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

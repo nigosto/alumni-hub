@@ -47,8 +47,7 @@ $ceremonies_controller = new CeremoniesController(
     $ceremonies_attendance_service
 );
 
-$authorization_middleware = new AuthorizationMiddleware(
-);
+$authorization_middleware = new AuthorizationMiddleware($users_service);
 $clothes_controller = new ClothesController($clothes_service);
 
 $base_path = parse_url($_ENV["BASE_URL"])["path"];
@@ -81,11 +80,13 @@ $router->register_route(
             $data = json_decode($json, true);
 
             $authentication_controller->register($data);
+            session_start();
+            setcookie(session_name(), session_id(), time() + 24 * 60 * 60, '/');
 
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -116,10 +117,10 @@ $router->register_route(
             $data = json_decode($json, true);
             $authentication_controller->set_fn($data);
 
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -134,10 +135,13 @@ $router->register_route(
             $data = json_decode($json, true);
             $user = $authentication_controller->login($data);
 
-            echo json_encode($user->to_array());
+            session_start();
+            setcookie(session_name(), session_id(), time() + 24 * 60 * 60, '/');
+            
+            echo json_encode($user->to_array(), JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -158,13 +162,13 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"));
             $students_controller->import_students($data);
 
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (PDOException $e) {
             http_response_code(409);
-            echo json_encode(["message" => "Някои от студентите вече са импортнати"]);
+            echo json_encode(["message" => "Някои от студентите вече са импортнати"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -215,10 +219,10 @@ $router->register_route(
             $ceremonies_controller->create_ceremony($data);
 
             http_response_code(200);
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -235,9 +239,10 @@ $router->register_route(
     'GET',
     'logout',
     $authorization_middleware->is_authenticated(function ($params) {
+        session_unset();
         session_destroy();
         header("Location: {$_ENV["BASE_URL"]}/login");
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -249,6 +254,14 @@ $router->register_route(
 );
 
 $router->register_route(
+    'GET',
+    'not-approved',
+    function () use ($pages_controller) {
+        return $pages_controller->show_not_approved_page();
+    }
+);
+
+$router->register_route(
     'PATCH',
     'clothes',
     $authorization_middleware->is_authorized(Role::Student, function ($params) use ($clothes_controller) {
@@ -256,10 +269,10 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             $clothes_controller->assign_clothing($data);
 
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["message" => $e->getMessage()]);
+            echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -272,10 +285,10 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             
             $ceremonies_controller->update_ceremony_invitation($data);
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -293,10 +306,10 @@ $router->register_route(
             $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, $status);
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -314,10 +327,10 @@ $router->register_route(
             $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, $status);
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -369,10 +382,10 @@ $router->register_route(
 
             $authentication_controller->add_fn($data);
 
-            echo json_encode(["Message" => "Success"]);
+            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
