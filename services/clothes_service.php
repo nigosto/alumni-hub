@@ -40,7 +40,7 @@ class ClothesService extends DataService
         SET student_fn = :student_fn
         WHERE id = (
             SELECT id
-            FROM clothes
+            FROM Clothes
             WHERE size = :size AND student_fn IS NULL
             LIMIT 1
         );
