@@ -224,11 +224,6 @@ class CeremoniesService extends DataService
                         }
                         // NOTE: If old status is declined and new one is waiting, we will reinvite the student.
                     }
-
-                    if ($student_fn === "0MI0800065")
-                    {
-                        var_dump($new_special_ceremony_attendances[$student_fn]);
-                    }
                     
                     if ($old_responsibility_status !== $new_responsibility_status)
                     {
