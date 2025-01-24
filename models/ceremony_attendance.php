@@ -9,20 +9,19 @@ enum SpeachStatus: string
     case Accepted = "accepted";
 }
 
-function parse_speach_status($speach_status)
+function speach_status_invite_string($speach_status)
 {
-    $speach_status = mb_strtolower($speach_status);
     switch ($speach_status) {
-        case 'няма':
-            return SpeachStatus::None;
-        case 'изчакващ':
-            return SpeachStatus::Waiting;
-        case 'отказал':
-            return SpeachStatus::Declined;
-        case 'приел':
-            return SpeachStatus::Accepted;
+        case SpeachStatus::None:
+            return 'няма';
+        case SpeachStatus::Waiting:
+            return 'подадена';
+        case SpeachStatus::Declined:
+            return 'отказана';
+        case SpeachStatus::Accepted:
+            return 'приета';
         default:
-            throw new Exception("Invalid speach status");
+            throw new Exception("Невалиден статус за реч");
     }
 }
 
@@ -40,30 +39,29 @@ enum ResponsibilityStatus: string
     case DeclinedDiplomas = "declined_diplomas"; 
 }
 
-function parse_responsibility_status($responsibility_status)
+function responsibility_status_invite_string($responsibility_status)
 {
-    $responsibility_status = mb_strtolower($responsibility_status);
     switch ($responsibility_status) {
-        case 'няма':
-            return ResponsibilityStatus::None;
-        case 'изчакващ отговорник за тоги':
-            return ResponsibilityStatus::WaitingRobes;
-        case 'изчакващ отговорник за подписи':
-            return ResponsibilityStatus::WaitingSignatures;
-        case 'изчакващ отговорник за връчване на дипломи':
-            return ResponsibilityStatus::WaitingDiplomas;
-        case 'отказал отговорник за тоги':
-            return ResponsibilityStatus::DeclinedRobes;
-        case 'отказал отговорник за подписи':
-            return ResponsibilityStatus::DeclinedSignatures;
-        case 'отказал отговорник за връчване на дипломи':
-            return ResponsibilityStatus::DeclinedDiplomas;
-        case 'приел отговорник за тоги':
-            return ResponsibilityStatus::AcceptedRobes;
-        case 'приел отговорник за подписи':
-            return ResponsibilityStatus::AcceptedSignatures;
-        case 'приел отговорник за връчване на дипломи':
-            return ResponsibilityStatus::AcceptedDiplomas;
+        case ResponsibilityStatus::None:
+            return 'няма';
+        case ResponsibilityStatus::WaitingRobes:
+            return 'подадена, за отговорник за тоги';
+        case ResponsibilityStatus::WaitingSignatures:
+            return 'подадена, за отговорник за подписи';
+        case ResponsibilityStatus::WaitingDiplomas:
+            return 'подадена, за отговорник за връчване на дипломи';
+        case ResponsibilityStatus::DeclinedRobes:
+            return 'отказана, за отговорник за тоги';
+        case ResponsibilityStatus::DeclinedSignatures:
+            return 'отказана, за отговорник за подписи';
+        case ResponsibilityStatus::DeclinedDiplomas:
+            return 'отказана, за отговорник за връчване на дипломи';
+        case ResponsibilityStatus::AcceptedRobes:
+            return 'приета, за отговорник за тоги';
+        case ResponsibilityStatus::AcceptedSignatures:
+            return 'приета, за отговорник за дипломни подписи';
+        case ResponsibilityStatus::AcceptedDiplomas:
+            return 'приета, за отговорник за връчване на дипломи';
         default:
             throw new Exception("Invalid responsibility status");
     }
@@ -125,6 +123,11 @@ class CeremonyAttendance implements IModel
     public function set_responsibility_status($val)
     {
         $this->responsibility_status = $val;
+    }
+
+    public static function labels_ceremony_students_list()
+    {
+        return ["Факултетен номер", "Степен", "Имена", "Година на завършване", "Размер на тоги", "Покана за изнасяне на реч?", "Покана за отговорник?"];
     }
 }
 ?>

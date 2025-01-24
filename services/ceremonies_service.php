@@ -409,6 +409,36 @@ class CeremoniesService extends DataService
         return $ceremony_info;
     }
 
+    public function get_ceremony_students_info($ceremony_id)
+    {
+        $select_query = <<<IQ
+            SELECT Students.fn, degree, fullname, Students.graduation_year, size, speach_status, responsibility_status FROM Ceremony
+            JOIN Ceremony_Attendance ON Ceremony.id = Ceremony_Attendance.ceremony_id
+            JOIN Students ON Students.fn = ceremony_attendance.student_fn
+            LEFT JOIN Clothes ON Students.fn = Clothes.student_fn
+            WHERE Ceremony.id = :ceremony_id
+            ORDER BY Ceremony.graduation_year
+        IQ;
+
+        $map_func = function ($row) {
+            if (!$row["size"]) 
+            {
+                $row["size"] = "Липсва";
+            }
+
+            $row["degree"] = prettify_degree(Degree::tryFrom($row["degree"]));
+            $row["speach_status"] = speach_status_invite_string(SpeachStatus::tryFrom($row["speach_status"]));
+            $row["responsibility_status"] = responsibility_status_invite_string(ResponsibilityStatus::tryFrom($row["responsibility_status"]));
+
+            return $row;
+        };
+
+        $ceremony_info_rows = parent::find_all_with_query_map($select_query, ["ceremony_id" => $ceremony_id], $map_func);
+
+        // var_dump($ceremony_info_rows);
+        return $ceremony_info_rows;
+    }
+
     private function get_all_ceremonies_info_from_rows($ceremony_info_rows)
     {
         $ceremony_info_all = [];

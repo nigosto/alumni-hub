@@ -300,5 +300,22 @@ $router->register_route(
             }
 }));
 
+$router->register_route(
+    'GET', 
+    'ceremony/students/{id}',
+    $authorization_middleware->is_authorized(Role::Administrator, 
+        function ($params) use ($ceremonies_controller) {
+            $ceremonies_controller->show_ceremonies_studdents_page($params["id"]);
+}));
+
+$router->register_route(
+    'GET', 
+    'ceremony/students/{id}/export',
+    $authorization_middleware->is_authorized(Role::Administrator, 
+        function ($params) use ($ceremonies_controller) {
+            // $ceremonies_controller->show_ceremonies_studdents_page($params["id"]);
+            echo "KUUR", $params["id"];
+}));
+
 $router->dispatch($request_method, $requested_uri);
 ?>
