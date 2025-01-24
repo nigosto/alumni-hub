@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             response = await fetch('', {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },

@@ -280,7 +280,7 @@ $router->register_route(
 }));
 
 $router->register_route(
-    'POST', 
+    'PUT', 
     'ceremony/edit/{id}',
     $authorization_middleware->is_authorized(Role::Administrator, 
         function ($params) use ($ceremonies_controller) {
