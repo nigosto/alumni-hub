@@ -21,7 +21,10 @@ $stylesheets = array_merge(
   [$base_url . "/pages/ceremonies/ceremonies_list/styles.css"]
 );
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/ceremonies/ceremonies_list/script.js"]);
+$meta = new MetadataComponent($stylesheets, array_merge(
+  MessageComponent::get_scripts(),
+  ["$base_url/pages/ceremonies/ceremonies_list/script.js"]
+));
 echo $meta->render();
 ?>
 

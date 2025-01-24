@@ -32,12 +32,12 @@ class AuthenticationController
     private function assign_fn_for_user($fn, $user_id)
     {
         if (!$fn || !$user_id) {
-            throw new Exception("Missing faculty number or user_id");
+            throw new Exception("Липсващ факултетен номер или потребителско ID");
         }
 
         $student = $this->students_service->get_student_by_fn($fn);
         if (!$student) {
-            throw new Exception('Incorrect faculty number!');
+            throw new Exception('Грешен факултетен номер!');
         }
         $this->students_service->update_user_id($fn, $user_id);
 
@@ -48,7 +48,7 @@ class AuthenticationController
     public function add_fn($data)
     {
         if (!isset($data["fn"])) {
-            throw new Exception("Missing fn");
+            throw new Exception("Липсващ факултетен номер!");
         }
 
         session_start();
@@ -67,20 +67,36 @@ class AuthenticationController
             $fn = $data['fn'];
 
             if ($password !== $password_confirmation) {
-                throw new Exception('Mismatch in passwords!');
+                throw new Exception('Разлика в паролите!');
             }
 
             if (($role === 'student' && ($fn === null || $fn === "")) || ($role === 'administrator' && ($fn !== null && $fn !== ''))) {
-                throw new Exception('Invalid faculty number!');
+                throw new Exception('Невалиден факултетен номер!');
             }
 
             $role = Role::tryFrom($role);
 
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+            if ($this->users_service->get_user_by_username($username)) {
+                throw new Exception("Вече съществува потребител с това име");
+            }
+
+            if ($this->users_service->get_user_by_email($email)) {
+                throw new Exception("Вече съществува потребител с този имейл");
+            }
+
             session_start();
 
             if ($role === Role::Student) {
                 $user = new User(null, $email, $password_hash, $username, $role->value, true);
+                $student = $this->students_service->get_student_by_fn($fn);
+                if (!$student) {
+                    throw new Exception('Невалиден факултетен номер!');
+                }
+                if ($student->to_array(["user_id"]) !== null) {
+                    throw new Exception("Невалиден факултетен номер!");
+                }
 
                 $registered_user_id = $this->users_service->insert($user);
                 $this->assign_fn_for_user($fn, $registered_user_id);
@@ -94,7 +110,7 @@ class AuthenticationController
             $_SESSION["id"] = $registered_user_id;
         } else {
             throw new Exception(
-                'Username, email and password are required'
+                'Потребителското име, имейлът и паролата са задължителни'
             );
         }
     }
@@ -107,8 +123,8 @@ class AuthenticationController
 
             $user = $this->users_service->get_user_by_username($username);
 
-            if (!$user->compare_password($password)) {
-                throw new Exception('Wrong password or username!');
+            if (!$user || !$user->compare_password($password)) {
+                throw new Exception('Грешна парола или потребителско име!');
             }
 
             session_start();
@@ -118,7 +134,7 @@ class AuthenticationController
             return $user;
         } else {
             throw new Exception(
-                'Username and password are required'
+                'Потребителското име и паролата са задължителни'
             );
         }
     }
@@ -131,7 +147,7 @@ class AuthenticationController
             $_SESSION["fn"] = $fn;
         } else {
             throw new Exception(
-                'Faculty number is empty!'
+                'Липсващ факултетен номер!'
             );
         }
     }

@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 window.location.reload();
             } else {
-                throw new Error(data.message || 'Could not clothes size');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 

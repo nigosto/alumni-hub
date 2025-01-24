@@ -7,9 +7,11 @@ require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../components/button/link.php";
 require_once __DIR__ . "/../../models/user.php";
+require_once __DIR__ . "/../../components/message/message_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
+$message = new MessageComponent();
 
 $base_url = $_ENV["BASE_URL"];
 
@@ -19,10 +21,14 @@ $stylesheets = array_merge(
     [$base_url . "/pages/register/styles.css"],
     [$base_url . "/components/styles/input.css"],
     [$base_url . "/components/styles/form.css"],
-    ButtonComponent::get_stylesheets()
+    ButtonComponent::get_stylesheets(),
+    MessageComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
+$meta = new MetadataComponent($stylesheets, array_merge(
+    MessageComponent::get_scripts(),
+    ["$base_url/pages/register/script.js"],
+));
 echo $meta->render();
 ?>
 
@@ -37,8 +43,9 @@ echo $meta->render();
         <form id="registration-form">
             <select id="account-type" name="account-type">
                 <option value="">Тип на акаунта</option>
-                <option value="<?php echo Role::Student->value;?>" id="student-account">Студентски акаунт</option>
-                <option value="<?php echo Role::Administrator->value;?>" id="administration-account">Адиминистраторски акаунт
+                <option value="<?php echo Role::Student->value; ?>" id="student-account">Студентски акаунт</option>
+                <option value="<?php echo Role::Administrator->value; ?>" id="administration-account">Адиминистраторски
+                    акаунт
                 </option>
             </select>
 
@@ -63,6 +70,8 @@ echo $meta->render();
             echo $link->render();
             ?>
         </nav>
+
+        <?php echo $message->render(); ?>
 
     </main>
 
