@@ -23,7 +23,13 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/ceremonies_list/index.php";
     }
 
-    private function validate_create_ceremony_data($date, 
+    public function show_ceremonies_edit_page($ceremony_id)
+    {
+        $ceremonies_controller = $this;
+        require_once __DIR__ . "/../pages/ceremonies/edit_ceremony/index.php";
+    }
+
+    private function validate_create_or_update_ceremony_data($date, 
         $graduation_year, 
         $responsible_robes,
         $responsible_signatures,
@@ -68,14 +74,14 @@ class CeremoniesController
             isset($data["responsible_diplomas"])) 
         {
 
-            $date = $this->ceremonies_service->create_date_from_string($data['date']);
+            $date = $this->ceremonies_service->create_date_from_js_string($data['date']);
             $graduation_year = $data['graduation_year'];
             $speaker = $data['speaker'];
             $responsible_robes = $data['responsible_robes'];
             $responsible_signatures = $data['responsible_signatures'];
             $responsible_diplomas = $data['responsible_diplomas'];
 
-            $this->validate_create_ceremony_data($date, 
+            $this->validate_create_or_update_ceremony_data($date, 
                 $graduation_year, 
                 $responsible_robes, 
                 $responsible_signatures, 
@@ -84,7 +90,6 @@ class CeremoniesController
             $ceremony = new Ceremony($date, $graduation_year);
             $this->ceremonies_service->insert_ceremony(
                 $ceremony,
-                $graduation_year,
                 $speaker,
                 $responsible_robes,
                 $responsible_signatures,
@@ -93,15 +98,61 @@ class CeremoniesController
         }
     }
 
-    public function get_ceremonies_data()
+    public function get_ceremonies_list_data()
     {
-        $ceremonies_info = $this->ceremonies_service->get_all_ceremony_info();
+        $ceremonies_info = $this->ceremonies_service->get_all_ceremony_list_info();
         if (!$ceremonies_info)
         {
             return [];
         }
 
         return $ceremonies_info;
+    }
+
+    public function get_ceremony_by_id($ceremony_id)
+    {
+        $ceremony_info = $this->ceremonies_service->get_ceremony_info_by_id($ceremony_id);
+        if (!$ceremony_info)
+        {
+            return null;
+        }
+
+        return $ceremony_info;
+    }
+
+    public function update_ceremony($data)
+    {
+        if (isset($data["id"]) &&
+            isset($data['date']) && 
+            isset($data['graduation_year']) && 
+            isset($data['speaker']) && 
+            isset($data['responsible_robes']) && 
+            isset($data["responsible_signatures"]) && 
+            isset($data["responsible_diplomas"])) 
+        {
+            $id = $data["id"];
+            $date = $this->ceremonies_service->create_date_from_js_string($data['date']);
+            $graduation_year = $data['graduation_year'];
+            $speaker = $data['speaker'];
+            $responsible_robes = $data['responsible_robes'];
+            $responsible_signatures = $data['responsible_signatures'];
+            $responsible_diplomas = $data['responsible_diplomas'];
+
+            $this->validate_create_or_update_ceremony_data($date, 
+                $graduation_year, 
+                $responsible_robes, 
+                $responsible_signatures, 
+                $responsible_diplomas);
+
+            $ceremony = new Ceremony($date, $graduation_year, $id);
+            $this->ceremonies_service->update_ceremony(
+                $ceremony,
+                $speaker,
+                $responsible_robes,
+                $responsible_signatures,
+                $responsible_diplomas
+            );
+        }
     }
 
     public function update_ceremony_invitation($data) {

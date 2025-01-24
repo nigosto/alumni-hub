@@ -94,7 +94,8 @@ class AuthenticationController
                 if (!$student) {
                     throw new Exception('Невалиден факултетен номер!');
                 }
-                if ($student->to_array(["user_id"]) !== null) {
+
+                if ($student->to_array()["user_id"] !== null) {
                     throw new Exception("Невалиден факултетен номер!");
                 }
 

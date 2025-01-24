@@ -11,7 +11,7 @@ class AuthorizationMiddleware {
 
     public function is_authenticated($next, $check_approval = true) 
     {
-        return function() use ($next, $check_approval) {
+        return function($params) use ($next, $check_approval) {
             session_start();
             if (!isset($_SESSION["id"])) {
                 $base_url = $_ENV["BASE_URL"];
@@ -29,13 +29,13 @@ class AuthorizationMiddleware {
                 return;
             }
 
-            $next();
+            $next($params);
         };
     }
 
     public function is_authorized($role, $next, $check_approval = true) 
     {
-        return $this->is_authenticated(function() use ($role, $next) {
+        return $this->is_authenticated(function ($params) use ($role, $next) {
             session_start();
             $session_role = $_SESSION["role"];
             if (!isset($session_role) || $session_role !== $role) {
@@ -46,13 +46,12 @@ class AuthorizationMiddleware {
                 return;
             }
 
-            $next();
+            $next($params);
         }, $check_approval);
     }
 
-    public function is_not_authenticated($next)
-    {
-        return function () use ($next) {
+    public function is_not_authenticated($next) {
+        return function($params) use ($next) {
             session_start();
             if (isset($_SESSION["id"])) {
                 $base_url = $_ENV["BASE_URL"];
@@ -61,8 +60,7 @@ class AuthorizationMiddleware {
                 header("Location: $base_url/");
                 return;
             }
-
-            $next();
+            $next($params);
         };
     }
 }

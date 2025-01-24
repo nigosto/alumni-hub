@@ -96,5 +96,35 @@ class CeremonyAttendance implements IModel
             "responsibility_status" => $this->responsibility_status->value,
         ];
     }
+
+    public function get_accepted()
+    {
+        return $this->accepted;
+    }
+
+    public function set_accepted($val)
+    {
+        $this->accepted = $val;
+    }
+
+    public function get_speach_status()
+    {
+        return $this->speach_status;
+    }
+
+    public function set_speach_status($val)
+    {
+        $this->speach_status = $val;
+    }
+
+    public function get_responsibility_status()
+    {
+        return $this->responsibility_status;
+    }
+
+    public function set_responsibility_status($val)
+    {
+        $this->responsibility_status = $val;
+    }
 }
 ?>

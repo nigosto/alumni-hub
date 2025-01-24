@@ -37,11 +37,17 @@ class TableRowComponent extends Component {
                 return $html;
             }
 
-            $action_key = array_key_first($this->action);
-            $action_param = $this->action[$action_key];
+            if(is_string($this->action)) {
+                $link = new LinkComponent($this->action_value, $this->action, ButtonStyleType::Small);
+                $html .= "<td align=\"center\" class=\"report-table-cell\">{$link->render()}</td>";
+            } else {
+                $action_key = array_key_first($this->action);
+                $action_param = $this->action[$action_key];
+    
+                $link = new LinkComponent($this->action_value, "?$action_key=$action_param", ButtonStyleType::Small);
+                $html .= "<td align=\"center\" class=\"report-table-cell\">{$link->render()}</td>";
+            }
 
-            $link = new LinkComponent($this->action_value, "?$action_key=$action_param", ButtonStyleType::Small);
-            $html .= "<td align=\"center\" class=\"report-table-cell\">{$link->render()}</td>";
         }
 
         return $html;
