@@ -25,7 +25,10 @@ $stylesheets = array_merge(
     MessageComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/register/script.js"]);
+$meta = new MetadataComponent($stylesheets, array_merge(
+    MessageComponent::get_scripts(),
+    ["$base_url/pages/register/script.js"],
+));
 echo $meta->render();
 ?>
 

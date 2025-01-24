@@ -271,5 +271,24 @@ $router->register_route(
     $ceremonies_controller->show_ceremonies_list_page();
 }));
 
+$router->register_route(
+    'POST',
+    'add-fn',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($authentication_controller) {
+        try {
+            header('Content-Type: application/json');
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            $authentication_controller->add_fn($data);
+
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+        }
+    })
+);
+
 $router->dispatch($request_method, $requested_uri);
 ?>

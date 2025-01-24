@@ -17,7 +17,13 @@ $stylesheets = array_merge(
   MessageComponent::get_stylesheets()
 );
 
-$meta = new MetadataComponent($stylesheets, [$_ENV["BASE_URL"] . "/pages/import-students/script.js"]);
+$meta = new MetadataComponent(
+  $stylesheets,
+  array_merge(
+    MessageComponent::get_scripts(),
+    [$_ENV["BASE_URL"] . "/pages/import-students/script.js"]
+  )
+);
 echo $meta->render();
 ?>
 
