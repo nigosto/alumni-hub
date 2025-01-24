@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const baseUrl = localStorage.getItem("baseUrl");
+                
                 window.location.href = `${baseUrl}/profile`;
             } else {
                 throw await response.json();

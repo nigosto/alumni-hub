@@ -82,8 +82,8 @@ class CeremonyAttendance implements IModel
         $this->ceremony_id = $ceremony_id;
         $this->student_fn = $student_fn;
         $this->accepted = $accepted;
-        $this->speach_status = $speach_status;
-        $this->responsibility_status = $responsibility_status;
+        $this->speach_status = $speach_status instanceof SpeachStatus ? $speach_status : SpeachStatus::tryFrom($speach_status) ?? parse_speach_status($speach_status);
+        $this->responsibility_status = $responsibility_status instanceof ResponsibilityStatus ? $responsibility_status : ResponsibilityStatus::tryFrom($responsibility_status) ?? parse_responsibility_status($responsibility_status);
     }
 
     public function to_array()
