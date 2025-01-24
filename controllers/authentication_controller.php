@@ -32,12 +32,12 @@ class AuthenticationController
     private function assign_fn_for_user($fn, $user_id)
     {
         if (!$fn || !$user_id) {
-            throw new Exception("Missing faculty number or user_id");
+            throw new Exception("Липсващ факултетен номер или потребителско ID");
         }
 
         $student = $this->students_service->get_student_by_fn($fn);
         if (!$student) {
-            throw new Exception('Incorrect faculty number!');
+            throw new Exception('Грешен факултетен номер!');
         }
         $this->students_service->update_user_id($fn, $user_id);
 
@@ -48,7 +48,7 @@ class AuthenticationController
     public function add_fn($data)
     {
         if (!isset($data["fn"])) {
-            throw new Exception("Missing fn");
+            throw new Exception("Липсващ факултетен номер!");
         }
 
         session_start();

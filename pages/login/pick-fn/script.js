@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const pickForm = document.getElementById('form-pick-fn');
     const addForm = document.getElementById('form-add-fn');
-    const popup = document.getElementById("popup");
 
     pickForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -52,17 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.message || 'Could not add faculty number');
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
-
-    function showPopup(message) {
-        popup.textContent = message;
-        popup.style.display = "block";
-
-        setTimeout(() => {
-            popup.style.display = "none";
-        }, 3000);
-    }
 });
 

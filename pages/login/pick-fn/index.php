@@ -27,7 +27,10 @@ session_start();
 $user_id = $_SESSION["id"];
 $students = $controller->students_service->get_students_by_user_id($user_id);
 
-$meta = new MetadataComponent($stylesheets, ["$base_url/pages/login/pick-fn/script.js"]);
+$meta = new MetadataComponent($stylesheets, array_merge(
+    MessageComponent::get_scripts(),
+    ["$base_url/pages/login/pick-fn/script.js"]
+));
 echo $meta->render();
 ?>
 
