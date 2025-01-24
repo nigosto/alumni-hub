@@ -85,8 +85,9 @@ class CeremoniesService extends DataService
                     );
                     return;
                 }
-                // If date or graduation year are not changed, we have to update the attendances accordingly
-                // Get current special people info
+                // If date or graduation year are not changed, we have to update the special attendances accordingly
+                // Get current special people info. 
+                // Does not include people who have declined all their special roles without accepting or pending at least one
                 $old_special_people_info = $this->ceremonies_attendance_service->get_ceremony_special_people_info($ceremony_id);
 
                 // Get newly requested special ceremony attendances
@@ -100,8 +101,8 @@ class CeremoniesService extends DataService
                 
                 $new_special_ceremony_attendances = array_reduce($requested_special_ceremony_attendances, 
                 function ($result, $attendance) {
-                    $object_student_fn = $attendance->to_array()["student_fn"];
-                    $result[$object_student_fn] = $attendance;
+                    $attendance_student_fn = $attendance->to_array()["student_fn"];
+                    $result[$attendance_student_fn] = $attendance;
                     return $result;
                 }, []);
 
