@@ -31,15 +31,38 @@ echo $meta->render();
         <h1>Създаване на церемония</h1>
 
         <form id="creation-form">
-            <input type="datetime-local" id="date" name="date" placeholder="Дата на церемонията" required>
-            <input type="number" id="graduation-year" name="graduation-year" placeholder="Година на завършване" required>
-            <input type="text" id="speaker" name="speaker" placeholder="Покана към студент за церемониална реч" required>
-            <input type="text" id="responsible-robes" name="responsible-robes" 
-                placeholder="Покана към студент за отговорник на церемониалните тоги" required>
-            <input type="text" id="responsible-signatures" name="responsible-signatures"
-                placeholder="Покана към студент за отговорник на дипломните подписи" required>
-            <input type="text" id="responsible-diplomas" name="responsible-diplomas"
-                placeholder="Покана към студент за отговорник по връчване на дипломите" required>
+            <div class="form-entry-container">
+                <label class="form-label">Дата на церемонията: </label>
+                <input type="datetime-local" id="date" name="date" required>
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Година на завършване: </label>
+                <input type="number" id="graduation-year" name="graduation-year" placeholder="Година" required>
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, изнасящ церемониална реч: </label>
+                <input type="text" id="speaker" name="speaker" placeholder="Факултетен номер" required>
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник за церемониалните тоги: </label>
+                <input type="text" id="responsible-robes" name="responsible-robes" 
+                    placeholder="Факултетен номер" required>
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник за дипломните подписи: </label>
+                <input type="text" id="responsible-signatures" name="responsible-signatures"
+                    placeholder="Факултетен номер" required>
+            </div>
+                
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник по връчване на дипломите: </label>
+                <input type="text" id="responsible-diplomas" name="responsible-diplomas"
+                    placeholder="Факултетен номер" required>
+            </div>
 
             <?php
                 $submit_button = new ButtonComponent("Създаване на церемония", ButtonStyleType::Primary, true);

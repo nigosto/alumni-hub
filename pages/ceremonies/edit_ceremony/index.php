@@ -35,21 +35,44 @@ $ceremony_info["date"] = str_replace(' ', 'T', $ceremony_info["date"]);
         <h1>Редактиране на церемония</h1>
 
         <form id="edit-form">
-            <input type="datetime-local" id="date" name="date" placeholder="Дата на церемонията" required
-            required value="<?= htmlspecialchars($ceremony_info['date'], ENT_QUOTES, 'UTF-8')?>">
-            <input type="number" id="graduation-year" name="graduation-year" placeholder="Година на завършване" required
-            value="<?= $ceremony_info['graduation_year']?>">
-            <input type="text" id="speaker" name="speaker" placeholder="Покана към студент за церемониална реч" required 
-            value="<?= htmlspecialchars($ceremony_info['speaker'], ENT_QUOTES, 'UTF-8') ?>">
-            <input type="text" id="responsible-robes" name="responsible-robes" 
-                placeholder="Покана към студент за отговорник на церемониалните тоги" required
-                required value="<?= htmlspecialchars($ceremony_info['responsible_robes'], ENT_QUOTES, 'UTF-8') ?>">
-            <input type="text" id="responsible-signatures" name="responsible-signatures"
-                placeholder="Покана към студент за отговорник на дипломните подписи" required
-                required value="<?= htmlspecialchars($ceremony_info['responsible_signatures'], ENT_QUOTES, 'UTF-8') ?>">
-            <input type="text" id="responsible-diplomas" name="responsible-diplomas"
-                placeholder="Покана към студент за отговорник по връчване на дипломите" required
-                required value="<?= htmlspecialchars($ceremony_info['responsible_diplomas'], ENT_QUOTES, 'UTF-8') ?>">
+            <div class="form-entry-container">
+                <label class="form-label">Дата на церемонията: </label>
+                <input type="datetime-local" id="date" name="date" required
+                required value="<?= htmlspecialchars($ceremony_info['date'], ENT_QUOTES, 'UTF-8')?>">
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Година на завършване: </label>
+                <input type="number" id="graduation-year" name="graduation-year" placeholder="Година на завършване" required
+                value="<?= $ceremony_info['graduation_year']?>">
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, изнасящ церемониална реч: </label>
+                <input type="text" id="speaker" name="speaker" placeholder="Факултетен номер" required 
+                value="<?= htmlspecialchars($ceremony_info['speaker'], ENT_QUOTES, 'UTF-8') ?>">
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник за церемониалните тоги: </label>
+                <input type="text" id="responsible-robes" name="responsible-robes" 
+                    placeholder="Факултетен номер" required
+                    required value="<?= htmlspecialchars($ceremony_info['responsible_robes'], ENT_QUOTES, 'UTF-8') ?>">
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник за дипломните подписи: </label>
+                <input type="text" id="responsible-signatures" name="responsible-signatures"
+                    placeholder="Факултетен номер" required
+                    required value="<?= htmlspecialchars($ceremony_info['responsible_signatures'], ENT_QUOTES, 'UTF-8') ?>">
+            </div>
+
+            <div class="form-entry-container">
+                <label class="form-label">Студент, отговорник по връчване на дипломите: </label>
+                <input type="text" id="responsible-diplomas" name="responsible-diplomas"
+                    placeholder="Факултетен номер" required
+                    required value="<?= htmlspecialchars($ceremony_info['responsible_diplomas'], ENT_QUOTES, 'UTF-8') ?>">
+            </div>
 
             <?php
                 $submit_button = new ButtonComponent("Редактиране на церемония", ButtonStyleType::Primary, true);

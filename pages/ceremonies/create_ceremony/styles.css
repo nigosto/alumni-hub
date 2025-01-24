@@ -16,8 +16,18 @@
   margin-right: 10px;
 }
 
-#registration-form {
+#creation-form {
+  gap: 15px;
+}
+
+.form-entry-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: 10px;
+}
+
+.form-label {
+  align-self: flex-start;
+  font-size: 0.9em;
 }
