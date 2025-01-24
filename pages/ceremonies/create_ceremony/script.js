@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                form.reset();
+                const baseUrl = localStorage.getItem("baseUrl");
+                window.location.href = `${baseUrl}/ceremonies`;
             } else {
                 // TODO: proper error handling
                 throw new Error(data.message || 'Ceremony creation failed');
