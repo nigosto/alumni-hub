@@ -89,7 +89,7 @@ class CeremoniesService extends DataService
                 // Get current special people info
                 $old_special_people_info = $this->ceremonies_attendance_service->get_ceremony_special_people_info($ceremony_id);
 
-                // Get new special ceremony attendances
+                // Get newly requested special ceremony attendances
                 $requested_special_ceremony_attendances = $this->get_special_ceremony_attendances(
                     $ceremony_info["id"],
                     $speaker,
@@ -105,65 +105,233 @@ class CeremoniesService extends DataService
                     return $result;
                 }, []);
 
-                // Now, based on the differences, decide the new ceremony attendances
+                // Students who were previously special but now will be ordinary
+                $new_ordinary_ceremony_attendances = [];
+
                 foreach ($old_special_people_info as $old_info)
                 {
                     $student_fn = $old_info["student_fn"];
+                    // This can be null or 1(accepted attendance), cannot be 0(declined attendance)
+                    $old_accepted = $old_info["accepted"];
+                    // "old_speach_status" can be Waiting, acceptedр declined or none
+                    $old_speach_status = $old_info["speach_status"];
+                    // "old_responsibility_status" can be a waiting, an accepted, declined or none
+                    $old_responsibility_status = $old_info["responsibility_status"];
+
+                    // NOTE: Between "old_speach_status" and "old_responsibility_status", at least one has to be waiting or accepted 
+                    //   This also means that old_accepted cannot be 0(declined attendance), since that would invalidate waiting or accepted
+
                     if (!isset($new_special_ceremony_attendances[$student_fn]))
                     {
                         // This used to be a special student who will now be ordinary
-                        // Upon creation of the ordinary attendances, his "special" statuses will be "cleared"
+                        // His special roles will be cleared if they weren't declined, otherwise will stay declined
+                        // His "accepted" status will be cleared depending on his old special roles
+                        $new_ordinary_attendance = new CeremonyAttendance(
+                            $ceremony_id,
+                            $student_fn,
+                            null, 
+                            SpeachStatus::None,
+                            ResponsibilityStatus::None
+                        );
+
+                        if ($old_speach_status !== SpeachStatus::Accepted &&
+                            $old_responsibility_status !== ResponsibilityStatus::AcceptedRobes &&
+                            $old_responsibility_status !== ResponsibilityStatus::AcceptedSignatures &&
+                            $old_responsibility_status !== ResponsibilityStatus::AcceptedDiplomas)
+                        {
+                            // The student hadn't confirmed any of his old roles, so set his "accepted" to its last value
+                            $new_ordinary_attendance->set_accepted($old_accepted);
+                        }
+                        else
+                        {
+                            // The student had confirmed some of his old roles, so set his "accepted" to null
+                            // (he might not want to come to the ceremony without his previously accepted role/roles)
+                            $new_ordinary_attendance->set_accepted(null);
+                        }
+
+                        if ($old_speach_status !== SpeachStatus::Declined)
+                        {
+                            // If the old status wasn't declined, reset it to none
+                            $new_ordinary_attendance->set_speach_status(SpeachStatus::None);
+                        }
+                        else
+                        {
+                            // If old status was declined, keep it declined
+                            $new_ordinary_attendance->set_speach_status(SpeachStatus::Declined);
+                        }
+
+                        if ($old_responsibility_status !== ResponsibilityStatus::DeclinedRobes &&
+                            $old_responsibility_status !== ResponsibilityStatus::DeclinedSignatures &&
+                            $old_responsibility_status !== ResponsibilityStatus::DeclinedDiplomas)
+                        {
+                            // If the old status wasn't declined, reset it to none
+                            $new_ordinary_attendance->set_responsibility_status(ResponsibilityStatus::None);
+                        }
+                        else
+                        {
+                            // If old status was declined, keep it declined
+                            $new_ordinary_attendance->set_responsibility_status($old_responsibility_status);
+                        }
+
+                        $new_ordinary_ceremony_attendances[] = $new_ordinary_attendance;
                         continue;
                     }
                     
                     $new_attendance = $new_special_ceremony_attendances[$student_fn];
-                    
+              
+                    // "new_speach_status" can be Waiting or none
                     $new_speach_status = $new_attendance->get_speach_status();
-                    $old_speach_status = $old_info["speach_status"];
-                    // 1) Already accepted speach status remains accepted
-                    // 2) If the old status was declined, the student will be asked again, so we don't need to do anything
-                    // 3) If the old status was waiting, we don't need to do anything
-                    // 3) If the old status was none, we don't need to do anything
-                    if ($old_speach_status !== $new_speach_status &&
-                        $old_speach_status === SpeachStatus::Accepted && 
-                        $new_speach_status === SpeachStatus::Waiting)
+                    // "new_responsibility_status" can be a waiting or none 
+                    $new_responsibility_status = $new_attendance->get_responsibility_status();
+
+                    // 1) If special student has previously accepted to attend and their roles have not changed
+                    //    we keep their "accepted" attendance
+                    // 2) If special student has previously accepted to attend and their roles were previously unconfirmed
+                    //    we keep their "accepted" attendance (since presumably they are coming to the ceremony regardless of their roles)
+                    if ($old_accepted === 1)
                     {
-                        $new_special_ceremony_attendances[$student_fn]->set_speach_status(SpeachStatus::Accepted);
+                        if ($old_speach_status === $new_speach_status && $old_responsibility_status === $new_responsibility_status)
+                        {
+                            // Their roles are unchanged => "accepted" remains true and we don't have to check for anymore changes
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
+                            continue;
+                        }
+                        else if ($old_speach_status !== SpeachStatus::Accepted &&
+                                ($old_responsibility_status !== ResponsibilityStatus::AcceptedRobes &&
+                                 $old_responsibility_status !== ResponsibilityStatus::AcceptedSignatures &&
+                                 $old_responsibility_status !== ResponsibilityStatus::AcceptedDiplomas))
+                        {
+                            // Their old roles were not accepted => "accepted" remains true
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
+                        }
                     }
                     
-                    $new_responsibility_status = $new_attendance->get_responsibility_status();
-                    $old_responsibility_status = $old_info["responsibility_status"];
+                    if ($old_speach_status !== $new_speach_status)
+                    {
+                        if ($old_speach_status === SpeachStatus::Accepted && 
+                            $new_speach_status === SpeachStatus::Waiting)
+                        {
+                            // Already accepted speach status remains the same
+                            $new_special_ceremony_attendances[$student_fn]->set_speach_status(SpeachStatus::Accepted);
+                            // Student was a speaker, so he should still be attending the ceremony
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
+                        }
+                        else if ($old_speach_status === SpeachStatus::Declined &&
+                                 $new_speach_status === SpeachStatus::None)
+                        {
+                            // Already declined speach status remains the same
+                            $new_special_ceremony_attendances[$student_fn]->set_speach_status(SpeachStatus::Declined);
+                        }
+                        // NOTE: If old status is declined and new one is waiting, we will reinvite the student.
+                    }
+
+                    if ($student_fn === "0MI0800065")
+                    {
+                        var_dump($new_special_ceremony_attendances[$student_fn]);
+                    }
                     
                     if ($old_responsibility_status !== $new_responsibility_status)
                     {
-                        // 1) Old status was accepted for robes and new status is unchanged => do not invalidate the accepted status
                         if ($old_responsibility_status === ResponsibilityStatus::AcceptedRobes &&
                             $new_responsibility_status === ResponsibilityStatus::WaitingRobes)
                         {
+                            // Old status was accepted new status is unchanged => do not invalidate the accepted status
                             $new_special_ceremony_attendances[$student_fn]->set_responsibility_status(ResponsibilityStatus::AcceptedRobes);
+                            // Student was a responsible person, so he should still be attending the ceremony
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
                         }
-                        // 2) Old status was accepted for signatures and new status is unchanged => do not invalidate the accepted status
                         else if ($old_responsibility_status === ResponsibilityStatus::AcceptedSignatures &&
                                  $new_responsibility_status === ResponsibilityStatus::WaitingSignatures)
                         {
+                            // Old status was accepted new status is unchanged => do not invalidate the accepted status
                             $new_special_ceremony_attendances[$student_fn]->set_responsibility_status(ResponsibilityStatus::AcceptedSignatures);
+                            // Student was a responsible person, so he should still be attending the ceremony
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
                         }
-                        // 3) Old status was accepted for diplomas and new status is unchanged => do not invalidate the accepted status
                         else if ($old_responsibility_status === ResponsibilityStatus::AcceptedDiplomas &&
                                  $new_responsibility_status === ResponsibilityStatus::WaitingDiplomas)
                         {
+                            // Old status was accepted new status is unchanged => do not invalidate the accepted status
                             $new_special_ceremony_attendances[$student_fn]->set_responsibility_status(ResponsibilityStatus::AcceptedDiplomas);
+                            // Student was a responsible person, so he should still be attending the ceremony
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
                         }
-                        // 4) In all other cases, we the new responsibility status is already correct, no need to do anything
+                        else if (($old_responsibility_status === ResponsibilityStatus::DeclinedRobes ||
+                                  $old_responsibility_status === ResponsibilityStatus::DeclinedSignatures ||
+                                  $old_responsibility_status === ResponsibilityStatus::DeclinedDiplomas) &&
+                            $new_responsibility_status === ResponsibilityStatus::None)
+                        {
+                            // Old status was declined and new status is none => do not invalidate the declined status
+                            $new_special_ceremony_attendances[$student_fn]->set_responsibility_status($old_responsibility_status);
+                        }
+                        // In all other cases, the new responsibility status is waiting, no need to do anything
+                        // NOTE: This includes if the student had previously declined. We will reinvite them in that case.
+                        // The "accepted" is also "null", i.e. the student has not declined or accepted attending the ceremony
                     }
                 }
-                
-                $ordinary_ceremony_attendances = $this->get_ordinary_ceremony_attendances(
-                    array_values($new_special_ceremony_attendances),
-                    $ceremony_info["id"],
-                    $ceremony_info["graduation_year"]
-                );
-                $all_ceremony_attendances = [...$new_special_ceremony_attendances, ... $ordinary_ceremony_attendances];
+
+                $special_declined_or_ordinary_ceremony_attendances = 
+                    $this->ceremonies_attendance_service->get_ceremony_declined_special_or_ordinary_people_info($ceremony_id);
+
+                foreach ($special_declined_or_ordinary_ceremony_attendances as $declined_or_ordinary_attendance)
+                {
+                    $student_fn = $declined_or_ordinary_attendance["student_fn"];
+
+                    if (!isset($old_special_people_info[$student_fn]) && 
+                        isset($new_special_ceremony_attendances[$student_fn]))
+                    {
+                        // This used to be a student who:
+                        // 1) declined at least one special role and used to not have taken on any roles
+                        // 2) had no special roles (speach_status: "none" and responsibility_status: "none")
+                        // This student will now be invited for a special role
+                        // For roles that he has already declined and are not changed, we want to keep them declined
+                        $new_attendance = $new_special_ceremony_attendances[$student_fn];
+
+                        // old accepted status, can be null, 1(accepted) or 0(declined)
+                        $old_accepted = $declined_or_ordinary_attendance["accepted"];
+
+                        // "old_speach_status" can be Declined or none
+                        $old_speach_status = $declined_or_ordinary_attendance["speach_status"];
+                        // "new_speach_status" can be Waiting or none
+                        $new_speach_status = $new_attendance->get_speach_status();
+
+                        // "new_responsibility_status" can be a "waiting type" or none 
+                        $new_responsibility_status = $new_attendance->get_responsibility_status();
+                        // "old_responsibility_status" can be a "declined type", or none
+                        $old_responsibility_status = $old_info["responsibility_status"];
+
+                        if ($old_accepted === 1)
+                        {
+                            // If the student had accepted the ceremony before, keep it that way
+                            // (he didn't have special roles, so presumably he can just decline the newly requested special roles and attend)
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(1);
+                        }
+                        else 
+                        {
+                            // If the student had not accepted the ceremony before, request him again
+                            // (his role is changed and now he might change his mind)
+                            $new_special_ceremony_attendances[$student_fn]->set_accepted(null);
+                        }
+
+                        if ($old_speach_status === SpeachStatus::Declined && 
+                            $new_speach_status === SpeachStatus::None)
+                        {
+                            // Keep the status declined
+                            $new_special_ceremony_attendances[$student_fn]->set_speach_status(SpeachStatus::Declined);
+                        }
+
+                        if (($old_responsibility_status === ResponsibilityStatus::DeclinedRobes ||
+                                $old_responsibility_status === ResponsibilityStatus::DeclinedSignatures || 
+                                $old_responsibility_status === ResponsibilityStatus::DeclinedDiplomas) && 
+                            $new_responsibility_status === ResponsibilityStatus::None)
+                        {
+                            // Keep the status declined
+                            $new_special_ceremony_attendances[$student_fn]->set_responsibility_status($old_responsibility_status);
+                        }
+                    }
+                }
+
+                $all_ceremony_attendances = [...$new_special_ceremony_attendances, ... $new_ordinary_ceremony_attendances];
                 
                 $this->ceremonies_attendance_service->update_many_ceremony_attendances($all_ceremony_attendances);
                 
@@ -462,7 +630,7 @@ class CeremoniesService extends DataService
             $ceremony_info["graduation_year"]
         );
         $all_ceremony_attendances = [...$special_ceremony_attendances, ... $ordinary_ceremony_attendances];
-        $this->ceremonies_attendance_service->update_many_ceremony_attendances($all_ceremony_attendances);
+        $this->ceremonies_attendance_service->update_all_ceremony_attendances($all_ceremony_attendances);
         
         // Update ceremony info second
         $this->update_ceremony_info($ceremony_info);
