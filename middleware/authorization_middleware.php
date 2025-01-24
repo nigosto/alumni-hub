@@ -3,7 +3,7 @@ class AuthorizationMiddleware
 {
     public function is_authenticated($next)
     {
-        return function () use ($next) {
+        return function ($params) use ($next) {
             session_start();
             if (!isset($_SESSION["id"])) {
                 $base_url = $_ENV["BASE_URL"];
@@ -13,7 +13,7 @@ class AuthorizationMiddleware
                 return;
             }
 
-            $next();
+            $next($params);
         };
     }
 

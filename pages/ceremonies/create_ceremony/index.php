@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../../components/header/header_component.php";
 require_once __DIR__ . "/../../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../../components/button/link.php";
-require_once __DIR__ . "/../../components/message/message_component.php";
+require_once __DIR__ . "/../../../components/message/message_component.php";
 
 $base_url = $_ENV["BASE_URL"];
 $header = new HeaderComponent();
