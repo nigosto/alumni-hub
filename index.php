@@ -267,32 +267,11 @@ $router->register_route(
 $router->register_route(
     'PATCH',
     'ceremonies/attendance',
-    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller, $ceremonies_attendance_service) {
+    $authorization_middleware->is_authorized(Role::Student, function () use ($ceremonies_controller) {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
-            $ceremony_id = intval($data["ceremony_id"]);
-            $status = boolval($data["status"]);
-
-            session_start();
-            $student_fn = $_SESSION["fn"];
-
-            $ceremonies_controller->update_accepted_status($ceremony_id, $student_fn, $status);
-
-            if ($status === false) {
-                $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, SpeachStatus::Declined);
-
-                $attendance = $ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
-                $responsibility_status = ResponsibilityStatus::tryFrom($attendance->to_array()["responsibility_status"]);
-
-                
-                if ($responsibility_status === ResponsibilityStatus::AcceptedDiplomas || $responsibility_status === ResponsibilityStatus::WaitingDiplomas) {
-                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedDiplomas);
-                } else if ($responsibility_status === ResponsibilityStatus::AcceptedRobes || $responsibility_status === ResponsibilityStatus::WaitingRobes) {
-                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedRobes);
-                } else if ($responsibility_status === ResponsibilityStatus::AcceptedSignatures || $responsibility_status === ResponsibilityStatus::WaitingSignatures) {
-                    $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedSignatures);
-                }
-            }
+            
+            $ceremonies_controller->update_ceremony_invitation($data);
             echo json_encode(["Message" => "Success"]);
         } catch (Exception $e) {
             http_response_code(500);

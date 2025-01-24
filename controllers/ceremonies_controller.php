@@ -54,10 +54,6 @@ class CeremoniesController
         return $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, $status);
     }
 
-    public function update_accepted_status($ceremony_id, $student_fn, $status) {
-        return $this->ceremonies_attendance_service->update_accepted_status($ceremony_id, $student_fn, $status);
-    }
-
     public function update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus $status) {
         return $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, $status);
     }
@@ -106,6 +102,31 @@ class CeremoniesController
         }
 
         return $ceremonies_info;
+    }
+
+    public function update_ceremony_invitation($data) {
+        $ceremony_id = intval($data["ceremony_id"]);
+        $status = boolval($data["status"]);
+
+        session_start();
+        $student_fn = $_SESSION["fn"];
+
+        $this->ceremonies_attendance_service->update_accepted_status($ceremony_id, $student_fn, $status);
+
+        if ($status === false) {
+            $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, SpeachStatus::Declined);
+
+            $attendance = $$this->ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
+            $responsibility_status = ResponsibilityStatus::tryFrom($attendance->to_array()["responsibility_status"]);
+            
+            if ($responsibility_status === ResponsibilityStatus::AcceptedDiplomas || $responsibility_status === ResponsibilityStatus::WaitingDiplomas) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedDiplomas);
+            } else if ($responsibility_status === ResponsibilityStatus::AcceptedRobes || $responsibility_status === ResponsibilityStatus::WaitingRobes) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedRobes);
+            } else if ($responsibility_status === ResponsibilityStatus::AcceptedSignatures || $responsibility_status === ResponsibilityStatus::WaitingSignatures) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedSignatures);
+            }
+        }
     }
 }
 ?>
