@@ -9,6 +9,23 @@ enum SpeachStatus: string
     case Accepted = "accepted";
 }
 
+function parse_speach_status($speach_status)
+{
+    $speach_status = mb_strtolower($speach_status);
+    switch ($speach_status) {
+        case 'няма':
+            return SpeachStatus::None;
+        case 'изчакващ':
+            return SpeachStatus::Waiting;
+        case 'отказал':
+            return SpeachStatus::Declined;
+        case 'приел':
+            return SpeachStatus::Accepted;
+        default:
+            throw new Exception("Невалиден статус за речи!");
+    }
+}
+
 function speach_status_invite_string($speach_status)
 {
     switch ($speach_status) {
@@ -37,6 +54,35 @@ enum ResponsibilityStatus: string
     case DeclinedRobes = "declined_robes";
     case DeclinedSignatures = "declined_signatures";
     case DeclinedDiplomas = "declined_diplomas"; 
+}
+
+function parse_responsibility_status($responsibility_status)
+{
+    $responsibility_status = mb_strtolower($responsibility_status);
+    switch ($responsibility_status) {
+        case 'няма':
+            return ResponsibilityStatus::None;
+        case 'изчакващ отговорник за тоги':
+            return ResponsibilityStatus::WaitingRobes;
+        case 'изчакващ отговорник за подписи':
+            return ResponsibilityStatus::WaitingSignatures;
+        case 'изчакващ отговорник за връчване на дипломи':
+            return ResponsibilityStatus::WaitingDiplomas;
+        case 'отказал отговорник за тоги':
+            return ResponsibilityStatus::DeclinedRobes;
+        case 'отказал отговорник за подписи':
+            return ResponsibilityStatus::DeclinedSignatures;
+        case 'отказал отговорник за връчване на дипломи':
+            return ResponsibilityStatus::DeclinedDiplomas;
+        case 'приел отговорник за тоги':
+            return ResponsibilityStatus::AcceptedRobes;
+        case 'приел отговорник за подписи':
+            return ResponsibilityStatus::AcceptedSignatures;
+        case 'приел отговорник за връчване на дипломи':
+            return ResponsibilityStatus::AcceptedDiplomas;
+        default:
+            throw new Exception("Невалиден статус за отговорности!");
+    }
 }
 
 function responsibility_status_invite_string($responsibility_status)
