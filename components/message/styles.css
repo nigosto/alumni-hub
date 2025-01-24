@@ -1,6 +1,6 @@
 .popup {
   position: fixed;
-  bottom: 20px;
+  bottom: 50px;
   left: 50%;
 
   background-color: var(--error-primary-color);
