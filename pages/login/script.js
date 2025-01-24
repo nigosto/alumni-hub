@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 form.reset();
                 const user = await response.json();
-                localStorage.setItem("role", user.role);
 
                 if (user.role.toLowerCase() === "student") {
                     window.location.href = `${baseUrl}/login/pick-fn`;
@@ -29,11 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const baseUrl = localStorage.getItem("baseUrl");
                     window.location.href = `${baseUrl}/profile`;
                 }
-            } else {
-                throw new Error(data.message || 'Login failed');
+            }
+            else {
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 });

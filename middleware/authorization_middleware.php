@@ -4,17 +4,19 @@ require_once __DIR__ . "/../services/users_service.php";
 class AuthorizationMiddleware {
     private UsersService $user_service;
 
-    function __construct($user_service) {
+    function __construct($user_service) 
+    {
         $this->user_service = $user_service;
     }
 
-    public function is_authenticated($next, $check_approval = true) {
+    public function is_authenticated($next, $check_approval = true) 
+    {
         return function() use ($next, $check_approval) {
             session_start();
             if (!isset($_SESSION["id"])) {
                 $base_url = $_ENV["BASE_URL"];
                 http_response_code(401);
-                echo json_encode(["Message" => "Fail: not authenticated"]);
+                echo json_encode(["message" => "Неаутентикиран потребител!"]);
                 header("Location: $base_url/login");
                 return;
             }
@@ -31,14 +33,15 @@ class AuthorizationMiddleware {
         };
     }
 
-    public function is_authorized($role, $next, $check_approval = true) {
+    public function is_authorized($role, $next, $check_approval = true) 
+    {
         return $this->is_authenticated(function() use ($role, $next) {
             session_start();
             $session_role = $_SESSION["role"];
             if (!isset($session_role) || $session_role !== $role) {
                 $base_url = $_ENV["BASE_URL"];
                 http_response_code(403);
-                echo json_encode(["Message" => "Fail: access denied"]);
+                echo json_encode(["message" => "Достъпът е отказан!"]);
                 header("Location: $base_url/access-denied");
                 return;
             }
@@ -47,15 +50,16 @@ class AuthorizationMiddleware {
         }, $check_approval);
     }
 
-    public function is_not_authenticated($next) {
-        return function() use ($next) {
+    public function is_not_authenticated($next)
+    {
+        return function () use ($next) {
             session_start();
             if (isset($_SESSION["id"])) {
                 http_response_code(403);
-                echo json_encode(["Message" => "Fail: access denied"]);
+                echo json_encode(["message" => "Достъпът е отказан!"]);
                 return;
             }
-    
+
             $next();
         };
     }

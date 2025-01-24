@@ -6,19 +6,28 @@ require_once __DIR__ . "/../../components/metadata/metadata_component.php";
 require_once __DIR__ . "/../../components/header/header_component.php";
 require_once __DIR__ . "/../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../components/button/index.php";
+require_once __DIR__ . "/../../components/message/message_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
 $submit_button = new ButtonComponent("Изпращане", ButtonStyleType::Primary, true);
+$message = new MessageComponent();
 
 $stylesheets = array_merge(
   $header->get_stylesheets(),
   $footer->get_stylesheets(),
+  MessageComponent::get_stylesheets(),
   $submit_button->get_stylesheets(),
   [$_ENV["BASE_URL"] . "/pages/import-students/styles.css"]
 );
 
-$meta = new MetadataComponent($stylesheets, [$_ENV["BASE_URL"] . "/pages/import-students/script.js"]);
+$meta = new MetadataComponent(
+  $stylesheets,
+  array_merge(
+    MessageComponent::get_scripts(),
+    [$_ENV["BASE_URL"] . "/pages/import-students/script.js"]
+  )
+);
 echo $meta->render();
 ?>
 
@@ -39,6 +48,7 @@ echo $meta->render();
         <?php echo $submit_button->render(); ?>
       </form>
     </section>
+    <?php echo $message->render(); ?>
   </main>
   <?php
   echo $footer->render();
