@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                form.reset();
+                const baseUrl = localStorage.getItem("baseUrl");
+                window.location.href = `${baseUrl}/ceremonies`;
             } else {
                 throw await response.json();
             }

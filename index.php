@@ -19,7 +19,8 @@ require_once __DIR__ . "/services/users_service.php";
 require_once __DIR__ . "/services/clothes_service.php";
 require_once __DIR__ . "/middleware/authorization_middleware.php";
 require_once __DIR__ . "/models/user.php";
-error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED);
 load_config(".env");
 
 $router = new Router();
@@ -28,8 +29,11 @@ $database = new Database();
 $students_service = new StudentsService($database);
 $users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
-$ceremoinies_service = new CeremoniesService($database);
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
+$ceremonies_service = new CeremoniesService(
+    $database, 
+    $ceremonies_attendance_service, 
+    $students_service);
 $students_export_service = new StudentsExportService();
 $clothes_service = new ClothesService($database);
 
@@ -39,11 +43,7 @@ $authentication_controller = new AuthenticationController($users_service, $stude
 $admin_controller = new AdminController($users_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service);
 $ceremonies_controller = new CeremoniesController(
-    $ceremoinies_service,
-
-    $ceremonies_attendance_service,
-
-    $students_service
+    $ceremonies_service
 );
 
 $authorization_middleware = new AuthorizationMiddleware(
@@ -259,6 +259,33 @@ $router->register_route(
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(["message" => $e->getMessage()]);
+        }
+    })
+);
+
+$router->register_route(
+    'GET', 
+    'ceremonies',
+    $authorization_middleware->is_authorized(Role::Administrator, 
+     function () use ($ceremonies_controller) {
+    $ceremonies_controller->show_ceremonies_list_page();
+}));
+
+$router->register_route(
+    'POST',
+    'add-fn',
+    $authorization_middleware->is_authorized(Role::Student, function () use ($authentication_controller) {
+        try {
+            header('Content-Type: application/json');
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            $authentication_controller->add_fn($data);
+
+            echo json_encode(["Message" => "Success"]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
         }
     })
 );
