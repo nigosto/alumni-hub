@@ -116,7 +116,7 @@ class CeremoniesController
         if ($status === false) {
             $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, SpeachStatus::Declined);
 
-            $attendance = $$this->ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
+            $attendance = $this->ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
             $responsibility_status = ResponsibilityStatus::tryFrom($attendance->to_array()["responsibility_status"]);
             
             if ($responsibility_status === ResponsibilityStatus::AcceptedDiplomas || $responsibility_status === ResponsibilityStatus::WaitingDiplomas) {
