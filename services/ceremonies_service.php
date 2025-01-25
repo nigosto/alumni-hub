@@ -654,7 +654,7 @@ class CeremoniesService extends DataService
             $ceremony_info["id"],
             $ceremony_info["graduation_year"]
         );
-        $all_ceremony_attendances = [...$special_ceremony_attendances, ... $ordinary_ceremony_attendances];
+        $all_ceremony_attendances = [...$special_ceremony_attendances, ...$ordinary_ceremony_attendances];
         $this->ceremonies_attendance_service->update_all_ceremony_attendances($all_ceremony_attendances);
         
         // Update ceremony info second
