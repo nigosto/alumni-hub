@@ -76,6 +76,15 @@ class AuthenticationController
             session_start();
 
             if ($role === Role::Student) {
+                $student = $this->students_service->get_student_by_fn($fn);
+                if (!$student) {
+                    throw new Exception('Невалиден факултетен номер!');
+                }
+
+                if ($student->to_array()["user_id"] !== null) {
+                    throw new Exception("Невалиден факултетен номер!");
+                }
+                
                 $user = new User(null, $email, $password_hash, $username, $role->value, true);
                 
                 $registered_user_id = $this->users_service->insert($user);
