@@ -26,6 +26,22 @@ function parse_speach_status($speach_status)
     }
 }
 
+function speach_status_invite_string($speach_status)
+{
+    switch ($speach_status) {
+        case SpeachStatus::None:
+            return 'няма';
+        case SpeachStatus::Waiting:
+            return 'подадена';
+        case SpeachStatus::Declined:
+            return 'отказана';
+        case SpeachStatus::Accepted:
+            return 'приета';
+        default:
+            throw new Exception("Невалиден статус за реч!");
+    }
+}
+
 enum ResponsibilityStatus: string
 {
     case None = "none"; 
@@ -64,6 +80,34 @@ function parse_responsibility_status($responsibility_status)
             return ResponsibilityStatus::AcceptedSignatures;
         case 'приел отговорник за връчване на дипломи':
             return ResponsibilityStatus::AcceptedDiplomas;
+        default:
+            throw new Exception("Невалиден статус за отговорности!");
+    }
+}
+
+function responsibility_status_invite_string($responsibility_status)
+{
+    switch ($responsibility_status) {
+        case ResponsibilityStatus::None:
+            return 'няма';
+        case ResponsibilityStatus::WaitingRobes:
+            return 'подадена, за отговорник за тоги';
+        case ResponsibilityStatus::WaitingSignatures:
+            return 'подадена, за отговорник за подписи';
+        case ResponsibilityStatus::WaitingDiplomas:
+            return 'подадена, за отговорник за връчване на дипломи';
+        case ResponsibilityStatus::DeclinedRobes:
+            return 'отказана, за отговорник за тоги';
+        case ResponsibilityStatus::DeclinedSignatures:
+            return 'отказана, за отговорник за подписи';
+        case ResponsibilityStatus::DeclinedDiplomas:
+            return 'отказана, за отговорник за връчване на дипломи';
+        case ResponsibilityStatus::AcceptedRobes:
+            return 'приета, за отговорник за тоги';
+        case ResponsibilityStatus::AcceptedSignatures:
+            return 'приета, за отговорник за дипломни подписи';
+        case ResponsibilityStatus::AcceptedDiplomas:
+            return 'приета, за отговорник за връчване на дипломи';
         default:
             throw new Exception("Невалиден статус за отговорности!");
     }
@@ -125,6 +169,11 @@ class CeremonyAttendance implements IModel
     public function set_responsibility_status($val)
     {
         $this->responsibility_status = $val;
+    }
+
+    public static function labels_ceremony_students_list()
+    {
+        return ["Факултетен номер", "Степен", "Имена", "Година на завършване", "Размер на тоги", "Покана за изнасяне на реч?", "Покана за отговорник?"];
     }
 }
 ?>
