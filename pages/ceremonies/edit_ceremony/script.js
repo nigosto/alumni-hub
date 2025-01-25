@@ -30,16 +30,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify({ date, graduation_year, speaker, responsible_robes, responsible_signatures, responsible_diplomas }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
                 window.location.href = `${baseUrl}/ceremonies`;
             } else {
-                // TODO: proper error handling
-                throw new Error(data.message || 'Ceremony editing failed');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 });

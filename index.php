@@ -295,10 +295,10 @@ $router->register_route(
             $data = json_decode(file_get_contents("php://input"), true);
             
             $ceremonies_controller->update_ceremony_invitation($data);
-            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -316,10 +316,10 @@ $router->register_route(
             $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_speach_status($ceremony_id, $student_fn, $status);
-            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -337,10 +337,10 @@ $router->register_route(
             $student_fn = $_SESSION["fn"];
 
             $ceremonies_controller->update_responsibility_status($ceremony_id, $student_fn, $status);
-            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     })
 );
@@ -374,10 +374,10 @@ $router->register_route(
                 $ceremonies_controller->update_ceremony($data);
 
                 http_response_code(200);
-                echo json_encode(["Message" => "Success"]);
+                echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
             } catch (Exception $e) {
                 http_response_code(500);
-                echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+                echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
             }
 }));
 
@@ -392,10 +392,10 @@ $router->register_route(
 
             $authentication_controller->add_fn($data);
 
-            echo json_encode(["Message" => "Success"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
     }, false)
 );
@@ -420,7 +420,7 @@ $router->register_route(
             }
             catch(Exception $e) {
                 http_response_code(500);
-                echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+                echo json_encode(["message" => "{$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
             }
 }));
 

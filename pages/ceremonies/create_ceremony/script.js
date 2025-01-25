@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ date, graduation_year, speaker, responsible_robes, responsible_signatures, responsible_diplomas }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/ceremonies`;
