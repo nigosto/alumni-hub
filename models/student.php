@@ -45,16 +45,21 @@ class Student implements IModel
         $this->user_id = $user_id;
     }
 
-    public function to_array($prettify = false)
+    public function to_array($prettify = false, $omit_user_id = false)
     {
-        return [
+        $result = [
             "fn" => $this->fn,
             "degree" => $prettify ? prettify_degree($this->degree) : $this->degree->value,
             "fullname" => $this->fullname,
             "graduation_year" => intval($this->graduation_year),
-            "grade" => floatval($this->grade),
-            "user_id" => $this->user_id,
+            "grade" => floatval($this->grade)
         ];
+
+        if (!$omit_user_id) {
+            $result = array_merge($result, ["user_id" => $this->user_id]);
+        }
+
+        return $result;
     }
 
     public static function labels()

@@ -16,21 +16,23 @@ window.addEventListener("load", () => {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    const baseUrl = localStorage.getItem("baseUrl");
 
     const reader = new FileReader();
     try {
       reader.onload = async function (e) {
-        await fetch('import', {
+        fetch('import', {
           method: 'POST',
           body: JSON.stringify({
             file: e.target.result.split("base64,")[1]
           })
-        });
+        }).then(() => window.location.href = `${baseUrl}/students`);
       };
       reader.readAsDataURL(file.files[0]);
     }
     catch (error) {
-      showPopup(error.message);
+      const popup = document.getElementById("error-popup");
+      showPopup(popup, error.message);
     }
   });
 });

@@ -52,7 +52,8 @@ class HeaderComponent extends Component
 
         if ($role === Role::Admin) {
             $html .= <<<HTML
-                <li><a href="$base_url/admin/approval">Преглед на потребители</a></li>
+                <li><a href="$base_url/admin/approval/administrators">Преглед на администратори</a></li>
+                <li><a href="$base_url/admin/approval/students">Преглед на студенти</a></li>
             HTML;
         }
 

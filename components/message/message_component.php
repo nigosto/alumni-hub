@@ -1,12 +1,25 @@
 <?php
 require_once __DIR__ . "/../component.php";
 
+enum MessageVariant: string
+{
+    case Error = "error-popup";
+    case Success = "success-popup";
+}
+
 class MessageComponent extends Component
 {
+    private MessageVariant $variant;
+
+    function __construct(MessageVariant $variant) {
+        $this->variant = $variant;
+    }
+
     public function render()
     {
+        $variant = $this->variant->value;
         return <<<HTML
-            <div id="popup" class="popup hidden" role="alert" aria-live="assertive"></div>
+            <div id="$variant" class="popup hidden $variant" role="alert" aria-live="assertive"></div>
         HTML;
     }
 

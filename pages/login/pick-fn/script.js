@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw await response.json();
             }
         } catch (error) {
-            showPopup(error.message);
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 
@@ -46,12 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                window.location.href = `${baseUrl}/profile`;
+                const popup = document.getElementById("success-popup");
+                showPopup(popup, "Заявката е изпратена успешно! Моля изчакайте докато бъдете одобрени!", 6000);
             } else {
-                throw new Error(data.message || 'Could not add faculty number');
+                throw new Error(data.message || 'Вече сте изпратили заявка за този факултетен номер!');
             }
         } catch (error) {
-            showPopup(error.message);
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 });
