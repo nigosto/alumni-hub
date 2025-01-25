@@ -1,15 +1,22 @@
 <?php
+require_once __DIR__ . "/../services/ceremonies_service.php";
 require_once __DIR__ . "/../services/ceremonies_attendance_service.php";
+require_once __DIR__ . "/../services/ceremony_students_export_service.php";
 
 class CeremoniesController
 {
-    private $ceremonies_service;
+    private CeremoniesService $ceremonies_service;
     private CeremoniesAttendanceService $ceremonies_attendance_service;
+    private CeremonyStudentsExportService $ceremony_students_export_service;
 
-    function __construct($ceremonies_service, CeremoniesAttendanceService $ceremonies_attendance_service)
+    function __construct(
+        CeremoniesService $ceremonies_service, 
+        CeremoniesAttendanceService $ceremonies_attendance_service,
+        CeremonyStudentsExportService $ceremony_students_export_service)
     {
         $this->ceremonies_service = $ceremonies_service;
         $this->ceremonies_attendance_service = $ceremonies_attendance_service;
+        $this->ceremony_students_export_service = $ceremony_students_export_service;
     }
 
     public function show_create_ceremony_page()
@@ -35,9 +42,15 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/students_list/index.php";
     }
 
-    public function get_ceremony_students_info($ceremonies_id)
+    public function export_students($ceremony_id)
     {
-        $ceremoniy_students_info = $this->ceremonies_service->get_ceremony_students_info($ceremonies_id);
+        $students = $this->ceremonies_service->get_ceremony_students_info($ceremony_id);
+        $this->ceremony_students_export_service->export($students);
+    }
+
+    public function get_ceremony_students_info($ceremony_id)
+    {
+        $ceremoniy_students_info = $this->ceremonies_service->get_ceremony_students_info($ceremony_id);
 
         if (!$ceremoniy_students_info)
         {

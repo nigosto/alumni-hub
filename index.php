@@ -13,6 +13,7 @@ require_once __DIR__ . "/database/database.php";
 require_once __DIR__ . "/services/students_service.php";
 require_once __DIR__ . "/services/ceremonies_service.php";
 require_once __DIR__ . "/services/ceremonies_attendance_service.php";
+require_once __DIR__ . "/services/ceremony_students_export_service.php";
 require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/users_service.php";
@@ -29,6 +30,7 @@ $database = new Database();
 $students_service = new StudentsService($database);
 $users_service = new UsersService($database);
 $students_import_service = new StudentsImportService();
+$ceremony_students_export_service = new CeremonyStudentsExportService();
 $ceremonies_attendance_service = new CeremoniesAttendanceService($database, $students_service);
 $ceremonies_service = new CeremoniesService(
     $database, 
@@ -44,7 +46,8 @@ $admin_controller = new AdminController($users_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service, $ceremonies_attendance_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremonies_service,
-    $ceremonies_attendance_service
+    $ceremonies_attendance_service,
+    $ceremony_students_export_service
 );
 
 $authorization_middleware = new AuthorizationMiddleware($users_service);
@@ -403,8 +406,16 @@ $router->register_route(
     'ceremony/students/{id}/export',
     $authorization_middleware->is_authorized(Role::Administrator, 
         function ($params) use ($ceremonies_controller) {
-            // $ceremonies_controller->show_ceremonies_studdents_page($params["id"]);
-            echo "KUUR", $params["id"];
+            try {
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename=students.csv');
+                $ceremonies_controller->export_students($params["id"]);  
+                throw new Exception("kuur");
+            }
+            catch(Exception $e) {
+                http_response_code(500);
+                echo json_encode(["Message" => "Fail: {$e->getMessage()}"]);
+            }
 }));
 
 $router->dispatch($request_method, $requested_uri);
