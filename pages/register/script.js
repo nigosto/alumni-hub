@@ -34,13 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const baseUrl = localStorage.getItem("baseUrl");
-                
-                window.location.href = `${baseUrl}/profile`;
+
+                if (role === "student") {
+                    localStorage.setItem("message", "Заявката е изпратена успешно! Моля изчакайте докато бъдете одобрени!");
+                    window.location.href = `${baseUrl}/login`;
+                } else {
+                    window.location.href = `${baseUrl}/profile`;
+                }
             } else {
                 throw await response.json();
             }
         } catch (error) {
-            showPopup(error.message);
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 });

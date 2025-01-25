@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const message = localStorage.getItem("message");
+    if (message) {
+        const popup = document.getElementById("success-popup");
+        showPopup(popup, message, 6000);
+        localStorage.removeItem("message");
+    }
+
     const form = document.getElementById('login-form');
 
     form.addEventListener('submit', async (e) => {
@@ -33,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw await response.json();
             }
         } catch (error) {
-            showPopup(error.message);
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 });

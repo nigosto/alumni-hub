@@ -17,6 +17,7 @@ require_once __DIR__ . "/services/students_import_service.php";
 require_once __DIR__ . "/services/students_export_service.php";
 require_once __DIR__ . "/services/users_service.php";
 require_once __DIR__ . "/services/clothes_service.php";
+require_once __DIR__ . "/services/requests_service.php";
 require_once __DIR__ . "/middleware/authorization_middleware.php";
 require_once __DIR__ . "/models/user.php";
 
@@ -36,11 +37,12 @@ $ceremonies_service = new CeremoniesService(
     $students_service);
 $students_export_service = new StudentsExportService();
 $clothes_service = new ClothesService($database);
+$requests_service = new RequestsService($database);
 
 $pages_controller = new PagesController();
 $students_controller = new StudentsController($students_service, $students_import_service, $students_export_service);
-$authentication_controller = new AuthenticationController($users_service, $students_service);
-$admin_controller = new AdminController($users_service);
+$authentication_controller = new AuthenticationController($users_service, $students_service, $requests_service);
+$admin_controller = new AdminController($users_service, $requests_service, $students_service);
 $user_controller = new UserController($users_service, $students_service, $clothes_service, $ceremonies_attendance_service);
 $ceremonies_controller = new CeremoniesController(
     $ceremonies_service,
@@ -104,7 +106,7 @@ $router->register_route(
     'login/pick-fn',
     $authorization_middleware->is_authorized(Role::Student, function ($params) use ($authentication_controller) {
         $authentication_controller->show_pick_fn_page();
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -122,7 +124,7 @@ $router->register_route(
             http_response_code(500);
             echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -163,9 +165,6 @@ $router->register_route(
             $students_controller->import_students($data);
 
             echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
-        } catch (PDOException $e) {
-            http_response_code(409);
-            echo json_encode(["message" => "Някои от студентите вече са импортнати"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -193,9 +192,17 @@ $router->register_route(
 
 $router->register_route(
     'GET',
-    'admin/approval',
+    'admin/approval/administrators',
     $authorization_middleware->is_authorized(Role::Admin, function ($params) use ($admin_controller) {
-        $admin_controller->show_approval_page();
+        $admin_controller->show_administrator_approval_page();
+    })
+);
+
+$router->register_route(
+    'GET',
+    'admin/approval/students',
+    $authorization_middleware->is_authorized(Role::Admin, function ($params) use ($admin_controller) {
+        $admin_controller->show_students_approval_page();
     })
 );
 
@@ -387,7 +394,7 @@ $router->register_route(
             http_response_code(500);
             echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
-    })
+    }, false)
 );
 
 $router->dispatch($request_method, $requested_uri);

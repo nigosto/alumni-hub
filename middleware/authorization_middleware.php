@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../services/users_service.php";
+require_once __DIR__ . "/../models/user.php";
 
 class AuthorizationMiddleware {
     private UsersService $user_service;
@@ -16,15 +17,24 @@ class AuthorizationMiddleware {
             if (!isset($_SESSION["id"])) {
                 $base_url = $_ENV["BASE_URL"];
                 http_response_code(401);
-                echo json_encode(["message" => "Неаутентикиран потребител!"], JSON_UNESCAPED_UNICODE);
+                echo json_encode(["message" => "Неудостоверен потребител!"], JSON_UNESCAPED_UNICODE);
                 header("Location: $base_url/login");
                 return;
             }
     
             $user = $this->user_service->get_user_by_id($_SESSION["id"]);
+            $user = $user->to_array();
+            $role = Role::tryFrom($user["role"]);
+            $base_url = $_ENV["BASE_URL"];
 
-            if ($check_approval && !$user->to_array()["approved"]) {
-                $base_url = $_ENV["BASE_URL"];
+            if ($check_approval && $role !== Role::Student && !$user["approved"]) {
+                header("Location: $base_url/not-approved");
+                return;
+            }
+
+            if ($check_approval && $role === Role::Student && !isset($_SESSION["fn"])) {
+                http_response_code(401);
+                echo json_encode(["message" => "Неудостоверен студент!"], JSON_UNESCAPED_UNICODE);
                 header("Location: $base_url/not-approved");
                 return;
             }
