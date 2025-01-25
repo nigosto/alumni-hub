@@ -36,10 +36,18 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/edit_ceremony/index.php";
     }
 
-    public function show_ceremonies_studdents_page($ceremony_id)
+    public function show_ceremonies_students_page($ceremony_id)
     {
-        $ceremonies_controller = $this;
-        require_once __DIR__ . "/../pages/ceremonies/students_list/index.php";
+        $ceremony_info = $this->get_ceremony_simple_info_by_id($ceremony_id);
+        if (!$ceremony_info)
+        {
+            require_once __DIR__ . "/../pages/not_found/index.php";
+        }
+        else 
+        {
+            $ceremonies_controller = $this;
+            require_once __DIR__ . "/../pages/ceremonies/students_list/index.php";
+        }
     }
 
     public function export_students($ceremony_id)

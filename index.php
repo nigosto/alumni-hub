@@ -272,14 +272,6 @@ $router->register_route(
 );
 
 $router->register_route(
-    'GET',
-    'not-found',
-    function () use ($pages_controller) {
-        return $pages_controller->show_not_found_page();
-    }
-);
-
-$router->register_route(
     'PATCH',
     'clothes',
     $authorization_middleware->is_authorized(Role::Student, function ($params) use ($clothes_controller) {
@@ -413,7 +405,7 @@ $router->register_route(
     'ceremony/students/{id}',
     $authorization_middleware->is_authorized(Role::Administrator, 
         function ($params) use ($ceremonies_controller) {
-            $ceremonies_controller->show_ceremonies_studdents_page($params["id"]);
+            $ceremonies_controller->show_ceremonies_students_page($params["id"]);
 }));
 
 $router->register_route(

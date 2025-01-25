@@ -3,7 +3,6 @@
 
 <?php
 require_once __DIR__ . "/../../../components/metadata/metadata_component.php";
-require_once __DIR__ . "/../../../components/not_found/not_found_component.php";
 require_once __DIR__ . "/../../../components/header/header_component.php";
 require_once __DIR__ . "/../../../components/footer/footer_component.php";
 require_once __DIR__ . "/../../../components/table/table_component.php";
@@ -12,7 +11,7 @@ require_once __DIR__ . "/../../../components/button/link.php";
 $header = new HeaderComponent();
 $footer = new FooterComponent();
 $students_table = new TableComponent(CeremonyAttendance::labels_ceremony_students_list(), 
-    $ceremonies_controller->get_ceremony_students_info($ceremony_id));
+$ceremonies_controller->get_ceremony_students_info($ceremony_id));
 $export_link = new LinkComponent("Експорт", "{$_ENV["BASE_URL"]}/ceremony/students/{$ceremony_id}/export");
 $edit_link = new LinkComponent("Редактиране", "{$_ENV["BASE_URL"]}/ceremony/edit/{$ceremony_id}");
 
@@ -25,19 +24,10 @@ $stylesheets = array_merge(
   [$_ENV["BASE_URL"] . "/pages/ceremonies/students_list/styles.css"],
 );
 
-$ceremony_info = $ceremonies_controller->get_ceremony_simple_info_by_id($ceremony_id);
-if (!$ceremony_info)
-{
-  $not_found_script = new NotFoundComponent();
-  echo $not_found_script->render();
-}
-else
-{
-  $ceremony_info = $ceremony_info->to_array();
-}
-
 $meta = new MetadataComponent($stylesheets);
 echo $meta->render();
+
+$ceremony_info = $ceremony_info->to_array();
 ?>
 
 <body>
@@ -49,13 +39,10 @@ echo $meta->render();
       <h3>Списък със студенти за церемония</h3>
       <div id="ceremony-info-container">
           <?php
-          if ($ceremony_info)
-          {
-            echo <<<HTML
-            <p class="entry"><strong class="entry-name">Дата на церемонията:</strong> {$ceremony_info["date"]}</p>
-            <p class="entry"><strong class="entry-name">Година на завършване:</strong> {$ceremony_info["graduation_year"]}</p>
-            HTML;  
-          }
+          echo <<<HTML
+          <p class="entry"><strong class="entry-name">Дата на церемонията:</strong> {$ceremony_info["date"]}</p>
+          <p class="entry"><strong class="entry-name">Година на завършване:</strong> {$ceremony_info["graduation_year"]}</p>
+          HTML;  
           ?>
       </div>
 

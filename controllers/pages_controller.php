@@ -15,10 +15,5 @@ class PagesController
     {
         require_once __DIR__ . "/../pages/not_approved/index.php";
     }
-
-    public function show_not_found_page()
-    {
-        require_once __DIR__ . "/../pages/not_found/index.php";
-    }
 }
 ?>
