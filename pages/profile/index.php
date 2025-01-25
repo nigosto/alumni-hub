@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../components/message/message_component.php";
 $base_url = $_ENV["BASE_URL"];
 $header = new HeaderComponent();
 $footer = new FooterComponent();
-$message = new MessageComponent();
+$message = new MessageComponent(MessageVariant::Error);
 
 $user = $controller->get_user();
 $user_data = $user->to_array();

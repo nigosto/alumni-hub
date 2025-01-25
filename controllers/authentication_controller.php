@@ -31,22 +31,6 @@ class AuthenticationController
         require_once __DIR__ . "/../pages/login/pick-fn/index.php";
     }
 
-    private function assign_fn_for_user($fn, $user_id)
-    {
-        if (!$fn || !$user_id) {
-            throw new Exception("Липсващ факултетен номер или потребителско ID");
-        }
-
-        $student = $this->students_service->get_student_by_fn($fn);
-        if (!$student) {
-            throw new Exception('Грешен факултетен номер!');
-        }
-        $this->students_service->update_user_id($fn, $user_id);
-
-        session_start();
-        $_SESSION["fn"] = $fn;
-    }
-
     public function add_fn($data)
     {
         if (!isset($data["fn"])) {
@@ -58,7 +42,6 @@ class AuthenticationController
         $request = new Request($user_id, $data["fn"]);
         $this->requests_service->insert_request($request);
 
-        // $this->assign_fn_for_user($data["fn"], $user_id);
     }
     public function register($data)
     {
@@ -99,8 +82,6 @@ class AuthenticationController
                 
                 $request = new Request($registered_user_id, $fn);
                 $this->requests_service->insert_request($request);
-
-                // $this->assign_fn_for_user($fn, $registered_user_id);
             } else {
                 $user = new User(null, $email, $password_hash, $username, $role->value, false);
                 $registered_user_id = $this->users_service->insert($user);

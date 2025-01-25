@@ -106,7 +106,7 @@ $router->register_route(
     'login/pick-fn',
     $authorization_middleware->is_authorized(Role::Student, function ($params) use ($authentication_controller) {
         $authentication_controller->show_pick_fn_page();
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -124,7 +124,7 @@ $router->register_route(
             http_response_code(500);
             echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
-    })
+    }, false)
 );
 
 $router->register_route(
@@ -165,9 +165,6 @@ $router->register_route(
             $students_controller->import_students($data);
 
             echo json_encode(["message" => "Success"], JSON_UNESCAPED_UNICODE);
-        } catch (PDOException $e) {
-            http_response_code(409);
-            echo json_encode(["message" => "Някои от студентите вече са импортнати"], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(["message" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -397,7 +394,7 @@ $router->register_route(
             http_response_code(500);
             echo json_encode(["Message" => "Fail: {$e->getMessage()}"], JSON_UNESCAPED_UNICODE);
         }
-    })
+    }, false)
 );
 
 $router->dispatch($request_method, $requested_uri);

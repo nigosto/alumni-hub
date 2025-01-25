@@ -3,14 +3,11 @@
   bottom: 50px;
   left: 50%;
 
-  background-color: var(--error-primary-color);
-  color: var(--error-secondary-color);
-  padding: 7px;
+  padding: 10px 20px;
   margin: 5px;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  border: 1px solid var(--error-secondary-color);
   max-width: 60%;
   text-align: center;
 }
@@ -25,6 +22,18 @@
 
 .popup.hide {
   animation: popupHide 0.5s forwards;
+}
+
+.error-popup {
+  background-color: var(--error-primary-color);
+  color: var(--error-secondary-color);
+  border: 1px solid var(--error-secondary-color);
+}
+
+.success-popup {
+  background-color: #198754;
+  color: white;
+  border: 1px solid #157347;
 }
 
 @keyframes popupShow {

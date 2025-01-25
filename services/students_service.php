@@ -13,7 +13,7 @@ class StudentsService extends DataService
     function insert_many($students)
     {
         $insert_query = <<<IQ
-            INSERT INTO Students (fn, degree, fullname, graduation_year, grade, user_id) 
+            INSERT IGNORE INTO Students (fn, degree, fullname, graduation_year, grade, user_id) 
             VALUES (:fn, :degree, :fullname, :graduation_year, :grade, :user_id)
         IQ;
 

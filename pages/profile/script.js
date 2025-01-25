@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw await response.json();
             }
         } catch (error) {
-            showPopup(error.message);
+            const popup = document.getElementById("error-popup");
+            showPopup(popup, error.message);
         }
     });
 

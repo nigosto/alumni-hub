@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../components/message/message_component.php";
 $header = new HeaderComponent();
 $footer = new FooterComponent();
 $submit_button = new ButtonComponent("Изпращане", ButtonStyleType::Primary, true);
-$message = new MessageComponent();
+$message = new MessageComponent(MessageVariant::Error);
 
 $stylesheets = array_merge(
   $header->get_stylesheets(),

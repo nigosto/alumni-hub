@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../components/message/message_component.php";
 
 $header = new HeaderComponent();
 $footer = new FooterComponent();
-$message = new MessageComponent();
+$error_message = new MessageComponent(MessageVariant::Error);
 
 $base_url = $_ENV["BASE_URL"];
 
@@ -71,7 +71,7 @@ echo $meta->render();
             ?>
         </nav>
 
-        <?php echo $message->render(); ?>
+        <?php echo $error_message->render(); ?>
 
     </main>
 
