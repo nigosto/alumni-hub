@@ -398,12 +398,16 @@ class CeremoniesService extends DataService
         $ceremony_info = parent::get_with_query_map($select_query, ["id" => $id],
             function ($row)
             {
+                if (!$row)
+                {
+                    return null;
+                }
                 $row["date"] = DateTime::createFromFormat("Y-m-d H:i:s", $row["date"]);
                 return new Ceremony($row["date"], $row["graduation_year"], $row["id"]);
             });
 
         if (!$ceremony_info) {
-            return false;
+            return null;
         }
 
         return $ceremony_info;
