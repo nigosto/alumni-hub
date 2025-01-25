@@ -11,7 +11,7 @@ require_once __DIR__ . "/../../../components/button/link.php";
 $header = new HeaderComponent();
 $footer = new FooterComponent();
 $students_table = new TableComponent(CeremonyAttendance::labels_ceremony_students_list(), 
-$ceremonies_controller->get_ceremony_students_info($ceremony_id));
+                                     $ceremonies_controller->get_ceremony_students_info($ceremony_id));
 $export_link = new LinkComponent("Експорт", "{$_ENV["BASE_URL"]}/ceremony/students/{$ceremony_id}/export");
 $edit_link = new LinkComponent("Редактиране", "{$_ENV["BASE_URL"]}/ceremony/edit/{$ceremony_id}");
 

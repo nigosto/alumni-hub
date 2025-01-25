@@ -416,7 +416,7 @@ class CeremoniesService extends DataService
     public function get_ceremony_students_info($ceremony_id)
     {
         $select_query = <<<IQ
-            SELECT Students.fn, degree, fullname, Students.graduation_year, size, speach_status, responsibility_status FROM Ceremony
+            SELECT Students.fn, degree, fullname, Students.graduation_year, size, accepted, speach_status, responsibility_status FROM Ceremony
             JOIN Ceremony_Attendance ON Ceremony.id = Ceremony_Attendance.ceremony_id
             JOIN Students ON Students.fn = ceremony_attendance.student_fn
             LEFT JOIN Clothes ON Students.fn = Clothes.student_fn
@@ -430,6 +430,7 @@ class CeremoniesService extends DataService
                 $row["size"] = "Липсва";
             }
 
+            $row["accepted"] = $row["accepted"] === 1 ? "Да" : "Не"; 
             $row["degree"] = prettify_degree(Degree::tryFrom($row["degree"]));
             $row["speach_status"] = speach_status_invite_string(SpeachStatus::tryFrom($row["speach_status"]));
             $row["responsibility_status"] = responsibility_status_invite_string(ResponsibilityStatus::tryFrom($row["responsibility_status"]));
