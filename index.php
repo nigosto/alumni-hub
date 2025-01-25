@@ -410,7 +410,6 @@ $router->register_route(
                 header('Content-Type: text/csv; charset=utf-8');
                 header('Content-Disposition: attachment; filename=students.csv');
                 $ceremonies_controller->export_students($params["id"]);  
-                throw new Exception("kuur");
             }
             catch(Exception $e) {
                 http_response_code(500);
