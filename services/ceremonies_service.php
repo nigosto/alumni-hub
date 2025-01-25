@@ -435,7 +435,6 @@ class CeremoniesService extends DataService
 
         $ceremony_info_rows = parent::find_all_with_query_map($select_query, ["ceremony_id" => $ceremony_id], $map_func);
 
-        // var_dump($ceremony_info_rows);
         return $ceremony_info_rows;
     }
 
