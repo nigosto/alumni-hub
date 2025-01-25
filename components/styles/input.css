@@ -4,7 +4,11 @@ select {
   padding: 5px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  color: #666;
+  color: #353535;
+}
+
+input::placeholder {
+  color: #878787;
 }
 
 .hidden {

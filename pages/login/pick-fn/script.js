@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/profile`;
             } else {
-                throw new Error(data.message || 'Could not pick faculty number');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.message || 'Could not add faculty number');
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 });

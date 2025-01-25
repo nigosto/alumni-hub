@@ -1,15 +1,15 @@
 <?php
+require_once __DIR__ . "/../services/ceremonies_attendance_service.php";
+
 class CeremoniesController
 {
     private $ceremonies_service;
-    private $ceremonies_attendance_service;
-    private $students_service;
+    private CeremoniesAttendanceService $ceremonies_attendance_service;
 
-    function __construct($ceremonies_service, $ceremonies_attendance_service, $students_service)
+    function __construct($ceremonies_service, CeremoniesAttendanceService $ceremonies_attendance_service)
     {
         $this->ceremonies_service = $ceremonies_service;
         $this->ceremonies_attendance_service = $ceremonies_attendance_service;
-        $this->students_service = $students_service;
     }
 
     public function show_create_ceremony_page()
@@ -17,7 +17,19 @@ class CeremoniesController
         require_once __DIR__ . "/../pages/ceremonies/create_ceremony/index.php";
     }
 
-    private function validate_create_ceremony_data($date, 
+    public function show_ceremonies_list_page()
+    {
+        $controller = $this;
+        require_once __DIR__ . "/../pages/ceremonies/ceremonies_list/index.php";
+    }
+
+    public function show_ceremonies_edit_page($ceremony_id)
+    {
+        $ceremonies_controller = $this;
+        require_once __DIR__ . "/../pages/ceremonies/edit_ceremony/index.php";
+    }
+
+    private function validate_create_or_update_ceremony_data($date, 
         $graduation_year, 
         $responsible_robes,
         $responsible_signatures,
@@ -28,88 +40,28 @@ class CeremoniesController
         // 2) already created ceremony for graduation year
         if (!$date) 
         {
-            throw new Exception('Invalid date!');
+            throw new Exception('Невалидна дата!');
         }
 
         if ($date->format('Y') < $graduation_year) 
         {
-            throw new Exception('Ceremony date is before graduation year');
+            throw new Exception('Датата за церемонията трябва да е след датата на завършването!');
         }
 
         if ($responsible_robes === $responsible_diplomas ||
             $responsible_robes === $responsible_signatures ||
             $responsible_signatures === $responsible_diplomas) 
         {
-            throw new Exception('The same student cannot be assigned more than one responsibility');
+            throw new Exception('Един студент не може да има повече от една отговорност!');
         }
     }
 
-    private function get_special_ceremony_attendances(
-        $ceremony_id,
-        $speaker,
-        $responsible_robes,
-        $responsible_signatures,
-        $responsible_diplomas)
-    {
-        // The speaking student can also have a responsibility
-        $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::None;
-        if ($responsible_robes === $speaker) {
-            $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::WaitingRobes;
-        }
-        else if ($responsible_signatures === $speaker) {
-            $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::WaitingSignatures;
-        }
-        else if ($responsible_diplomas === $speaker) {
-            $ceremony_attendance_speaker_responsibility = ResponsibilityStatus::WaitingDiplomas;
-        }
-
-        $ceremony_attendances = [];
-        $ceremony_attendance_speaker = new CeremonyAttendance($ceremony_id, $speaker, null, 
-                SpeachStatus::Waiting, $ceremony_attendance_speaker_responsibility);
-        array_push($ceremony_attendances, $ceremony_attendance_speaker);
-
-        if ($ceremony_attendance_speaker_responsibility !== ResponsibilityStatus::WaitingRobes) 
-        {
-            $ceremony_attendance_responsible_robes = new CeremonyAttendance(
-                $ceremony_id, $responsible_robes, null, 
-                SpeachStatus::None, ResponsibilityStatus::WaitingRobes);
-            array_push($ceremony_attendances, $ceremony_attendance_responsible_robes);
-        }
-        if ($ceremony_attendance_speaker_responsibility !== ResponsibilityStatus::WaitingSignatures) 
-        {
-            $ceremony_attendance_responsible_signatures = new CeremonyAttendance(
-                $ceremony_id, $responsible_signatures, null, 
-                SpeachStatus::None, ResponsibilityStatus::WaitingSignatures);
-            array_push($ceremony_attendances, $ceremony_attendance_responsible_signatures);
-        }
-        if ($ceremony_attendance_speaker_responsibility !== ResponsibilityStatus::WaitingDiplomas) 
-        {
-            $ceremony_attendance_responsible_diplomas = new CeremonyAttendance(
-                $ceremony_id, $responsible_diplomas, null, 
-                SpeachStatus::None, ResponsibilityStatus::WaitingDiplomas);
-            array_push($ceremony_attendances, $ceremony_attendance_responsible_diplomas);
-        }
-
-        return $ceremony_attendances;
+    public function update_speach_status($ceremony_id, $student_fn, SpeachStatus $status) {
+        return $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, $status);
     }
 
-    private function get_ordinary_ceremony_attendances($special_ceremony_attendances, $ceremony_id, $graduation_year)
-    {
-        $special_students_fns = array_map(
-            function($value): string { return $value->to_array()["student_fn"]; }, 
-        $special_ceremony_attendances);
-        $ordinary_students_fns = $this->students_service->get_ordinary_students_fns_for_graduation_year($graduation_year, $special_students_fns);
-        
-        $ordinary_ceremony_attendances = [];
-        foreach ($ordinary_students_fns as $ordinary_student_fn)
-        {
-            $ordinary_ceremony_attendance = new CeremonyAttendance(
-                $ceremony_id, $ordinary_student_fn, null, 
-                SpeachStatus::None, ResponsibilityStatus::None);
-            array_push($ordinary_ceremony_attendances, $ordinary_ceremony_attendance);
-        }
-
-        return $ordinary_ceremony_attendances;
+    public function update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus $status) {
+        return $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, $status);
     }
 
     public function create_ceremony($data)
@@ -122,36 +74,109 @@ class CeremoniesController
             isset($data["responsible_diplomas"])) 
         {
 
-            $date = $this->ceremonies_service->create_date_from_string($data['date']);
+            $date = $this->ceremonies_service->create_date_from_js_string($data['date']);
             $graduation_year = $data['graduation_year'];
             $speaker = $data['speaker'];
             $responsible_robes = $data['responsible_robes'];
             $responsible_signatures = $data['responsible_signatures'];
             $responsible_diplomas = $data['responsible_diplomas'];
 
-            $this->validate_create_ceremony_data($date, 
+            $this->validate_create_or_update_ceremony_data($date, 
                 $graduation_year, 
                 $responsible_robes, 
                 $responsible_signatures, 
                 $responsible_diplomas);
 
-            $ceremony = new Ceremony($date);
-            $ceremony_id = $this->ceremonies_service->insert_ceremony($ceremony);
+            $ceremony = new Ceremony($date, $graduation_year);
+            $this->ceremonies_service->insert_ceremony(
+                $ceremony,
+                $speaker,
+                $responsible_robes,
+                $responsible_signatures,
+                $responsible_diplomas
+            );
+        }
+    }
 
-            $special_ceremony_attendances = $this->get_special_ceremony_attendances(
-                $ceremony_id, 
-                $speaker, 
+    public function get_ceremonies_list_data()
+    {
+        $ceremonies_info = $this->ceremonies_service->get_all_ceremony_list_info();
+        if (!$ceremonies_info)
+        {
+            return [];
+        }
+
+        return $ceremonies_info;
+    }
+
+    public function get_ceremony_by_id($ceremony_id)
+    {
+        $ceremony_info = $this->ceremonies_service->get_ceremony_info_by_id($ceremony_id);
+        if (!$ceremony_info)
+        {
+            return null;
+        }
+
+        return $ceremony_info;
+    }
+
+    public function update_ceremony($data)
+    {
+        if (isset($data["id"]) &&
+            isset($data['date']) && 
+            isset($data['graduation_year']) && 
+            isset($data['speaker']) && 
+            isset($data['responsible_robes']) && 
+            isset($data["responsible_signatures"]) && 
+            isset($data["responsible_diplomas"])) 
+        {
+            $id = $data["id"];
+            $date = $this->ceremonies_service->create_date_from_js_string($data['date']);
+            $graduation_year = $data['graduation_year'];
+            $speaker = $data['speaker'];
+            $responsible_robes = $data['responsible_robes'];
+            $responsible_signatures = $data['responsible_signatures'];
+            $responsible_diplomas = $data['responsible_diplomas'];
+
+            $this->validate_create_or_update_ceremony_data($date, 
+                $graduation_year, 
                 $responsible_robes, 
                 $responsible_signatures, 
                 $responsible_diplomas);
 
-            $ordinary_ceremony_attendances = $this->get_ordinary_ceremony_attendances(
-                $special_ceremony_attendances, 
-                $ceremony_id, 
-                $graduation_year);
+            $ceremony = new Ceremony($date, $graduation_year, $id);
+            $this->ceremonies_service->update_ceremony(
+                $ceremony,
+                $speaker,
+                $responsible_robes,
+                $responsible_signatures,
+                $responsible_diplomas
+            );
+        }
+    }
 
-            $ceremony_attendances = array_merge($special_ceremony_attendances, $ordinary_ceremony_attendances);
-            $this->ceremonies_attendance_service->insert_many_ceremony_attendances($ceremony_attendances);
+    public function update_ceremony_invitation($data) {
+        $ceremony_id = intval($data["ceremony_id"]);
+        $status = boolval($data["status"]);
+
+        session_start();
+        $student_fn = $_SESSION["fn"];
+
+        $this->ceremonies_attendance_service->update_accepted_status($ceremony_id, $student_fn, $status);
+
+        if ($status === false) {
+            $this->ceremonies_attendance_service->update_speach_status($ceremony_id, $student_fn, SpeachStatus::Declined);
+
+            $attendance = $this->ceremonies_attendance_service->find_one_for_student($ceremony_id, $student_fn);
+            $responsibility_status = ResponsibilityStatus::tryFrom($attendance->to_array()["responsibility_status"]);
+            
+            if ($responsibility_status === ResponsibilityStatus::AcceptedDiplomas || $responsibility_status === ResponsibilityStatus::WaitingDiplomas) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedDiplomas);
+            } else if ($responsibility_status === ResponsibilityStatus::AcceptedRobes || $responsibility_status === ResponsibilityStatus::WaitingRobes) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedRobes);
+            } else if ($responsibility_status === ResponsibilityStatus::AcceptedSignatures || $responsibility_status === ResponsibilityStatus::WaitingSignatures) {
+                $this->ceremonies_attendance_service->update_responsibility_status($ceremony_id, $student_fn, ResponsibilityStatus::DeclinedSignatures);
+            }
         }
     }
 }

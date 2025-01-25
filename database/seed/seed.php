@@ -28,27 +28,27 @@ $hashed_passwords = [
 $hashed_passwords = array_map(fn($value): string => password_hash($value, PASSWORD_DEFAULT), $hashed_passwords);
 
 $db_con->exec(<<<CT
-INSERT INTO Users (email, password, username, role)
+INSERT INTO Users (email, password, username, role, approved)
 VALUES
-    ('ivan.petrov@example.com', '{$hashed_passwords[0]}', 'IvanPetrov', 'admin'),
-    ('maria.ivanova@example.com', '{$hashed_passwords[1]}', 'MariaIvanova', 'administrator'),
-    ('georgi.georgiev@example.com', '{$hashed_passwords[2]}', 'GeorgiGeorgiev', 'administrator'),
+    ('ivan.petrov@example.com', '{$hashed_passwords[0]}', 'IvanPetrov', 'admin', 1),
+    ('maria.ivanova@example.com', '{$hashed_passwords[1]}', 'MariaIvanova', 'administrator', 1),
+    ('georgi.georgiev@example.com', '{$hashed_passwords[2]}', 'GeorgiGeorgiev', 'administrator', 0),
 
-    ('elena.stoyanova@example.com', '{$hashed_passwords[3]}', 'ElenaStoyanova', 'student'),
-    ('petar.kolev@example.com', '{$hashed_passwords[4]}', 'PetarKolev', 'student'),
-    ('krasimira.dimitrova@example.com', '{$hashed_passwords[5]}', 'KrasimiraDimitrova', 'student'),
+    ('elena.stoyanova@example.com', '{$hashed_passwords[3]}', 'ElenaStoyanova', 'student', 1),
+    ('petar.kolev@example.com', '{$hashed_passwords[4]}', 'PetarKolev', 'student', 1),
+    ('krasimira.dimitrova@example.com', '{$hashed_passwords[5]}', 'KrasimiraDimitrova', 'student', 1),
 
-    ('nikolay.iliev@example.com', '{$hashed_passwords[6]}', 'NikolayIliev', 'student'),
-    ('valentina.marinova@example.com', '{$hashed_passwords[7]}', 'ValentinaMarinova', 'student'),
-    ('stefan.popov@example.com', '{$hashed_passwords[8]}', 'StefanPopov', 'student'),
+    ('nikolay.iliev@example.com', '{$hashed_passwords[6]}', 'NikolayIliev', 'student', 1),
+    ('valentina.marinova@example.com', '{$hashed_passwords[7]}', 'ValentinaMarinova', 'student', 1),
+    ('stefan.popov@example.com', '{$hashed_passwords[8]}', 'StefanPopov', 'student', 1),
 
-    ('daniela.angelova@example.com', '{$hashed_passwords[9]}', 'DanielaAngelova', 'student'),
-    ('boris.kolev@example.com', '{$hashed_passwords[10]}', 'BorisKolev', 'student'),
-    ('yana.vasileva@example.com', '{$hashed_passwords[11]}', 'YanaVasileva', 'student'),
+    ('daniela.angelova@example.com', '{$hashed_passwords[9]}', 'DanielaAngelova', 'student', 1),
+    ('boris.kolev@example.com', '{$hashed_passwords[10]}', 'BorisKolev', 'student', 1),
+    ('yana.vasileva@example.com', '{$hashed_passwords[11]}', 'YanaVasileva', 'student', 1),
     
-    ('mitko.dimitrov@example.com', '{$hashed_passwords[12]}', 'MitkoDimitrov', 'student'),
-    ('teodora.petkova@example.com', '{$hashed_passwords[13]}', 'TeodoraPetkova', 'student'),
-    ('alexander.stanev@example.com', '{$hashed_passwords[14]}', 'AlexanderStanev', 'student');
+    ('mitko.dimitrov@example.com', '{$hashed_passwords[12]}', 'MitkoDimitrov', 'student', 1),
+    ('teodora.petkova@example.com', '{$hashed_passwords[13]}', 'TeodoraPetkova', 'student', 1),
+    ('alexander.stanev@example.com', '{$hashed_passwords[14]}', 'AlexanderStanev', 'student', 1);
 CT);
 
 $db_con->exec(<<<CT
@@ -56,7 +56,7 @@ INSERT INTO Students (fn, degree, fullname, graduation_year, grade)
 VALUES 
     ('1MI1234567', 'bachelor', 'Елена Андреева Стоянова', '2025', 3.01),
     ('2MI9876543', 'bachelor', 'Петър Станимирeв Колев', '2025', 6.00),
-    ('3MI4567890', 'bachelor', 'Красимира Николаева Димитрова', '2025', 6.01),
+    ('3MI4567890', 'bachelor', 'Красимира Николаева Димитрова', '2025', 6.00),
 
     ('4MI6543210', 'bachelor', 'Николай Радославов Илиев', '2025', 5.00),
     ('5MI2345678', 'master', 'Валентина Валериева Маринова', '2025', 5.50),
@@ -72,44 +72,18 @@ VALUES
 CT);
 
 $db_con->exec(<<<CT
-INSERT INTO Clothes (size, student_fn)
+INSERT INTO Clothes (size)
 VALUES 
-    ('S', '1MI1234567'),
-    ('L', '2MI9876543'),
-    ('M', '3MI4567890'),
-    ('M', '4MI6543210'),
-    ('XL', '5MI2345678'),
-    ('XL', '6MI8765432'),
-    ('S', '7MI3456789'),
-    ('S', '8MI7654321'),
-    ('S', '9MI5678901'),
-    ('M', '1MI8901234'),
-    ('M', '2MI6789012'),
-    ('L', '3MI7890123')
+    ('S'),
+    ('L'),
+    ('M'),
+    ('M'),
+    ('XL'),
+    ('XL'),
+    ('S'),
+    ('S'),
+    ('S'),
+    ('M'),
+    ('M'),
+    ('L')
 CT);
-
-$db_con->exec(<<<CT
-INSERT INTO Ceremony (date)
-VALUES 
-    ('2024-02-19 10:30:00'),
-    ('2025-02-23 10:00:00')
-CT);
-
-$db_con->exec(<<<CT
-INSERT INTO Ceremony_Attendance (ceremony_id, student_fn, accepted, speach_status, responsibility_status)
-VALUES 
-    ('2', '1MI1234567', FALSE, 'none', 'none'),
-    ('2', '2MI9876543', NULL, 'none', 'none'),
-    ('2', '3MI4567890', NULL, 'none', 'none'),
-
-    ('2', '4MI6543210', NULL, 'none', 'none'),
-    ('2', '5MI2345678', NULL, 'none', 'accepted_robes'),
-    ('2', '6MI8765432', NULL, 'none', 'accepted_robes'),
-
-    ('2', '8MI7654321', NULL, 'none', 'declined_robes'),
-    ('2', '9MI5678901', NULL, 'none', 'declined_robes'),
-    ('2', '2MI6789012', NULL, 'none', 'declined_robes'),
-    ('2', '3MI7890123', NULL, 'none', 'declined_robes')
-CT);
-
-?>

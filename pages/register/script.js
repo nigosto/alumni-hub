@@ -32,18 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ username, email, role, password, password_confirmation, fn }),
             });
 
-            const data = await response.json();
-
             if (response.ok) {
-                form.reset();
                 const baseUrl = localStorage.getItem("baseUrl");
                 // TODO: show message, but don't redirect
                 // window.location.href = `${baseUrl}/profile`;
             } else {
-                throw new Error(data.message || 'Registration failed');
+                throw await response.json();
             }
         } catch (error) {
-            console.log(error)
+            showPopup(error.message);
         }
     });
 });
