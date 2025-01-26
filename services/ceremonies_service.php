@@ -418,7 +418,7 @@ class CeremoniesService extends DataService
         $select_query = <<<IQ
             SELECT Students.fn, degree, fullname, Students.graduation_year, size, accepted, speach_status, responsibility_status FROM Ceremony
             JOIN Ceremony_Attendance ON Ceremony.id = Ceremony_Attendance.ceremony_id
-            JOIN Students ON Students.fn = ceremony_attendance.student_fn
+            JOIN Students ON Students.fn = Ceremony_Attendance.student_fn
             LEFT JOIN Clothes ON Students.fn = Clothes.student_fn
             WHERE Ceremony.id = :ceremony_id
             ORDER BY Ceremony.graduation_year
