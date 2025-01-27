@@ -14,9 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ fn }),
             });
-
-            const data = await response.json();
-
             if (response.ok) {
                 const baseUrl = localStorage.getItem("baseUrl");
                 window.location.href = `${baseUrl}/profile`;

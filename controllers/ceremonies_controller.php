@@ -2,21 +2,25 @@
 require_once __DIR__ . "/../services/ceremonies_service.php";
 require_once __DIR__ . "/../services/ceremonies_attendance_service.php";
 require_once __DIR__ . "/../services/ceremony_students_export_service.php";
+require_once __DIR__ . "/../services/students_service.php";
 
 class CeremoniesController
 {
     private CeremoniesService $ceremonies_service;
     private CeremoniesAttendanceService $ceremonies_attendance_service;
     private CeremonyStudentsExportService $ceremony_students_export_service;
+    private StudentsService $students_service;
 
     function __construct(
         CeremoniesService $ceremonies_service, 
         CeremoniesAttendanceService $ceremonies_attendance_service,
-        CeremonyStudentsExportService $ceremony_students_export_service)
+        CeremonyStudentsExportService $ceremony_students_export_service,
+        StudentsService $students_service)
     {
         $this->ceremonies_service = $ceremonies_service;
         $this->ceremonies_attendance_service = $ceremonies_attendance_service;
         $this->ceremony_students_export_service = $ceremony_students_export_service;
+        $this->students_service = $students_service;
     }
 
     public function show_create_ceremony_page()
@@ -70,6 +74,7 @@ class CeremoniesController
 
     private function validate_create_or_update_ceremony_data($date, 
         $graduation_year, 
+        $speaker,
         $responsible_robes,
         $responsible_signatures,
         $responsible_diplomas)
@@ -93,6 +98,15 @@ class CeremoniesController
         {
             throw new Exception('Един студент не може да има повече от една отговорност!');
         }
+
+        if (
+            !$this->students_service->get_student_by_fn($responsible_diplomas) || 
+            !$this->students_service->get_student_by_fn($responsible_robes) || 
+            !$this->students_service->get_student_by_fn($responsible_signatures) ||
+            !$this->students_service->get_student_by_fn($speaker)
+        ) {
+            throw new Exception('Моля въведете валидни факултетни номера!');
+        }
     }
 
     public function update_speach_status($ceremony_id, $student_fn, SpeachStatus $status) {
@@ -112,7 +126,6 @@ class CeremoniesController
             isset($data["responsible_signatures"]) && 
             isset($data["responsible_diplomas"])) 
         {
-
             $date = $this->ceremonies_service->create_date_from_js_string($data['date']);
             $graduation_year = $data['graduation_year'];
             $speaker = $data['speaker'];
@@ -122,6 +135,7 @@ class CeremoniesController
 
             $this->validate_create_or_update_ceremony_data($date, 
                 $graduation_year, 
+                $speaker,
                 $responsible_robes, 
                 $responsible_signatures, 
                 $responsible_diplomas);
@@ -190,6 +204,7 @@ class CeremoniesController
 
             $this->validate_create_or_update_ceremony_data($date, 
                 $graduation_year, 
+                $speaker,
                 $responsible_robes, 
                 $responsible_signatures, 
                 $responsible_diplomas);
