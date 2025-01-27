@@ -49,7 +49,8 @@ $user_controller = new UserController($users_service, $students_service, $clothe
 $ceremonies_controller = new CeremoniesController(
     $ceremonies_service,
     $ceremonies_attendance_service,
-    $ceremony_students_export_service
+    $ceremony_students_export_service,
+    $students_service
 );
 
 $authorization_middleware = new AuthorizationMiddleware($users_service);

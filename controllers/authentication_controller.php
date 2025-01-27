@@ -1,11 +1,12 @@
 <?php
 require_once __DIR__ . "/../models/user.php";
 require_once __DIR__ . "/../services/requests_service.php";
+require_once __DIR__ . "/../services/students_service.php";
 
 class AuthenticationController
 {
     private $users_service;
-    private $students_service;
+    private StudentsService $students_service;
     private RequestsService $requests_service;
 
     function __construct($users_service, $students_service, $requests_service)
@@ -38,6 +39,20 @@ class AuthenticationController
         }
 
         session_start();
+        
+        $student = $this->students_service->get_student_by_fn($data["fn"]);
+        if (!$student) {
+            throw new Exception(
+                'Невалиден факултетен номер!'
+            );
+        }
+
+        if (isset($student->to_array()["user_id"])) {
+            throw new Exception(
+                'Вече съществува потребител с този факултетен номер!'
+            );
+        }
+
         $user_id = $_SESSION["id"];
         $request = new Request($user_id, $data["fn"]);
         $this->requests_service->insert_request($request);
@@ -134,7 +149,22 @@ class AuthenticationController
     {
         if (isset($data['fn'])) {
             $fn = $data['fn'];
+
+            $student = $this->students_service->get_student_by_fn($fn);
+
+            if (!$student) {
+                throw new Exception(
+                    'Невалиден факултетен номер!'
+                );
+            }
+
             session_start();
+            if ($student->to_array()["user_id"] !== $_SESSION["id"]) {
+                throw new Exception(
+                    'Невалиден факултетен номер!'
+                );    
+            }
+
             $_SESSION["fn"] = $fn;
         } else {
             throw new Exception(

@@ -367,7 +367,7 @@ class CeremoniesService extends DataService
         $select_query = <<<IQ
             SELECT Ceremony.id, date, Ceremony.graduation_year, student_fn, speach_status, responsibility_status FROM Ceremony
             JOIN Ceremony_Attendance ON Ceremony.id = Ceremony_Attendance.ceremony_id
-            JOIN Students ON Students.fn = ceremony_attendance.student_fn
+            JOIN Students ON Students.fn = Ceremony_Attendance.student_fn
             WHERE ((speach_status != "declined" AND Ceremony_Attendance.speach_status != "none")
                 OR (responsibility_status NOT LIKE '%declined%' AND responsibility_status != "none"))
                 AND (Ceremony.id = ?)
